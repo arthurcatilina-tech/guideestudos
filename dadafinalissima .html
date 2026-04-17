@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Arthur Henrique | Medicina UFPE</title>
+
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CONFIGURAÇÃO DO FIREBASE — FAÇA ISSO UMA VEZ SÓ               ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║  1. Acesse: https://console.firebase.google.com                 ║
+  ║  2. Clique em "Adicionar projeto" → dê um nome → continuar      ║
+  ║  3. No menu lateral: Build → Realtime Database → Criar banco     ║
+  ║     - Escolha "Modo de teste" (por 30 dias, depois ajusta)      ║
+  ║  4. No menu lateral: Configurações do projeto (⚙️)              ║
+  ║     - Role até "Seus apps" → clique em </> (Web)                ║
+  ║     - Copie o bloco firebaseConfig e cole SUBSTITUINDO           ║
+  ║       o objeto FIREBASE_CONFIG abaixo                           ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+
+<style>
+  :root {
+    --bg:#f5f4f0; --bg2:#edecea; --bg3:#e4e2dc;
+    --text:#1a1a18; --text2:#6b6b67; --text3:#9e9d99;
+    --border:rgba(0,0,0,0.1); --border2:rgba(0,0,0,0.18);
+    --white:#ffffff;
+    --green:#1D9E75; --green-bg:#EAF3DE; --green-text:#3B6D11;
+    --blue:#378ADD;  --blue-bg:#E6F1FB;  --blue-text:#185FA5;
+    --amber:#BA7517; --amber-bg:#FAEEDA; --amber-text:#854F0B;
+    --red:#E24B4A;   --red-bg:#FCEBEB;   --red-text:#A32D2D;
+    --radius:10px; --radius-sm:7px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{
+      --bg:#1a1a18; --bg2:#242422; --bg3:#2e2e2b;
+      --text:#eae8e1; --text2:#9e9d99; --text3:#6b6b67;
+      --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+      --white:#242422;
+      --green-bg:#0d2e1a; --green-text:#5fcfa0;
+      --blue-bg:#0d1e30;  --blue-text:#7ab8f0;
+      --amber-bg:#2e1e06; --amber-text:#f0b060;
+      --red-bg:#2e0d0d;   --red-text:#f07070;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .app{max-width:680px;margin:0 auto;padding:1.2rem 1rem 4rem;}
+
+  /* sync banner */
+  .sync-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:var(--radius-sm);font-size:11px;margin-bottom:1rem;transition:all .3s;}
+  .sync-bar.ok   {background:#EAF3DE;color:#3B6D11;}
+  .sync-bar.err  {background:#FCEBEB;color:#A32D2D;}
+  .sync-bar.load {background:#E6F1FB;color:#185FA5;}
+  .sync-bar.warn {background:#FAEEDA;color:#854F0B;}
+  .sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .sync-bar.ok   .sync-dot{background:#1D9E75;}
+  .sync-bar.err  .sync-dot{background:#E24B4A;}
+  .sync-bar.load .sync-dot{background:#378ADD;animation:pulse 1s infinite;}
+  .sync-bar.warn .sync-dot{background:#BA7517;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* setup card */
+  .setup-card{background:var(--amber-bg);border:1px solid rgba(186,117,23,.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:1rem;font-size:12px;color:var(--amber-text);line-height:1.7;}
+  .setup-card h3{font-size:13px;font-weight:700;margin-bottom:6px;}
+  .setup-card code{background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;}
+  .setup-card a{color:var(--amber-text);font-weight:700;}
+  .setup-input{width:100%;margin-top:8px;height:34px;border:1px solid rgba(186,117,23,.4);border-radius:var(--radius-sm);padding:0 10px;font-size:12px;background:var(--white);color:var(--text);font-family:monospace;}
+  .setup-btn{margin-top:8px;height:34px;padding:0 16px;background:#BA7517;color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+  .setup-btn:active{opacity:.85;}
+
+  .header{margin-bottom:1rem;}
+  .header h1{font-size:19px;font-weight:600;letter-spacing:-.3px;}
+  .header-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:1rem;}
+  .stat{background:var(--bg2);border-radius:var(--radius-sm);padding:9px 10px;}
+  .stat-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
+  .stat-num{font-size:20px;font-weight:600;}
+  .n-done{color:#1D9E75;} .n-todo{color:#378ADD;} .n-due{color:#E24B4A;} .n-rev{color:#BA7517;}
+  .progress-bar{height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;margin-bottom:3px;}
+  .progress-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width .4s;}
+  .progress-label{font-size:11px;color:var(--text3);text-align:right;margin-bottom:1.1rem;}
+  .section-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+  .status-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+  .stab{height:28px;padding:0 13px;font-size:12px;border:1px solid var(--border2);border-radius:99px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;}
+  .stab.active{background:var(--bg2);color:var(--text);font-weight:600;}
+  .nav{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.1rem;}
+  .nav-btn{flex:1;height:36px;border:none;background:none;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .nav-btn.active{color:var(--text);border-bottom-color:var(--text);}
+  .sub-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+  .chip{height:28px;padding:0 12px;font-size:11px;border-radius:99px;cursor:pointer;border:none;font-weight:700;transition:opacity .15s;opacity:1;}
+  .chip:not(.active){opacity:.3;}
+  .chip-all    {background:#e4e2dc;color:#1a1a18;}
+  .chip-sai-c  {background:#F5C4B3;color:#993C1D;}
+  .chip-sai-n  {background:#AFA9EC;color:#26215C;}
+  .chip-sai-g  {background:#F4C0D1;color:#4B1528;}
+  .chip-sca    {background:#FAC775;color:#412402;}
+  .chip-ictc-c {background:#9FE1CB;color:#04342C;}
+  .chip-ictc-a {background:#5DCAA5;color:#04342C;}
+  .chip-btm    {background:#B5D4F4;color:#042C53;}
+  .chip-ramel  {background:#F0997B;color:#4A1B0C;}
+  .chip-dpp    {background:#C0DD97;color:#173404;}
+  .chip-fabs   {background:#D3D1C7;color:#2C2C2A;}
+  .add-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem;}
+  .add-row input,.add-row select{height:36px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:13px;padding:0 10px;}
+  .add-row input{flex:1;min-width:140px;}
+  .add-row select{font-size:12px;padding:0 7px;}
+  .add-row button{height:36px;padding:0 14px;border:none;border-radius:var(--radius-sm);background:#1D9E75;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
+  .add-row button:active{opacity:.85;}
+  .lembrete{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:var(--radius-sm);background:#FAEEDA;border:1px solid rgba(186,117,23,.25);margin-bottom:1rem;font-size:12px;color:#854F0B;}
+  .lembrete-dot{width:7px;height:7px;border-radius:50%;background:#BA7517;flex-shrink:0;}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;font-size:11px;color:var(--text2);align-items:center;}
+  .prova-group{margin-bottom:1.3rem;}
+  .prova-header{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+  .prova-tag{font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap;}
+  .tag-high{background:#FCEBEB;color:#A32D2D;}
+  .tag-med {background:#FAEEDA;color:#854F0B;}
+  .tag-low {background:#edecea;color:#6b6b67;}
+  .prova-count{margin-left:auto;font-size:11px;color:#9e9d99;display:flex;align-items:center;gap:5px;}
+  .mini-bar{width:52px;height:4px;background:#e4e2dc;border-radius:99px;overflow:hidden;}
+  .mini-fill{height:100%;border-radius:99px;}
+  .mf-high{background:#E24B4A;} .mf-med{background:#BA7517;} .mf-done{background:#1D9E75;}
+  .item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-left:3px solid #ccc;border-radius:var(--radius);background:var(--white);margin-bottom:6px;transition:opacity .2s;}
+  .item.dim{opacity:.45;}
+  .item[data-sub="SAI — Clínica"]    {border-left-color:#D07050;}
+  .item[data-sub="SAI — Neurologia"] {border-left-color:#AFA9EC;}
+  .item[data-sub="SAI — Gineco"]     {border-left-color:#D4537E;}
+  .item[data-sub="SCA"]              {border-left-color:#EF9F27;}
+  .item[data-sub="ICTC — Cirurgia"]  {border-left-color:#1D9E75;}
+  .item[data-sub="ICTC — Anatomia"]  {border-left-color:#0F6E56;}
+  .item[data-sub="BTM"]              {border-left-color:#378ADD;}
+  .item[data-sub="RAMEL"]            {border-left-color:#D85A30;}
+  .item[data-sub="DPP"]              {border-left-color:#639922;}
+  .item[data-sub="FABS 2"]           {border-left-color:#888780;}
+  .check{width:18px;height:18px;border:1.5px solid var(--border2);border-radius:5px;cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+  .check.on{background:#1D9E75;border-color:#1D9E75;}
+  .check.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);}
+  .item-body{flex:1;min-width:0;}
+  .item-text{font-size:13px;line-height:1.4;}
+  .item-text.done{text-decoration:line-through;color:var(--text2);}
+  .item-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center;}
+  .sub-badge{font-size:10px;padding:2px 8px;border-radius:99px;white-space:nowrap;font-weight:700;}
+  .sb-sai-c  {background:#F5C4B3;color:#993C1D;}
+  .sb-sai-n  {background:#AFA9EC;color:#26215C;}
+  .sb-sai-g  {background:#F4C0D1;color:#4B1528;}
+  .sb-sca    {background:#FAC775;color:#412402;}
+  .sb-ictc-c {background:#9FE1CB;color:#04342C;}
+  .sb-ictc-a {background:#5DCAA5;color:#04342C;}
+  .sb-btm    {background:#B5D4F4;color:#042C53;}
+  .sb-ramel  {background:#F0997B;color:#4A1B0C;}
+  .sb-dpp    {background:#C0DD97;color:#173404;}
+  .sb-fabs   {background:#D3D1C7;color:#2C2C2A;}
+  .aula-tag{font-size:10px;padding:1px 7px;border-radius:99px;white-space:nowrap;font-weight:600;}
+  .aula-past  {background:#FAEEDA;color:#854F0B;}
+  .aula-today {background:#1D9E75;color:#fff;}
+  .aula-future{background:#E6F1FB;color:#185FA5;}
+  /* ── Aulas já ministradas (passadas, não estudadas) ── */
+  .item.ministrada{
+    opacity:1;
+    background: #FFF8F0;
+    border-left-width:4px;
+    border-style: solid;
+    box-shadow: 0 1px 4px rgba(186,117,23,.13);
+  }
+  .item.ministrada .item-text{color:#6b3d00;font-weight:500;}
+  .item.ministrada .item-right::before{
+    content:'Aula ministrada';
+    font-size:9px;
+    color:#BA7517;
+    font-weight:700;
+    letter-spacing:.03em;
+    display:block;
+    text-align:right;
+    margin-bottom:2px;
+  }
+  @media(prefers-color-scheme:dark){
+    .item.ministrada{background:#2a1e0a;}
+    .item.ministrada .item-text{color:#f0b060;}
+  }
+
+  /* ── Aulas futuras (ainda não ocorreram) ── */
+  .item.futura{
+    border-left-width:4px;
+    background: #EEF5FF;
+    box-shadow: 0 1px 5px rgba(55,138,221,.15);
+  }
+  .item.futura .item-text{font-weight:500;color:#0d2e5a;}
+  .item.futura .item-right::before{
+    content:'Próxima aula';
+    font-size:9px;
+    color:#185FA5;
+    font-weight:700;
+    letter-spacing:.03em;
+    display:block;
+    text-align:right;
+    margin-bottom:2px;
+  }
+  @media(prefers-color-scheme:dark){
+    .item.futura{background:#0d1e30;}
+    .item.futura .item-text{color:#7ab8f0;}
+  }
+  .rev-tag{font-size:10px;padding:1px 6px;border-radius:99px;white-space:nowrap;font-weight:500;}
+  .rt-late {background:#FCEBEB;color:#A32D2D;}
+  .rt-today{background:#FAEEDA;color:#854F0B;}
+  .rt-soon {background:#E6F1FB;color:#185FA5;}
+  .rt-fut  {background:#edecea;color:#9e9d99;}
+  .item-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+  .status-badge{font-size:10px;padding:2px 7px;border-radius:99px;white-space:nowrap;font-weight:600;}
+  .sb-done{background:#EAF3DE;color:#3B6D11;}
+  .sb-todo{background:#E6F1FB;color:#185FA5;}
+  .del{font-size:17px;color:#9e9d99;background:none;border:none;cursor:pointer;line-height:1;padding:0;}
+  .del:hover{color:#E24B4A;}
+  .quality-row{display:flex;gap:5px;margin-top:6px;align-items:center;flex-wrap:wrap;}
+  .q-label{font-size:10px;color:#9e9d99;}
+  .qbtn{font-size:10px;padding:2px 8px;border-radius:99px;background:none;cursor:pointer;}
+  .qbtn-hard{border:1px solid #E24B4A;color:#A32D2D;}
+  .qbtn-ok  {border:1px solid #BA7517;color:#854F0B;}
+  .qbtn-easy{border:1px solid #1D9E75;color:#3B6D11;}
+  .qbtn:active{opacity:.75;}
+  .rev-banner{font-size:12px;color:var(--text2);padding:9px 13px;background:var(--bg2);border-radius:var(--radius-sm);margin-bottom:1rem;line-height:1.6;}
+  .empty{font-size:13px;color:var(--text3);text-align:center;padding:16px 0;line-height:1.8;}
+  .show-more{font-size:12px;color:var(--text2);cursor:pointer;padding:3px 0;display:inline-block;}
+  .show-more:hover{color:var(--text);}
+
+  /* ── FOCO / TIMER ── */
+  .foco-timer-wrap{text-align:center;padding:24px 0 16px;}
+  .foco-clock{font-size:52px;font-weight:700;letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:1;}
+  .foco-clock.running{color:var(--green);}
+  .foco-sub{font-size:12px;color:var(--text3);margin-top:4px;}
+  .foco-controls{display:flex;gap:8px;justify-content:center;margin:14px 0;}
+  .foco-btn{height:38px;padding:0 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border2);}
+  .foco-btn-start{background:var(--green);color:#fff;border-color:var(--green);}
+  .foco-btn-pause{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber);}
+  .foco-btn-stop{background:var(--bg2);color:var(--text);}
+  .foco-btn:active{opacity:.8;}
+  .foco-subj-select{width:100%;height:38px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:13px;padding:0 10px;margin-bottom:1rem;}
+  .foco-log{margin-top:1rem;}
+  .foco-log-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+  .foco-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+  .foco-bar-label{font-size:12px;color:var(--text);width:110px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .foco-bar-track{flex:1;height:8px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+  .foco-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+  .foco-bar-val{font-size:11px;color:var(--text2);width:42px;text-align:right;flex-shrink:0;}
+  .foco-session-list{margin-top:1rem;}
+  .foco-session{display:flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--white);margin-bottom:5px;font-size:12px;}
+  .foco-session-sub{flex:1;color:var(--text);}
+  .foco-session-dur{color:var(--text2);}
+  .foco-session-time{color:var(--text3);font-size:11px;}
+  .foco-empty{font-size:13px;color:var(--text3);text-align:center;padding:16px 0;}
+  .foco-reset{font-size:11px;color:var(--text3);cursor:pointer;text-align:center;margin-top:8px;padding:4px;}
+  .foco-reset:hover{color:var(--red);}
+
+  /* ── FALTAS ── */
+  .falta-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;margin-bottom:8px;}
+  .falta-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .falta-name{font-size:13px;font-weight:600;flex:1;}
+  .falta-status{font-size:10px;padding:2px 8px;border-radius:99px;white-space:nowrap;font-weight:600;}
+  .fs-ok    {background:var(--green-bg);color:var(--green-text);}
+  .fs-warn  {background:var(--amber-bg);color:var(--amber-text);}
+  .fs-danger{background:var(--red-bg);color:var(--red-text);}
+  .fs-none  {background:var(--bg2);color:var(--text3);}
+  .falta-bar-wrap{height:6px;background:var(--bg3);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .falta-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+  .fb-ok    {background:var(--green);}
+  .fb-warn  {background:var(--amber);}
+  .fb-danger{background:var(--red);}
+  .falta-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .falta-count{font-size:22px;font-weight:600;min-width:30px;text-align:center;}
+  .falta-btn{width:32px;height:32px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+  .falta-btn:active{opacity:.7;}
+  .falta-limit-row{display:flex;align-items:center;gap:6px;margin-left:auto;}
+  .falta-limit-label{font-size:11px;color:var(--text3);}
+  .falta-limit-input{width:48px;height:28px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:12px;text-align:center;padding:0 4px;}
+  .falta-summary{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+  .falta-sum-item{flex:1;min-width:120px;background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;}
+  .falta-sum-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
+  .falta-sum-num{font-size:18px;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SETUP CARD — some when Firebase not configured -->
+  <div class="setup-card" id="setup-card" style="display:none">
+    <h3>⚙️ Configure o Firebase para sincronizar entre dispositivos</h3>
+    <p>Siga os passos:</p>
+    <p>1. Acesse <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> com sua conta Google</p>
+    <p>2. Crie um projeto → Build → <strong>Realtime Database</strong> → Criar banco → Modo de teste</p>
+    <p>3. Configurações do projeto (⚙️) → Seus apps → &lt;/&gt; Web → copie o <code>databaseURL</code></p>
+    <p>4. Cole o URL do banco aqui embaixo e clique em Salvar:</p>
+    <input class="setup-input" id="db-url-input" placeholder="https://SEU-PROJETO-default-rtdb.firebaseio.com" />
+    <p style="margin-top:6px">5. Copie também o <code>apiKey</code> do firebaseConfig:</p>
+    <input class="setup-input" id="api-key-input" placeholder="AIzaSy..." style="margin-top:4px"/>
+    <button class="setup-btn" onclick="saveConfig()">Salvar e conectar</button>
+  </div>
+
+  <!-- SYNC STATUS BAR -->
+  <div class="sync-bar load" id="sync-bar">
+    <div class="sync-dot"></div>
+    <span id="sync-msg">Conectando ao Firebase...</span>
+  </div>
+
+  <div class="header">
+    <h1>Dashboard — Arthur Henrique</h1>
+    <div class="header-sub" id="date-label"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Estudado</div><div class="stat-num n-done" id="cnt-done">0</div></div>
+    <div class="stat"><div class="stat-label">A estudar</div><div class="stat-num n-todo" id="cnt-todo">0</div></div>
+    <div class="stat"><div class="stat-label">Atrasado</div><div class="stat-num n-due" id="cnt-due">0</div></div>
+    <div class="stat"><div class="stat-label">A vir</div><div class="stat-num n-rev" id="cnt-rev">0</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="progress-label"><span id="pct">0%</span> concluído — Medicina UFPE 4º Período 2026.1</div>
+
+  <div class="section-label">Filtrar por status</div>
+  <div class="status-row" id="status-filters">
+    <button class="stab active" onclick="setFilter('all',this)">Todos</button>
+    <button class="stab" onclick="setFilter('todo',this)">A estudar</button>
+    <button class="stab" onclick="setFilter('done',this)">Estudado</button>
+    <button class="stab" onclick="setFilter('ministrada',this)">Aula ministrada</button>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="setView('estudos',this)">Estudos</button>
+    <button class="nav-btn" onclick="setView('foco',this)">Foco</button>
+    <button class="nav-btn" onclick="setView('faltas',this)">Faltas</button>
+  </div>
+
+  <div id="view-estudos">
+    <div class="lembrete"><div class="lembrete-dot"></div><div><strong>30/04:</strong> Cenários Clínicos SAI (atividade avaliativa)</div></div>
+    <div class="section-label">Filtrar por cadeira</div>
+    <div class="sub-chips" id="sub-chips"></div>
+    <div class="legend">
+      Data da aula:
+      <span><span class="aula-tag aula-past">02/03</span> ministrada</span>
+      <span><span class="aula-tag aula-today">hoje</span> hoje</span>
+      <span><span class="aula-tag aula-future">20/04</span> futura</span>
+    </div>
+    <div class="add-row">
+      <input type="text" id="new-text" placeholder="Adicionar tópico..."/>
+      <select id="new-status"><option value="todo">A estudar</option><option value="done">Estudado</option></select>
+      <select id="new-subj">
+        <option value="SAI — Clínica">SAI — Clínica</option>
+        <option value="SAI — Neurologia">SAI — Neuro</option>
+        <option value="SAI — Gineco">SAI — Gineco</option>
+        <option value="SCA">SCA</option>
+        <option value="ICTC — Cirurgia">ICTC — Cirurgia</option>
+        <option value="ICTC — Anatomia">ICTC — Anatomia</option>
+        <option value="BTM">BTM</option>
+        <option value="RAMEL">RAMEL</option>
+        <option value="DPP">DPP</option>
+        <option value="FABS 2">FABS 2</option>
+      </select>
+      <button onclick="addItem()">+ Adicionar</button>
+    </div>
+    <div id="list"></div>
+  </div>
+
+  <div id="view-foco" style="display:none">
+    <div class="foco-timer-wrap">
+      <div class="foco-clock" id="foco-clock">00:00:00</div>
+      <div class="foco-sub" id="foco-sub">Selecione a disciplina e inicie</div>
+    </div>
+    <select class="foco-subj-select" id="foco-subj">
+      <option value="SAI — Clínica">SAI — Clínica</option>
+      <option value="SAI — Neurologia">SAI — Neurologia</option>
+      <option value="SAI — Gineco">SAI — Gineco</option>
+      <option value="SCA">SCA</option>
+      <option value="ICTC — Cirurgia">ICTC — Cirurgia</option>
+      <option value="ICTC — Anatomia">ICTC — Anatomia</option>
+      <option value="BTM">BTM</option>
+      <option value="RAMEL">RAMEL</option>
+      <option value="DPP">DPP</option>
+      <option value="FABS 2">FABS 2</option>
+    </select>
+    <div class="foco-controls">
+      <button class="foco-btn foco-btn-start" id="foco-start-btn" onclick="focoStart()">Iniciar</button>
+      <button class="foco-btn foco-btn-stop"  id="foco-stop-btn"  onclick="focoStop()" style="display:none">Encerrar sessão</button>
+    </div>
+    <div class="foco-log">
+      <div class="foco-log-title">Tempo acumulado por disciplina</div>
+      <div id="foco-bars"></div>
+      <div class="foco-session-list" id="foco-sessions"></div>
+      <div class="foco-reset" onclick="focoReset()">Zerar histórico de hoje</div>
+    </div>
+  </div>
+
+  <div id="view-faltas" style="display:none">
+    <div class="falta-summary">
+      <div class="falta-sum-item"><div class="falta-sum-label">Total de faltas</div><div class="falta-sum-num n-due" id="falta-total">0</div></div>
+      <div class="falta-sum-item"><div class="falta-sum-label">Disciplinas em risco</div><div class="falta-sum-num n-rev" id="falta-risco">0</div></div>
+      <div class="falta-sum-item"><div class="falta-sum-label">Disciplinas reprovando</div><div class="falta-sum-num n-done" style="color:var(--red)" id="falta-reprov">0</div></div>
+    </div>
+    <div id="falta-list"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// ─────────────────────────────────────────────
+//  SUBJECT META
+// ─────────────────────────────────────────────
+const SM_META = {
+  'SAI — Clínica':    {chip:'chip-sai-c', badge:'sb-sai-c', label:'SAI — Clínica'},
+  'SAI — Neurologia': {chip:'chip-sai-n', badge:'sb-sai-n', label:'SAI — Neurologia'},
+  'SAI — Gineco':     {chip:'chip-sai-g', badge:'sb-sai-g', label:'SAI — Gineco'},
+  'SCA':              {chip:'chip-sca',   badge:'sb-sca',   label:'SCA'},
+  'ICTC — Cirurgia':  {chip:'chip-ictc-c',badge:'sb-ictc-c',label:'ICTC — Cirurgia'},
+  'ICTC — Anatomia':  {chip:'chip-ictc-a',badge:'sb-ictc-a',label:'ICTC — Anatomia'},
+  'BTM':              {chip:'chip-btm',   badge:'sb-btm',   label:'BTM'},
+  'RAMEL':            {chip:'chip-ramel', badge:'sb-ramel', label:'RAMEL'},
+  'DPP':              {chip:'chip-dpp',   badge:'sb-dpp',   label:'DPP'},
+  'FABS 2':           {chip:'chip-fabs',  badge:'sb-fabs',  label:'FABS 2'},
+};
+const DEADLINES={'P1 SAI — 13/04':'2026-04-13','P1 Anat. Topográfica — 14/04':'2026-04-14','P1 BTM — 15/04':'2026-04-15','P1 ICTC — 22/04':'2026-04-22','P1 SCA — 29/04':'2026-04-29','P1 RAMEL — 05/05':'2026-05-05','P1 DPP — 05/05':'2026-05-05','P2 BTM — 13/05':'2026-05-13','P2 SAI — 15/06':'2026-06-15','P2 SCA — 17/06':'2026-06-17','P2 RAMEL — 17/06':'2026-06-17','P2 Anat. Topográfica — 30/06':'2026-06-30','P2 ICTC — 01/07':'2026-07-01','P3 BTM — 10/06':'2026-06-10','Adicionado manualmente':'2026-07-04'};
+const ORDER={'P1 SAI — 13/04':0,'P1 Anat. Topográfica — 14/04':0,'P1 BTM — 15/04':0,'P1 ICTC — 22/04':1,'P1 SCA — 29/04':1,'P1 RAMEL — 05/05':1,'P1 DPP — 05/05':1,'P2 BTM — 13/05':2,'P2 SAI — 15/06':3,'P2 SCA — 17/06':3,'P2 RAMEL — 17/06':3,'P3 BTM — 10/06':3,'P2 Anat. Topográfica — 30/06':4,'P2 ICTC — 01/07':4,'Adicionado manualmente':5};
+const IV=[1,3,7,14,30,60];
+
+// ─────────────────────────────────────────────
+//  DATE HELPERS
+// ─────────────────────────────────────────────
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function addD(iso,n){const d=new Date(iso);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function diffD(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
+function fmt(iso){const[,m,d]=iso.split('-');return`${d}/${m}`;}
+
+function aulaTag(iso){
+  if(!iso)return'';
+  const t=todayISO();
+  if(iso<t) return`<span class="aula-tag aula-past">${fmt(iso)}</span>`;
+  if(iso===t)return`<span class="aula-tag aula-today">hoje ${fmt(iso)}</span>`;
+  return`<span class="aula-tag aula-future">${fmt(iso)}</span>`;
+}
+function revTag(iso){
+  const t=todayISO(),d=diffD(t,iso);
+  if(d<0)  return`<span class="rev-tag rt-late">Atrasada — ${fmt(iso)}</span>`;
+  if(d===0)return`<span class="rev-tag rt-today">Revisar hoje</span>`;
+  if(d<=7) return`<span class="rev-tag rt-soon">Revisar ${fmt(iso)}</span>`;
+  return`<span class="rev-tag rt-fut">Próx. rev. ${fmt(iso)}</span>`;
+}
+function calcNext(item,q){
+  const cur=item.rep||0;
+  const rep=q===0?0:q===1?Math.min(cur+1,IV.length-1):Math.min(cur+2,IV.length-1);
+  let nd=addD(todayISO(),IV[rep]);
+  const dl=DEADLINES[item.prova];
+  if(dl){const cap=addD(dl,-2);if(nd>cap){const ob=addD(dl,-1);nd=ob>todayISO()?ob:todayISO();}}
+  return{nd,rep};
+}
+
+// ─────────────────────────────────────────────
+//  DEFAULT DATA
+// ─────────────────────────────────────────────
+const DEFAULT_ITEMS=[
+  {id:9, text:'Recepção, exame físico geral e febre',                         aulaDate:'2026-03-02',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:10,text:'Introdução à semiologia, ficha médica, queixas respiratórias', aulaDate:'2026-03-02',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:11,text:'Exame físico do aparelho respiratório',                        aulaDate:'2026-03-09',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:12,text:'Síndromes respiratórias',                                      aulaDate:'2026-03-16',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:13,text:'Introdução à fisiologia cardíaca e queixas cardíacas',         aulaDate:'2026-03-23',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:14,text:'Exame cardíaco e síndrome cardiovascular I',                   aulaDate:'2026-03-30',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:15,text:'Síndrome cardiovascular II',                                   aulaDate:'2026-04-06',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:16,text:'Nervos cranianos I, II, III, IV e VI',                         aulaDate:'2026-03-02',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:17,text:'Nervos cranianos V e VII',                                     aulaDate:'2026-03-02',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:18,text:'Nervos cranianos VIII, IX, X, XI e XII',                       aulaDate:'2026-03-16',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:19,text:'Síndrome extrapiramidal',                                      aulaDate:'2026-03-16',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:20,text:'Coordenação',                                                  aulaDate:'2026-03-30',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:21,text:'Síndrome do neurônio motor superior e inferior',               aulaDate:'2026-03-30',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:22,text:'Anamnese ginecológica',                                        aulaDate:'2026-03-02',subject:'SAI — Gineco',    prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:23,text:'Exame físico ginecológico',                                    aulaDate:'2026-03-16',subject:'SAI — Gineco',    prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:24,text:'Ciclo menstrual',                                              aulaDate:'2026-03-30',subject:'SAI — Gineco',    prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
+  {id:25,text:'Intro à anatomia topográfica e sistema tegumentar',            aulaDate:'2026-03-03',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
+  {id:26,text:'Anatomia topográfica da cabeça',                               aulaDate:'2026-03-10',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
+  {id:27,text:'Anatomia topográfica cabeça e pescoço (prática)',              aulaDate:'2026-03-24',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
+  {id:28,text:'Anatomia topográfica do tórax',                                aulaDate:'2026-04-07',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
+  {id:82,text:'Anatomia do canal inguinal (teórica)',                         aulaDate:'2026-04-28',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:83,text:'Anatomia da pelve e períneo (teórica)',                        aulaDate:'2026-05-05',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:84,text:'Anatomia do canal inguinal, pelve e períneo (prática)',        aulaDate:'2026-05-12',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:85,text:'Anatomia topográfica do abdome (teórica)',                     aulaDate:'2026-05-19',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:86,text:'Anatomia topográfica dos MMSS (teórica)',                      aulaDate:'2026-06-02',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:87,text:'Anatomia topográfica dos MMII (teórica)',                      aulaDate:'2026-06-09',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:88,text:'Anatomia topográfica do abdome (prática)',                     aulaDate:'2026-05-26',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:89,text:'Anatomia dos MMSS e MMII (prática)',                           aulaDate:'2026-06-17',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
+  {id:1, text:'Diuréticos (parte 1)',                                         aulaDate:'2026-03-04',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:2, text:'Diuréticos (parte 2)',                                         aulaDate:'2026-03-11',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:3, text:'Fármacos na HAS (parte 1)',                                    aulaDate:'2026-03-13',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:4, text:'Fármacos na HAS (parte 2)',                                    aulaDate:'2026-03-18',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:5, text:'Fármacos na angina do peito',                                  aulaDate:'2026-03-20',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:6, text:'Fármacos na IC (parte 1)',                                     aulaDate:'2026-03-25',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:7, text:'Fármacos na IC (parte 2)',                                     aulaDate:'2026-03-27',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:8, text:'Fármacos anticoagulantes, antiplaquetários e trombolíticos',   aulaDate:'2026-04-01',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:29,text:'Assepsia e antissepsia',                                       aulaDate:'2026-03-11',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
+  {id:30,text:'Água e eletrólitos',                                           aulaDate:'2026-03-18',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
+  {id:31,text:'REMIT (resposta endócrino-metabólica ao trauma)',              aulaDate:'2026-03-25',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
+  {id:32,text:'Proteção profissional',                                        aulaDate:'2026-04-01',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
+  {id:33,text:'Infecção em cirurgia (biologia e profilaxia)',                 aulaDate:'2026-04-08',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
+  {id:34,text:'Equilíbrio ácido-básico',                                      aulaDate:'2026-04-15',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
+  {id:90,text:'Choque — fisiopatologia e tratamento',                         aulaDate:'2026-04-29',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:91,text:'Cicatrização de feridas',                                      aulaDate:'2026-05-06',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:92,text:'Princípios da antibióticoterapia em cirurgia',                 aulaDate:'2026-05-13',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:93,text:'Princípios da cirurgia minimamente invasiva',                  aulaDate:'2026-05-20',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:94,text:'Princípios da transplantação de órgãos e tecidos',             aulaDate:'2026-05-27',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:95,text:'Princípios da cirurgia oncológica',                            aulaDate:'2026-06-03',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:96,text:'Nutrição em cirurgia',                                         aulaDate:'2026-06-10',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:97,text:'Terminologia cirúrgica e laparotomias',                        aulaDate:'2026-06-17',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
+  {id:35,text:'Introdução à semiologia pediátrica',                           aulaDate:'2026-03-04',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:36,text:'Anamnese pediátrica',                                          aulaDate:'2026-03-05',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:37,text:'Acompanhamento do crescimento infantil',                       aulaDate:'2026-03-11',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:38,text:'Exame físico geral pediátrico',                                aulaDate:'2026-03-18',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:39,text:'Semiologia da cabeça, pescoço e ORL pediátrica',              aulaDate:'2026-04-01',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:40,text:'Semiologia do aparelho respiratório pediátrico',               aulaDate:'2026-04-08',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:41,text:'Semiologia do aparelho cardiovascular pediátrico',             aulaDate:'2026-04-15',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:42,text:'Introdução ao laboratório clínico',                            aulaDate:'2026-03-04',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:43,text:'Radiografia e mamografia',                                     aulaDate:'2026-03-10',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:44,text:'Tomografia computadorizada (RX)',                              aulaDate:'2026-03-11',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:45,text:'Ultrassonografia',                                             aulaDate:'2026-03-17',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:46,text:'Eritrograma',                                                  aulaDate:'2026-03-18',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:47,text:'Hemostasia — plaquetas, vasos e coagulação',                   aulaDate:'2026-03-24',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:48,text:'Leucograma',                                                   aulaDate:'2026-03-25',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:49,text:'Tomografia por ressonância magnética',                         aulaDate:'2026-03-31',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:50,text:'Imunoensaios',                                                 aulaDate:'2026-04-01',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:51,text:'Comunicação com o paciente: anamnese e entrevista clínica',    aulaDate:'2026-03-03',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
+  {id:52,text:'Raciocínio sindrômico em psiquiatria',                         aulaDate:'2026-03-10',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
+  {id:53,text:'Relações entre doenças físicas e transtornos psiquiátricos',   aulaDate:'2026-03-24',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
+  {id:54,text:'Avaliação psiquiátrica de crianças e adolescentes',            aulaDate:'2026-03-31',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
+  {id:55,text:'Entrevista com paciente — relatório',                          aulaDate:'2026-04-07',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
+  {id:56,text:'Antimicrobianos antibacterianos (parte 1)', aulaDate:'2026-04-04',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:57,text:'Antimicrobianos antibacterianos (parte 2)', aulaDate:'2026-04-17',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
+  {id:58,text:'Terapia com glicocorticoides',              aulaDate:'2026-04-15',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:59,text:'Fármacos na asma e educação em asma',       aulaDate:'2026-04-22',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
+  {id:60,text:'Fármacos em doenças dispépticas',           aulaDate:'2026-04-24',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
+  {id:61,text:'Antifúngicos',                              aulaDate:'2026-04-29',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
+  {id:62,text:'Antivirais e antirretrovirais',             aulaDate:'2026-05-06',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
+  {id:63,text:'Antiparasitários',                          aulaDate:'2026-05-08',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
+  {id:64,text:'Semiologia do idoso',                        aulaDate:'2026-04-20',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:65,text:'Semiologia reumatológica',                   aulaDate:'2026-04-27',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:66,text:'Queixas e exame físico digestivo',           aulaDate:'2026-05-04',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:67,text:'Fígado, vesícula, pâncreas e síndromes dig.',aulaDate:'2026-05-11',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:68,text:'Semiologia endócrina',                       aulaDate:'2026-05-18',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:69,text:'Semiologia renal e edema',                   aulaDate:'2026-05-25',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:70,text:'Sistema sensitivo e nervos periféricos',     aulaDate:'2026-04-27',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:71,text:'Síndromes medulares',                        aulaDate:'2026-04-27',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:72,text:'Funções corticais superiores',               aulaDate:'2026-05-11',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:73,text:'Investigação ginecológica complementar',     aulaDate:'2026-04-27',subject:'SAI — Gineco',    prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
+  {id:74,text:'Acompanhamento do desenvolvimento infantil',         aulaDate:'2026-03-25',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:75,text:'Semiologia do aparelho locomotor pediátrico',        aulaDate:'2026-04-22',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:76,text:'Semiologia neurológica pediátrica',                  aulaDate:'2026-05-06',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  {id:77,text:'Semiologia do abdome e ap. digestório pediátrico',   aulaDate:'2026-05-13',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  {id:78,text:'Semiologia do aparelho genital pediátrico',          aulaDate:'2026-05-20',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  {id:79,text:'Semiologia nefrológica pediátrica',                  aulaDate:'2026-05-27',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  {id:80,text:'Semiologia do recém-nascido',                        aulaDate:'2026-06-03',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  {id:81,text:'Semiologia do adolescente',                          aulaDate:'2026-06-10',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  // P2 RAMEL
+  {id:98, text:'Medicina nuclear',                                             aulaDate:'2026-04-07',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:99, text:'Função renal e sumário de urina',                              aulaDate:'2026-04-09',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:100,text:'Radioproteção',                                                aulaDate:'2026-04-14',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:101,text:'Diagnóstico de lesão hepática e vias biliares',                aulaDate:'2026-04-16',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:102,text:'Marcadores tumorais',                                          aulaDate:'2026-04-21',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:103,text:'Radiologia torácica — sistema cardiovascular e respiratório',  aulaDate:'2026-04-28',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:104,text:'Função endócrina',                                             aulaDate:'2026-05-05',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:105,text:'Proteínas de fase aguda',                                      aulaDate:'2026-05-12',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:106,text:'Radiologia do sistema digestivo e urinário',                   aulaDate:'2026-05-19',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:107,text:'Diagnóstico de lesão e função cardíaca',                       aulaDate:'2026-05-26',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:108,text:'Radiologia do sistema nervoso (RX, TC, US, RM, nuclear)',      aulaDate:'2026-06-02',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:109,text:'Distúrbio acidobásico e gasimetria',                           aulaDate:'2026-06-09',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:110,text:'Radiologia ginecológica — mama e pelves',                      aulaDate:'2026-06-10',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:111,text:'Diagnóstico em neurologia (LCR)',                              aulaDate:'2026-06-17',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:112,text:'Radiologia do sistema musculoesquelético',                     aulaDate:'2026-06-23',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  // P3 BTM
+  {id:113,text:'Fármacos em doenças tireoidianas',                             aulaDate:'2026-05-15',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  {id:114,text:'Vitaminoterapia — fundamentos da nutrição médica',              aulaDate:'2026-05-20',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  {id:115,text:'Fármacos na Diabetes Mellitus',                                aulaDate:'2026-05-22',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  {id:116,text:'Vitaminoterapia',                                               aulaDate:'2026-05-27',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  {id:117,text:'Educação em diabetes',                                          aulaDate:'2026-05-29',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  {id:118,text:'Farmacoterapia e dietoterapia nas dislipidemias e obesidade',   aulaDate:'2026-06-03',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  {id:119,text:'Métodos contraceptivos',                                        aulaDate:'2026-06-05',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+];
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let items = [];
+let nid = 200;
+let fStatus='all', fSub='all', fRev='all', view='estudos';
+let expanded = {};
+let dbRef = null;
+let isSyncing = false;
+
+// ─────────────────────────────────────────────
+//  FIREBASE SETUP
+// ─────────────────────────────────────────────
+function loadConfig(){
+  return {
+    dbUrl: localStorage.getItem('fb_db_url') || '',
+    apiKey: localStorage.getItem('fb_api_key') || '',
+  };
+}
+
+function saveConfig(){
+  const url = document.getElementById('db-url-input').value.trim();
+  const key = document.getElementById('api-key-input').value.trim();
+  if(!url || !key){ alert('Preencha os dois campos!'); return; }
+  localStorage.setItem('fb_db_url', url);
+  localStorage.setItem('fb_api_key', key);
+  document.getElementById('setup-card').style.display='none';
+  initFirebase(url, key);
+}
+
+function setSyncStatus(type, msg){
+  const bar = document.getElementById('sync-bar');
+  const txt = document.getElementById('sync-msg');
+  bar.className = 'sync-bar ' + type;
+  txt.textContent = msg;
+}
+
+function initFirebase(dbUrl, apiKey){
+  if(!dbUrl || !apiKey){
+    document.getElementById('setup-card').style.display='block';
+    setSyncStatus('warn', 'Firebase não configurado — dados salvos só neste dispositivo');
+    // fallback to localStorage
+    const saved = localStorage.getItem('arthur_local');
+    items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    nid = Math.max(...items.map(i=>i.id), 0) + 1;
+    buildChips(); renderList(); updateStats();
+    return;
+  }
+
+  setSyncStatus('load', 'Conectando ao Firebase...');
+
+  try {
+    // init only once
+    if(!firebase.apps.length){
+      firebase.initializeApp({
+        apiKey: apiKey,
+        databaseURL: dbUrl,
+        projectId: dbUrl.replace('https://','').replace('.firebaseio.com','').replace('-default-rtdb',''),
+      });
+    }
+    dbRef = firebase.database().ref('dashboard/items');
+
+    // listen for real-time updates
+    dbRef.on('value', snapshot => {
+      const data = snapshot.val();
+      if(data){
+        items = Object.values(data);
+        nid = Math.max(...items.map(i=>i.id), 0) + 1;
+      } else {
+        // first time — push default data
+        items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+        nid = Math.max(...items.map(i=>i.id), 0) + 1;
+        pushAllToFirebase();
+      }
+      setSyncStatus('ok', 'Sincronizado ✓ — alterações aparecem em todos os dispositivos');
+      buildChips(); renderList(); updateStats();
+    }, err => {
+      setSyncStatus('err', 'Erro de conexão — verifique o URL e a apiKey');
+      console.error(err);
+      // fallback
+      const saved = localStorage.getItem('arthur_local');
+      items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+      nid = Math.max(...items.map(i=>i.id), 0) + 1;
+      buildChips(); renderList(); updateStats();
+    });
+
+  } catch(e){
+    setSyncStatus('err', 'Erro ao inicializar Firebase: ' + e.message);
+    const saved = localStorage.getItem('arthur_local');
+    items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    nid = Math.max(...items.map(i=>i.id), 0) + 1;
+    buildChips(); renderList(); updateStats();
+  }
+}
+
+function pushAllToFirebase(){
+  if(!dbRef) return;
+  const obj = {};
+  items.forEach(item => { obj['item_'+item.id] = item; });
+  dbRef.set(obj).catch(console.error);
+}
+
+function saveItem(item){
+  if(dbRef){
+    dbRef.child('item_'+item.id).set(item).catch(console.error);
+  } else {
+    localStorage.setItem('arthur_local', JSON.stringify(items));
+  }
+}
+
+function deleteItemRemote(id){
+  if(dbRef){
+    dbRef.child('item_'+id).remove().catch(console.error);
+  } else {
+    localStorage.setItem('arthur_local', JSON.stringify(items));
+  }
+}
+
+// ─────────────────────────────────────────────
+//  RENDER HELPERS
+// ─────────────────────────────────────────────
+function chipsHTML(){
+  return`<button class="chip chip-all active" onclick="setSub('all',this)">Todas</button>`
+    +Object.entries(SM_META).map(([k,v])=>`<button class="chip ${v.chip} active" onclick="setSub('${k}',this)">${v.label}</button>`).join('');
+}
+function buildChips(){
+  document.getElementById('sub-chips').innerHTML=chipsHTML();
+}
+function subBadge(sub){
+  const m=SM_META[sub];
+  return m?`<span class="sub-badge ${m.badge}">${m.label}</span>`:`<span style="font-size:10px;color:#9e9d99">${sub}</span>`;
+}
+function statusBadge(s){
+  return s==='done'
+    ?'<span class="status-badge sb-done">Estudado</span>'
+    :'<span class="status-badge sb-todo">A estudar</span>';
+}
+
+function renderList(){
+  const t=todayISO();
+  let f=items;
+  if(fStatus==='todo')       f=f.filter(i=>i.status==='todo');
+  if(fStatus==='done')       f=f.filter(i=>i.status==='done');
+  if(fStatus==='ministrada') f=f.filter(i=>i.aulaDate&&i.aulaDate<=t);
+  if(fSub!=='all')           f=f.filter(i=>i.subject===fSub);
+
+  const groups={};
+  f.forEach(item=>{
+    const k=item.prova||'Outros';
+    if(!groups[k]) groups[k]={urgency:item.urgency||'low',items:[]};
+    groups[k].items.push(item);
+  });
+  const keys=Object.keys(groups).sort((a,b)=>(ORDER[a]??2)-(ORDER[b]??2));
+  const el=document.getElementById('list');
+  if(!f.length){el.innerHTML='<p class="empty">Nenhum item aqui.</p>';updateStats();return;}
+
+  el.innerHTML=keys.map(prova=>{
+    const g=groups[prova],u=g.urgency;
+    const dc=g.items.filter(i=>i.status==='done').length;
+    const isLow=u==='low',isExp=expanded[prova]||false;
+    const pct=g.items.length?Math.round(dc/g.items.length*100):0;
+    const fc=pct===100?'mf-done':u==='high'?'mf-high':'mf-med';
+    const tc=u==='high'?'tag-high':u==='med'?'tag-med':'tag-low';
+
+    const row=item=>{
+      const t=todayISO();
+      const isMinistrada=item.aulaDate&&item.aulaDate<t&&item.status!=='done';
+      const isFutura=item.aulaDate&&item.aulaDate>t&&item.status!=='done';
+      const extraClass=(isMinistrada?' ministrada':isFutura?' futura':'');
+      return`<div class="item${isLow&&!isExp?' dim':''}${extraClass}" data-sub="${item.subject}">
+      <div class="check${item.status==='done'?' on':''}" onclick="toggle(${item.id})"></div>
+      <div class="item-body">
+        <div class="item-text${item.status==='done'?' done':''}">${item.text}</div>
+        <div class="item-meta">
+          ${subBadge(item.subject)}
+          ${aulaTag(item.aulaDate)}
+          ${item.nextRev?revTag(item.nextRev):''}
+        </div>
+      </div>
+      <div class="item-right">
+        ${statusBadge(item.status)}
+        <button class="del" onclick="del(${item.id})">×</button>
+      </div>
+    </div>`;
+    };
+
+    let body='';
+    if(isLow&&!isExp){
+      body=g.items.slice(0,3).map(row).join('');
+      const h=g.items.length-3;
+      if(h>0)body+=`<span class="show-more" onclick="toggleGroup('${prova}')">+ ver mais ${h} tópico${h>1?'s':''}</span>`;
+    } else if(isLow&&isExp){
+      body=g.items.map(row).join('')+`<span class="show-more" onclick="toggleGroup('${prova}')">− recolher</span>`;
+    } else { body=g.items.map(row).join(''); }
+
+    return`<div class="prova-group">
+      <div class="prova-header">
+        <span class="prova-tag ${tc}">${prova}</span>
+        <span class="prova-count">${dc}/${g.items.length}
+          <span class="mini-bar"><span class="mini-fill ${fc}" style="width:${pct}%"></span></span>
+        </span>
+      </div>${body}</div>`;
+  }).join('');
+  updateStats();
+}
+
+function updateStats(){
+  const t=todayISO();
+  document.getElementById('cnt-done').textContent=items.filter(i=>i.status==='done').length;
+  document.getElementById('cnt-todo').textContent=items.filter(i=>i.status==='todo').length;
+  // "Atrasado" = aula já ministrada, não estudado
+  document.getElementById('cnt-due').textContent=items.filter(i=>i.status==='todo'&&i.aulaDate&&i.aulaDate<t).length;
+  // "A vir" = aula futura, não estudado
+  document.getElementById('cnt-rev').textContent=items.filter(i=>i.status==='todo'&&i.aulaDate&&i.aulaDate>t).length;
+  const pct=items.length?Math.round(items.filter(i=>i.status==='done').length/items.length*100):0;
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'%';
+}
+
+// ─────────────────────────────────────────────
+//  ACTIONS
+// ─────────────────────────────────────────────
+function toggle(id){
+  const item=items.find(i=>i.id===id);if(!item)return;
+  if(item.status==='done'){item.status='todo';delete item.nextRev;delete item.rep;}
+  else{item.status='done';const{nd,rep}=calcNext(item,1);item.nextRev=nd;item.rep=rep;}
+  saveItem(item);
+  renderList();updateStats();
+}
+function applyQ(id,q){
+  const item=items.find(i=>i.id===id);if(!item)return;
+  const{nd,rep}=calcNext(item,q);item.nextRev=nd;item.rep=rep;
+  saveItem(item);
+  updateStats();
+}
+function del(id){
+  items=items.filter(i=>i.id!==id);
+  deleteItemRemote(id);
+  renderList();
+}
+function addItem(){
+  const t=document.getElementById('new-text').value.trim();if(!t)return;
+  const s=document.getElementById('new-status').value;
+  const subj=document.getElementById('new-subj').value;
+  const ni={id:nid++,text:t,status:s,subject:subj,prova:'Adicionado manualmente',urgency:'low'};
+  if(s==='done'){const{nd,rep}=calcNext(ni,1);ni.nextRev=nd;ni.rep=rep;}
+  items.unshift(ni);
+  document.getElementById('new-text').value='';
+  saveItem(ni);
+  renderList();
+}
+
+function setFilter(f,btn){fStatus=f;document.querySelectorAll('#status-filters .stab').forEach(s=>s.classList.remove('active'));btn.classList.add('active');renderList();}
+function setSub(s,btn){
+  fSub=s;
+  document.querySelectorAll('.sub-chips .chip').forEach(c=>{
+    const isAll=c.classList.contains('chip-all');
+    const match=s==='all'?isAll:(SM_META[s]&&c.textContent.trim()===SM_META[s].label);
+    if(match)c.classList.add('active');else c.classList.remove('active');
+  });
+  renderList();
+}
+function toggleGroup(p){expanded[p]=!expanded[p];renderList();}
+function setView(v,btn){
+  view=v;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('view-estudos').style.display=v==='estudos'?'':'none';
+  document.getElementById('view-foco').style.display=v==='foco'?'':'none';
+  document.getElementById('view-faltas').style.display=v==='faltas'?'':'none';
+  if(v==='foco')renderFoco();
+  if(v==='faltas')renderFaltas();
+}
+
+// ─────────────────────────────────────────────
+//  FOCO — TIMER DE ESTUDO
+// ─────────────────────────────────────────────
+const FOCO_COLORS = {
+  'SAI — Clínica':'#D07050','SAI — Neurologia':'#AFA9EC','SAI — Gineco':'#D4537E',
+  'SCA':'#EF9F27','ICTC — Cirurgia':'#1D9E75','ICTC — Anatomia':'#0F6E56',
+  'BTM':'#378ADD','RAMEL':'#D85A30','DPP':'#639922','FABS 2':'#888780',
+};
+let focoTimer=null, focoStart_t=0, focoElapsed=0, focoRunning=false;
+
+function focoTodayKey(){return'arthur_foco_'+todayISO();}
+function loadFocoSessions(){
+  try{return JSON.parse(localStorage.getItem(focoTodayKey())||'[]');}catch{return[];}
+}
+function saveFocoSessions(s){localStorage.setItem(focoTodayKey(),JSON.stringify(s));}
+
+function fmtDur(ms){
+  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  if(h>0)return`${h}h ${m.toString().padStart(2,'0')}min`;
+  if(m>0)return`${m}min ${ss.toString().padStart(2,'0')}s`;
+  return`${ss}s`;
+}
+function fmtClock(ms){
+  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  return`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${ss.toString().padStart(2,'0')}`;
+}
+
+function focoStart(){
+  focoRunning=true;
+  focoStart_t=Date.now()-focoElapsed;
+  focoTimer=setInterval(()=>{
+    focoElapsed=Date.now()-focoStart_t;
+    document.getElementById('foco-clock').textContent=fmtClock(focoElapsed);
+    document.getElementById('foco-clock').classList.add('running');
+    document.getElementById('foco-sub').textContent='Estudando: '+document.getElementById('foco-subj').value;
+  },500);
+  document.getElementById('foco-start-btn').style.display='none';
+  document.getElementById('foco-stop-btn').style.display='';
+}
+
+function focoStop(){
+  if(!focoRunning)return;
+  clearInterval(focoTimer);focoRunning=false;
+  const subj=document.getElementById('foco-subj').value;
+  const dur=focoElapsed;
+  const sessions=loadFocoSessions();
+  sessions.unshift({subj,dur,time:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+  saveFocoSessions(sessions);
+  focoElapsed=0;
+  document.getElementById('foco-clock').textContent='00:00:00';
+  document.getElementById('foco-clock').classList.remove('running');
+  document.getElementById('foco-sub').textContent='Sessão registrada!';
+  document.getElementById('foco-start-btn').style.display='';
+  document.getElementById('foco-stop-btn').style.display='none';
+  renderFoco();
+}
+
+function focoReset(){
+  if(!confirm('Zerar todo o histórico de hoje?'))return;
+  localStorage.removeItem(focoTodayKey());
+  renderFoco();
+}
+
+function renderFoco(){
+  const sessions=loadFocoSessions();
+  // totals per subject
+  const totals={};
+  sessions.forEach(s=>{totals[s.subj]=(totals[s.subj]||0)+s.dur;});
+  const maxMs=Math.max(...Object.values(totals),1);
+  const totalMs=Object.values(totals).reduce((a,b)=>a+b,0);
+
+  // bars
+  const subjects=Object.keys(SM_META);
+  const barsHTML=subjects.map(s=>{
+    const ms=totals[s]||0;
+    const pct=Math.round(ms/maxMs*100);
+    const color=FOCO_COLORS[s]||'#888';
+    return ms>0?`<div class="foco-bar-row">
+      <div class="foco-bar-label">${SM_META[s].label}</div>
+      <div class="foco-bar-track"><div class="foco-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div class="foco-bar-val">${fmtDur(ms)}</div>
+    </div>`:''}).join('');
+
+  document.getElementById('foco-bars').innerHTML = barsHTML||'<p class="foco-empty">Nenhuma sessão hoje ainda.</p>';
+
+  // session list
+  document.getElementById('foco-sessions').innerHTML = sessions.length
+    ? `<div class="foco-log-title" style="margin-top:1rem">Sessões de hoje · total ${fmtDur(totalMs)}</div>`
+      +sessions.map(s=>`<div class="foco-session">
+        <span class="foco-session-sub">${s.subj}</span>
+        <span class="foco-session-dur">${fmtDur(s.dur)}</span>
+        <span class="foco-session-time">${s.time}</span>
+      </div>`).join('')
+    : '';
+}
+
+// ─────────────────────────────────────────────
+//  FALTAS
+// ─────────────────────────────────────────────
+// Carga horária total e limite de 25% (em nº de aulas de 50min)
+// 1h = 1,2 aulas de 50min → limite_aulas = floor(CH_horas * 0.25 * 1.2)
+const FALTA_META = {
+  'SAI — Clínica':    {ch:150, label:'SAI (Clínica)'},
+  'SAI — Neurologia': {ch:150, label:'SAI (Neurologia)'},
+  'SAI — Gineco':     {ch:150, label:'SAI (Gineco)'},
+  'SCA':              {ch:60,  label:'SCA'},
+  'ICTC — Cirurgia':  {ch:135, label:'ICTC (Cirurgia)'},
+  'ICTC — Anatomia':  {ch:135, label:'ICTC (Anatomia)'},
+  'BTM':              {ch:60,  label:'BTM'},
+  'RAMEL':            {ch:75,  label:'RAMEL'},
+  'DPP':              {ch:45,  label:'DPP 1'},
+  'FABS 2':           {ch:75,  label:'FABS 2'},
+};
+// SAI é um módulo único de 150h que engloba Clínica, Neuro e Gineco juntos.
+// Para fins de falta, agrupamos SAI como um só bloco.
+const FALTA_GROUPS = [
+  {key:'SAI',      label:'SAI — Semiologia do Adulto e Idoso', ch:150, subjects:['SAI — Clínica','SAI — Neurologia','SAI — Gineco'], badge:'sb-sai-c'},
+  {key:'SCA',      label:'SCA — Semiologia da Criança e Adolescente', ch:60,  subjects:['SCA'],             badge:'sb-sca'},
+  {key:'ICTC',     label:'ICTC — Introdução à Clínica e Técnica Cirúrgica', ch:135, subjects:['ICTC — Cirurgia','ICTC — Anatomia'], badge:'sb-ictc-c'},
+  {key:'BTM',      label:'BTM — Bases do Tratamento Médico', ch:60,  subjects:['BTM'],             badge:'sb-btm'},
+  {key:'RAMEL',    label:'RAMEL — Radiologia e Exames Laboratoriais', ch:75,  subjects:['RAMEL'],           badge:'sb-ramel'},
+  {key:'DPP',      label:'DPP 1 — Desenvolvimento Pessoal e Profissional', ch:45,  subjects:['DPP'],             badge:'sb-dpp'},
+  {key:'FABS 2',   label:'FABS 2 — Fundamentos da Atenção Básica', ch:75,  subjects:['FABS 2'],          badge:'sb-fabs'},
+];
+// limite em aulas de 50min: floor(ch * 0.25 * 60/50)
+function calcLimiteAulas(ch){ return Math.floor(ch * 0.25 * 60 / 50); }
+
+function loadFaltas(){
+  const saved = localStorage.getItem('arthur_faltas_v2');
+  if(saved) return JSON.parse(saved);
+  const def = {};
+  FALTA_GROUPS.forEach(g => { def[g.key] = {count:0}; });
+  return def;
+}
+function saveFaltas(f){ localStorage.setItem('arthur_faltas_v2', JSON.stringify(f)); }
+
+function faltaStatus(count, limite){
+  const pct = Math.min(Math.round(count/limite*100), 100);
+  if(count >= limite) return {cls:'fs-danger', label:'Reprovado por faltas ⚠️', pct};
+  if(count >= Math.floor(limite*0.75)) return {cls:'fs-warn', label:`Atenção — ${limite-count} aula${limite-count===1?'':'s'} até reprovar`, pct};
+  return {cls:'fs-ok', label:`${limite-count} aula${limite-count===1?'':'s'} restante${limite-count===1?'':'s'}`, pct};
+}
+
+function renderFaltas(){
+  const faltas = loadFaltas();
+  let total=0, risco=0, reprov=0;
+  FALTA_GROUPS.forEach(g=>{
+    const count=(faltas[g.key]||{count:0}).count;
+    const lim=calcLimiteAulas(g.ch);
+    total+=count;
+    if(count>=lim) reprov++;
+    else if(count>=Math.floor(lim*0.75)) risco++;
+  });
+  document.getElementById('falta-total').textContent=total;
+  document.getElementById('falta-risco').textContent=risco;
+  document.getElementById('falta-reprov').textContent=reprov;
+
+  document.getElementById('falta-list').innerHTML = FALTA_GROUPS.map(g=>{
+    const f=faltas[g.key]||{count:0};
+    const lim=calcLimiteAulas(g.ch);
+    const st=faltaStatus(f.count, lim);
+    const barClass=st.cls==='fs-danger'?'fb-danger':st.cls==='fs-warn'?'fb-warn':'fb-ok';
+    return`<div class="falta-card">
+      <div class="falta-header">
+        <span class="sub-badge ${g.badge}" style="font-size:11px;padding:3px 9px">${g.label}</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span class="falta-status ${st.cls}">${st.label}</span>
+        <span style="font-size:11px;color:var(--text3)">Limite: ${lim} aulas (${g.ch}h × 25%)</span>
+      </div>
+      <div class="falta-bar-wrap"><div class="falta-bar-fill ${barClass}" style="width:${st.pct}%"></div></div>
+      <div class="falta-controls" style="margin-top:8px">
+        <button class="falta-btn" onclick="addFalta('${g.key}',-1)">−</button>
+        <div style="text-align:center">
+          <div class="falta-count">${f.count}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:-2px">de ${lim} aulas</div>
+        </div>
+        <button class="falta-btn" onclick="addFalta('${g.key}',1)">+</button>
+        <div style="margin-left:auto;font-size:11px;color:var(--text2)">CH: ${g.ch}h</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addFalta(key, delta){
+  const f=loadFaltas();
+  if(!f[key]) f[key]={count:0};
+  f[key].count = Math.max(0, f[key].count+delta);
+  saveFaltas(f);
+  renderFaltas();
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+document.getElementById('new-text').addEventListener('keydown',e=>{if(e.key==='Enter')addItem();});
+const now=new Date();
+document.getElementById('date-label').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+const cfg=loadConfig();
+initFirebase(cfg.dbUrl, cfg.apiKey);
+</script>
+</body>
+</html>
