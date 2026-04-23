@@ -122,7 +122,7 @@
   .mini-fill{height:100%;border-radius:99px;}
   .mf-high{background:#E24B4A;} .mf-med{background:#BA7517;} .mf-done{background:#1D9E75;}
   .item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-left:3px solid #ccc;border-radius:var(--radius);background:var(--white);margin-bottom:6px;transition:opacity .2s;}
-  .item.dim{opacity:.45;}
+  .item.dim{opacity:1;}
   .item[data-sub="SAI — Clínica"]    {border-left-color:#D07050;}
   .item[data-sub="SAI — Neurologia"] {border-left-color:#AFA9EC;}
   .item[data-sub="SAI — Gineco"]     {border-left-color:#D4537E;}
@@ -152,54 +152,36 @@
   .sb-dpp    {background:#C0DD97;color:#173404;}
   .sb-fabs   {background:#D3D1C7;color:#2C2C2A;}
   .aula-tag{font-size:10px;padding:1px 7px;border-radius:99px;white-space:nowrap;font-weight:600;}
-  .aula-past  {background:#FAEEDA;color:#854F0B;}
+  .aula-past  {background:#E8E7E3;color:#9e9d99;}
   .aula-today {background:#1D9E75;color:#fff;}
   .aula-future{background:#E6F1FB;color:#185FA5;}
   /* ── Aulas já ministradas (passadas, não estudadas) ── */
   .item.ministrada{
-    opacity:1;
-    background: #FFF8F0;
-    border-left-width:4px;
-    border-style: solid;
-    box-shadow: 0 1px 4px rgba(186,117,23,.13);
+    opacity:.52;
+    background: var(--bg2);
+    border-left-color:#bbb !important;
+    border-left-width:3px;
+    border-style: dashed solid solid solid;
   }
-  .item.ministrada .item-text{color:#6b3d00;font-weight:500;}
+  .item.ministrada .item-text{color:var(--text3);font-style:italic;}
   .item.ministrada .item-right::before{
-    content:'Aula ministrada';
+    content:'aula passada';
     font-size:9px;
-    color:#BA7517;
-    font-weight:700;
-    letter-spacing:.03em;
+    color:var(--text3);
+    font-style:italic;
     display:block;
     text-align:right;
     margin-bottom:2px;
   }
-  @media(prefers-color-scheme:dark){
-    .item.ministrada{background:#2a1e0a;}
-    .item.ministrada .item-text{color:#f0b060;}
-  }
+  @media(prefers-color-scheme:dark){.item.ministrada{background:#1e1e1c;}}
 
   /* ── Aulas futuras (ainda não ocorreram) ── */
   .item.futura{
     border-left-width:4px;
-    background: #EEF5FF;
-    box-shadow: 0 1px 5px rgba(55,138,221,.15);
+    background: var(--white);
+    box-shadow: 0 1px 5px rgba(55,138,221,.12);
   }
-  .item.futura .item-text{font-weight:500;color:#0d2e5a;}
-  .item.futura .item-right::before{
-    content:'Próxima aula';
-    font-size:9px;
-    color:#185FA5;
-    font-weight:700;
-    letter-spacing:.03em;
-    display:block;
-    text-align:right;
-    margin-bottom:2px;
-  }
-  @media(prefers-color-scheme:dark){
-    .item.futura{background:#0d1e30;}
-    .item.futura .item-text{color:#7ab8f0;}
-  }
+  .item.futura .item-text{font-weight:500;}
   .rev-tag{font-size:10px;padding:1px 6px;border-radius:99px;white-space:nowrap;font-weight:500;}
   .rt-late {background:#FCEBEB;color:#A32D2D;}
   .rt-today{background:#FAEEDA;color:#854F0B;}
@@ -222,6 +204,10 @@
   .empty{font-size:13px;color:var(--text3);text-align:center;padding:16px 0;line-height:1.8;}
   .show-more{font-size:12px;color:var(--text2);cursor:pointer;padding:3px 0;display:inline-block;}
   .show-more:hover{color:var(--text);}
+  .item-move-row{display:flex;align-items:center;gap:5px;margin-top:6px;}
+  .item-move-label{font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
+  .item-move-sel{font-size:10px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text2);padding:2px 5px;cursor:pointer;flex:1;min-width:0;}
+  .item-origin-badge{font-size:10px;padding:1px 7px;border-radius:99px;background:var(--bg3);color:var(--text3);white-space:nowrap;font-style:italic;margin-top:3px;display:inline-block;}
 
   /* ── FOCO / TIMER ── */
   .foco-timer-wrap{text-align:center;padding:24px 0 16px;}
@@ -528,9 +514,9 @@ const DEFAULT_ITEMS=[
   {id:53,text:'Relações entre doenças físicas e transtornos psiquiátricos',   aulaDate:'2026-03-24',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
   {id:54,text:'Avaliação psiquiátrica de crianças e adolescentes',            aulaDate:'2026-03-31',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
   {id:55,text:'Entrevista com paciente — relatório',                          aulaDate:'2026-04-07',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
-  {id:56,text:'Antimicrobianos antibacterianos (parte 1)', aulaDate:'2026-04-04',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:56,text:'Antimicrobianos antibacterianos (parte 1)', aulaDate:'2026-04-04',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
   {id:57,text:'Antimicrobianos antibacterianos (parte 2)', aulaDate:'2026-04-17',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:58,text:'Terapia com glicocorticoides',              aulaDate:'2026-04-15',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
+  {id:58,text:'Terapia com glicocorticoides',              aulaDate:'2026-04-15',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
   {id:59,text:'Fármacos na asma e educação em asma',       aulaDate:'2026-04-22',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
   {id:60,text:'Fármacos em doenças dispépticas',           aulaDate:'2026-04-24',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
   {id:61,text:'Antifúngicos',                              aulaDate:'2026-04-29',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
@@ -546,8 +532,8 @@ const DEFAULT_ITEMS=[
   {id:71,text:'Síndromes medulares',                        aulaDate:'2026-04-27',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
   {id:72,text:'Funções corticais superiores',               aulaDate:'2026-05-11',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
   {id:73,text:'Investigação ginecológica complementar',     aulaDate:'2026-04-27',subject:'SAI — Gineco',    prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:74,text:'Acompanhamento do desenvolvimento infantil',         aulaDate:'2026-03-25',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:75,text:'Semiologia do aparelho locomotor pediátrico',        aulaDate:'2026-04-22',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
+  {id:74,text:'Acompanhamento do desenvolvimento infantil',         aulaDate:'2026-03-25',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
+  {id:75,text:'Semiologia do aparelho locomotor pediátrico',        aulaDate:'2026-04-22',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
   {id:76,text:'Semiologia neurológica pediátrica',                  aulaDate:'2026-05-06',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
   {id:77,text:'Semiologia do abdome e ap. digestório pediátrico',   aulaDate:'2026-05-13',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
   {id:78,text:'Semiologia do aparelho genital pediátrico',          aulaDate:'2026-05-20',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
@@ -555,13 +541,13 @@ const DEFAULT_ITEMS=[
   {id:80,text:'Semiologia do recém-nascido',                        aulaDate:'2026-06-03',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
   {id:81,text:'Semiologia do adolescente',                          aulaDate:'2026-06-10',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
   // P2 RAMEL
-  {id:98, text:'Medicina nuclear',                                             aulaDate:'2026-04-07',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:99, text:'Função renal e sumário de urina',                              aulaDate:'2026-04-09',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:100,text:'Radioproteção',                                                aulaDate:'2026-04-14',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:101,text:'Diagnóstico de lesão hepática e vias biliares',                aulaDate:'2026-04-16',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:102,text:'Marcadores tumorais',                                          aulaDate:'2026-04-21',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:103,text:'Radiologia torácica — sistema cardiovascular e respiratório',  aulaDate:'2026-04-28',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:104,text:'Função endócrina',                                             aulaDate:'2026-05-05',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
+  {id:98, text:'Medicina nuclear',                                             aulaDate:'2026-04-07',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:99, text:'Função renal e sumário de urina',                              aulaDate:'2026-04-09',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:100,text:'Radioproteção',                                                aulaDate:'2026-04-14',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:101,text:'Diagnóstico de lesão hepática e vias biliares',                aulaDate:'2026-04-16',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:102,text:'Marcadores tumorais',                                          aulaDate:'2026-04-21',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:103,text:'Radiologia torácica — sistema cardiovascular e respiratório',  aulaDate:'2026-04-28',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
+  {id:104,text:'Função endócrina',                                             aulaDate:'2026-05-05',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
   {id:105,text:'Proteínas de fase aguda',                                      aulaDate:'2026-05-12',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
   {id:106,text:'Radiologia do sistema digestivo e urinário',                   aulaDate:'2026-05-19',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
   {id:107,text:'Diagnóstico de lesão e função cardíaca',                       aulaDate:'2026-05-26',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
@@ -732,7 +718,17 @@ function renderList(){
     if(!groups[k]) groups[k]={urgency:item.urgency||'low',items:[]};
     groups[k].items.push(item);
   });
-  const keys=Object.keys(groups).sort((a,b)=>(ORDER[a]??2)-(ORDER[b]??2));
+  // ordenar itens dentro de cada grupo por data da aula (mais antiga primeiro)
+  Object.values(groups).forEach(g=>{
+    g.items.sort((a,b)=>(a.aulaDate||'9999').localeCompare(b.aulaDate||'9999'));
+  });
+  // ordenar grupos pela data-limite real da prova
+  const keys=Object.keys(groups).sort((a,b)=>{
+    const da=DEADLINES[a]||'9999-12-31';
+    const db=DEADLINES[b]||'9999-12-31';
+    return da.localeCompare(db);
+  });
+  const allProvas=Object.keys(DEADLINES).filter(p=>p!=='Adicionado manualmente').sort((a,b)=>(DEADLINES[a]||'').localeCompare(DEADLINES[b]||''));
   const el=document.getElementById('list');
   if(!f.length){el.innerHTML='<p class="empty">Nenhum item aqui.</p>';updateStats();return;}
 
@@ -749,6 +745,7 @@ function renderList(){
       const isMinistrada=item.aulaDate&&item.aulaDate<t&&item.status!=='done';
       const isFutura=item.aulaDate&&item.aulaDate>t&&item.status!=='done';
       const extraClass=(isMinistrada?' ministrada':isFutura?' futura':'');
+      const provaOpts=allProvas.map(p=>`<option value="${p}"${p===item.prova?' selected':''}>${p}</option>`).join('');
       return`<div class="item${isLow&&!isExp?' dim':''}${extraClass}" data-sub="${item.subject}">
       <div class="check${item.status==='done'?' on':''}" onclick="toggle(${item.id})"></div>
       <div class="item-body">
@@ -757,6 +754,11 @@ function renderList(){
           ${subBadge(item.subject)}
           ${aulaTag(item.aulaDate)}
           ${item.nextRev?revTag(item.nextRev):''}
+        </div>
+        ${item.provaOriginal?`<span class="item-origin-badge">movido de: ${item.provaOriginal}</span>`:''}
+        <div class="item-move-row">
+          <span class="item-move-label">Prova:</span>
+          <select class="item-move-sel" onchange="moveItemProva(${item.id},this.value)">${provaOpts}</select>
         </div>
       </div>
       <div class="item-right">
@@ -829,6 +831,23 @@ function addItem(){
   items.unshift(ni);
   document.getElementById('new-text').value='';
   saveItem(ni);
+  renderList();
+}
+
+function moveItemProva(id, novaProva){
+  const item=items.find(i=>i.id===id);if(!item)return;
+  if(item.prova===novaProva)return;
+  // guardar prova original (só na primeira vez que for movido)
+  if(!item.provaOriginal) item.provaOriginal=item.prova;
+  // se voltou para a original, limpar o marcador
+  if(novaProva===item.provaOriginal) delete item.provaOriginal;
+  item.prova=novaProva;
+  const dl=DEADLINES[novaProva];
+  if(dl){
+    const diff=diffD(todayISO(),dl);
+    item.urgency=diff<=30?'high':diff<=60?'med':'low';
+  }
+  saveItem(item);
   renderList();
 }
 
@@ -981,11 +1000,12 @@ const FALTA_GROUPS = [
 function calcLimiteAulas(ch){ return Math.floor(ch * 0.25 * 60 / 50); }
 
 function loadFaltas(){
-  const saved = localStorage.getItem('arthur_faltas_v2');
-  if(saved) return JSON.parse(saved);
-  const def = {};
-  FALTA_GROUPS.forEach(g => { def[g.key] = {count:0}; });
-  return def;
+  let saved={};
+  try{ saved=JSON.parse(localStorage.getItem('arthur_faltas_v2')||'{}'); }catch(e){}
+  // garante que todos os grupos existem, mesmo que o localStorage esteja incompleto
+  const result={};
+  FALTA_GROUPS.forEach(g=>{ result[g.key]={count: saved[g.key]?.count ?? 0}; });
+  return result;
 }
 function saveFaltas(f){ localStorage.setItem('arthur_faltas_v2', JSON.stringify(f)); }
 
