@@ -157,23 +157,20 @@
   .aula-future{background:#E6F1FB;color:#185FA5;}
   /* ── Aulas já ministradas (passadas, não estudadas) ── */
   .item.ministrada{
-    opacity:.52;
     background: var(--bg2);
     border-left-color:#bbb !important;
     border-left-width:3px;
-    border-style: dashed solid solid solid;
   }
-  .item.ministrada .item-text{color:var(--text3);font-style:italic;}
+  .item.ministrada .item-text{color:var(--text2);}
   .item.ministrada .item-right::before{
     content:'aula passada';
     font-size:9px;
     color:var(--text3);
-    font-style:italic;
     display:block;
     text-align:right;
     margin-bottom:2px;
   }
-  @media(prefers-color-scheme:dark){.item.ministrada{background:#1e1e1c;}}
+  @media(prefers-color-scheme:dark){.item.ministrada{background:#222220;}}
 
   /* ── Aulas futuras (ainda não ocorreram) ── */
   .item.futura{
@@ -208,6 +205,12 @@
   .item-move-label{font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
   .item-move-sel{font-size:10px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text2);padding:2px 5px;cursor:pointer;flex:1;min-width:0;}
   .item-origin-badge{font-size:10px;padding:1px 7px;border-radius:99px;background:var(--bg3);color:var(--text3);white-space:nowrap;font-style:italic;margin-top:3px;display:inline-block;}
+  .drag-handle{cursor:grab;color:var(--text3);font-size:16px;padding:0 4px 0 0;flex-shrink:0;margin-top:1px;user-select:none;touch-action:none;}
+  .drag-handle:active{cursor:grabbing;}
+  .item.dragging{opacity:.4;border-style:dashed;}
+  .prova-group.drag-over .prova-header{background:var(--blue-bg);border-radius:var(--radius-sm);transition:background .15s;}
+  .drop-label{font-size:11px;color:var(--blue-text);display:none;padding:2px 0 0 2px;}
+  .prova-group.drag-over .drop-label{display:block;}
 
   /* ── FOCO / TIMER ── */
   .foco-timer-wrap{text-align:center;padding:24px 0 16px;}
@@ -262,6 +265,13 @@
   .falta-sum-item{flex:1;min-width:120px;background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;}
   .falta-sum-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
   .falta-sum-num{font-size:18px;font-weight:600;}
+  /* ── TOAST UNDO ── */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#eae8e1;border-radius:var(--radius);padding:11px 16px;font-size:13px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;max-width:90vw;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .toast-msg{flex:1;overflow:hidden;text-overflow:ellipsis;}
+  .toast-undo{background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
+  .toast-undo:active{opacity:.8;}
+  @media(prefers-color-scheme:dark){.toast{background:#eae8e1;color:#1a1a18;} .toast-undo{background:#1D9E75;color:#fff;}}
 </style>
 </head>
 <body>
@@ -382,9 +392,11 @@
     </div>
     <div id="falta-list"></div>
   </div>
+</div><!-- .app -->
+<div class="toast" id="toast">
+  <span class="toast-msg" id="toast-msg"></span>
+  <button class="toast-undo" onclick="undoLast()">Desfazer</button>
 </div>
-
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -746,7 +758,8 @@ function renderList(){
       const isFutura=item.aulaDate&&item.aulaDate>t&&item.status!=='done';
       const extraClass=(isMinistrada?' ministrada':isFutura?' futura':'');
       const provaOpts=allProvas.map(p=>`<option value="${p}"${p===item.prova?' selected':''}>${p}</option>`).join('');
-      return`<div class="item${isLow&&!isExp?' dim':''}${extraClass}" data-sub="${item.subject}">
+      return`<div class="item${extraClass}" data-sub="${item.subject}" data-id="${item.id}" draggable="true">
+      <div class="drag-handle" title="Arrastar para outra prova">⠿</div>
       <div class="check${item.status==='done'?' on':''}" onclick="toggle(${item.id})"></div>
       <div class="item-body">
         <div class="item-text${item.status==='done'?' done':''}">${item.text}</div>
@@ -757,7 +770,7 @@ function renderList(){
         </div>
         ${item.provaOriginal?`<span class="item-origin-badge">movido de: ${item.provaOriginal}</span>`:''}
         <div class="item-move-row">
-          <span class="item-move-label">Prova:</span>
+          <span class="item-move-label">Mover para:</span>
           <select class="item-move-sel" onchange="moveItemProva(${item.id},this.value)">${provaOpts}</select>
         </div>
       </div>
@@ -777,13 +790,15 @@ function renderList(){
       body=g.items.map(row).join('')+`<span class="show-more" onclick="toggleGroup('${prova}')">− recolher</span>`;
     } else { body=g.items.map(row).join(''); }
 
-    return`<div class="prova-group">
+    return`<div class="prova-group" data-prova="${prova}">
       <div class="prova-header">
         <span class="prova-tag ${tc}">${prova}</span>
         <span class="prova-count">${dc}/${g.items.length}
           <span class="mini-bar"><span class="mini-fill ${fc}" style="width:${pct}%"></span></span>
         </span>
-      </div>${body}</div>`;
+      </div>
+      <div class="drop-label">Soltar aqui para mover para esta prova</div>
+      ${body}</div>`;
   }).join('');
   updateStats();
 }
@@ -817,11 +832,74 @@ function applyQ(id,q){
   saveItem(item);
   updateStats();
 }
-function del(id){
-  items=items.filter(i=>i.id!==id);
-  deleteItemRemote(id);
-  renderList();
+// ─────────────────────────────────────────────
+//  UNDO / TOAST
+// ─────────────────────────────────────────────
+let undoStack = []; // [{type:'delete'|'move', item, prevProva}]
+let toastTimer = null;
+
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 5000);
 }
+
+function undoLast(){
+  const action = undoStack.pop();
+  if(!action) return;
+  clearTimeout(toastTimer);
+  document.getElementById('toast').classList.remove('show');
+
+  if(action.type === 'delete'){
+    items.unshift(action.item);
+    saveItem(action.item);
+    renderList(); updateStats();
+  } else if(action.type === 'move'){
+    const item = items.find(i=>i.id===action.item.id);
+    if(!item) return;
+    item.prova = action.prevProva;
+    // restaurar provaOriginal corretamente
+    if(action.prevProvaOriginal !== undefined) item.provaOriginal = action.prevProvaOriginal;
+    else delete item.provaOriginal;
+    const dl = DEADLINES[item.prova];
+    if(dl){ const diff=diffD(todayISO(),dl); item.urgency=diff<=30?'high':diff<=60?'med':'low'; }
+    saveItem(item);
+    renderList();
+  }
+}
+
+function del(id){
+  const item = items.find(i=>i.id===id);
+  if(!item) return;
+  undoStack.push({type:'delete', item: JSON.parse(JSON.stringify(item))});
+  items = items.filter(i=>i.id!==id);
+  deleteItemRemote(id);
+  renderList(); updateStats();
+  showToast(`"${item.text.slice(0,40)}${item.text.length>40?'…':''}" removido`);
+}
+
+function moveItemProva(id, novaProva){
+  const item = items.find(i=>i.id===id);
+  if(!item || item.prova===novaProva) return;
+  // guardar estado anterior para undo
+  undoStack.push({
+    type: 'move',
+    item: {id: item.id},
+    prevProva: item.prova,
+    prevProvaOriginal: item.provaOriginal,
+  });
+  if(!item.provaOriginal) item.provaOriginal = item.prova;
+  if(novaProva === item.provaOriginal) delete item.provaOriginal;
+  item.prova = novaProva;
+  const dl = DEADLINES[novaProva];
+  if(dl){ const diff=diffD(todayISO(),dl); item.urgency=diff<=30?'high':diff<=60?'med':'low'; }
+  saveItem(item);
+  renderList();
+  showToast(`Tópico movido para ${novaProva}`);
+}
+
 function addItem(){
   const t=document.getElementById('new-text').value.trim();if(!t)return;
   const s=document.getElementById('new-status').value;
@@ -834,21 +912,80 @@ function addItem(){
   renderList();
 }
 
-function moveItemProva(id, novaProva){
-  const item=items.find(i=>i.id===id);if(!item)return;
-  if(item.prova===novaProva)return;
-  // guardar prova original (só na primeira vez que for movido)
-  if(!item.provaOriginal) item.provaOriginal=item.prova;
-  // se voltou para a original, limpar o marcador
-  if(novaProva===item.provaOriginal) delete item.provaOriginal;
-  item.prova=novaProva;
-  const dl=DEADLINES[novaProva];
-  if(dl){
-    const diff=diffD(todayISO(),dl);
-    item.urgency=diff<=30?'high':diff<=60?'med':'low';
-  }
-  saveItem(item);
-  renderList();
+// ── DRAG AND DROP ──
+let dragId=null;
+
+function initDragDrop(){
+  const list=document.getElementById('list');
+
+  // drag start — via delegation
+  list.addEventListener('dragstart',e=>{
+    const item=e.target.closest('.item[data-id]');
+    if(!item)return;
+    dragId=parseInt(item.dataset.id);
+    setTimeout(()=>item.classList.add('dragging'),0);
+  });
+  list.addEventListener('dragend',e=>{
+    document.querySelectorAll('.item.dragging').forEach(el=>el.classList.remove('dragging'));
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    dragId=null;
+  });
+
+  // drag over groups
+  list.addEventListener('dragover',e=>{
+    e.preventDefault();
+    const group=e.target.closest('.prova-group[data-prova]');
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    if(group) group.classList.add('drag-over');
+  });
+  list.addEventListener('dragleave',e=>{
+    if(!list.contains(e.relatedTarget)){
+      document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    }
+  });
+  list.addEventListener('drop',e=>{
+    e.preventDefault();
+    const group=e.target.closest('.prova-group[data-prova]');
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    if(!group||dragId==null)return;
+    moveItemProva(dragId, group.dataset.prova);
+  });
+
+  // touch support
+  let touchItem=null,touchClone=null,touchId=null;
+  list.addEventListener('touchstart',e=>{
+    const handle=e.target.closest('.drag-handle');
+    if(!handle)return;
+    touchItem=handle.closest('.item[data-id]');
+    if(!touchItem)return;
+    touchId=parseInt(touchItem.dataset.id);
+    touchClone=touchItem.cloneNode(true);
+    touchClone.style.cssText='position:fixed;z-index:999;opacity:.7;pointer-events:none;width:'+touchItem.offsetWidth+'px;';
+    document.body.appendChild(touchClone);
+    touchItem.classList.add('dragging');
+  },{passive:true});
+  list.addEventListener('touchmove',e=>{
+    if(!touchClone)return;
+    e.preventDefault();
+    const t=e.touches[0];
+    touchClone.style.left=(t.clientX-40)+'px';
+    touchClone.style.top=(t.clientY-20)+'px';
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    const under=document.elementFromPoint(t.clientX,t.clientY);
+    const group=under&&under.closest('.prova-group[data-prova]');
+    if(group)group.classList.add('drag-over');
+  },{passive:false});
+  list.addEventListener('touchend',e=>{
+    if(!touchClone)return;
+    const t=e.changedTouches[0];
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    const under=document.elementFromPoint(t.clientX,t.clientY);
+    const group=under&&under.closest('.prova-group[data-prova]');
+    if(group&&touchId!=null) moveItemProva(touchId,group.dataset.prova);
+    touchClone.remove();touchClone=null;
+    if(touchItem)touchItem.classList.remove('dragging');
+    touchItem=null;touchId=null;
+  });
 }
 
 function setFilter(f,btn){fStatus=f;document.querySelectorAll('#status-filters .stab').forEach(s=>s.classList.remove('active'));btn.classList.add('active');renderList();}
@@ -1071,7 +1208,7 @@ function addFalta(key, delta){
 document.getElementById('new-text').addEventListener('keydown',e=>{if(e.key==='Enter')addItem();});
 const now=new Date();
 document.getElementById('date-label').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-
+initDragDrop();
 const cfg=loadConfig();
 initFirebase(cfg.dbUrl, cfg.apiKey);
 </script>
