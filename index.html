@@ -654,6 +654,7 @@ function initFirebase(dbUrl, apiKey){
       }
       setSyncStatus('ok', 'Sincronizado ✓ — alterações aparecem em todos os dispositivos');
       buildChips(); renderList(); updateStats();
+      initFaltasSync();
     }, err => {
       setSyncStatus('err', 'Erro de conexão — verifique o URL e a apiKey');
       console.error(err);
@@ -1139,12 +1140,33 @@ function calcLimiteAulas(ch){ return Math.floor(ch * 0.25 * 60 / 50); }
 function loadFaltas(){
   let saved={};
   try{ saved=JSON.parse(localStorage.getItem('arthur_faltas_v2')||'{}'); }catch(e){}
-  // garante que todos os grupos existem, mesmo que o localStorage esteja incompleto
   const result={};
   FALTA_GROUPS.forEach(g=>{ result[g.key]={count: saved[g.key]?.count ?? 0}; });
   return result;
 }
-function saveFaltas(f){ localStorage.setItem('arthur_faltas_v2', JSON.stringify(f)); }
+function saveFaltas(f){
+  localStorage.setItem('arthur_faltas_v2', JSON.stringify(f));
+  // sincronizar no Firebase se estiver conectado
+  if(typeof firebase!=='undefined' && firebase.apps.length){
+    try{ firebase.database().ref('dashboard/faltas').set(f); }catch(e){}
+  }
+}
+
+// ouvir mudanças de faltas do Firebase em tempo real
+function initFaltasSync(){
+  if(typeof firebase==='undefined'||!firebase.apps.length) return;
+  firebase.database().ref('dashboard/faltas').on('value', snapshot=>{
+    const data=snapshot.val();
+    if(!data) return;
+    // merge com todos os grupos conhecidos
+    const merged={};
+    FALTA_GROUPS.forEach(g=>{ merged[g.key]={count: data[g.key]?.count ?? 0}; });
+    // salvar local também para fallback offline
+    localStorage.setItem('arthur_faltas_v2', JSON.stringify(merged));
+    // re-renderizar se a aba estiver visível
+    if(document.getElementById('view-faltas').style.display!=='none') renderFaltas();
+  });
+}
 
 function faltaStatus(count, limite){
   const pct = Math.min(Math.round(count/limite*100), 100);
