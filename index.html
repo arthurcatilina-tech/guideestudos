@@ -291,6 +291,44 @@
   .falta-sum-item{flex:1;min-width:120px;background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;}
   .falta-sum-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
   .falta-sum-num{font-size:18px;font-weight:600;}
+  /* ── PROVAS CALENDÁRIO ── */
+  .prov-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+  .prov-header-title{font-size:15px;font-weight:700;}
+  .prov-section-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 7px;}
+  /* card */
+  .prov-card{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--border2);border-radius:var(--radius);margin-bottom:6px;overflow:hidden;transition:all .3s;}
+  .prov-card.prov-pending{border-left:3px solid #1D9E75;}
+  .prov-card.prov-done{background:var(--bg2);border-left:3px solid transparent;border-color:var(--border);opacity:.38;filter:grayscale(.6);}
+  .prov-card-header{display:flex;align-items:center;gap:11px;padding:10px 13px;}
+  /* checkbox */
+  .prov-check{width:20px;height:20px;border:1.5px solid var(--border2);border-radius:6px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+  .prov-check.on{background:#1D9E75;border-color:#1D9E75;}
+  .prov-check.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);}
+  .prov-info{flex:1;min-width:0;}
+  .prov-name{font-size:13px;font-weight:600;line-height:1.35;color:var(--text);}
+  .prov-done .prov-name{color:var(--text3);text-decoration:line-through;}
+  /* tipo tag */
+  .prov-tipo{font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;white-space:nowrap;display:inline-block;margin-top:3px;}
+  .prov-tipo-teo {background:var(--blue-bg);color:var(--blue-text);}
+  .prov-tipo-prat{background:var(--green-bg);color:var(--green-text);}
+  /* data — só texto */
+  .prov-date-txt{font-size:12px;color:var(--text2);margin-top:1px;}
+  .prov-done .prov-date-txt{color:var(--text3);}
+  .prov-date-txt strong{color:var(--text);font-weight:600;}
+  .prov-done .prov-date-txt strong{color:var(--text3);}
+  /* countdown */
+  .prov-countdown{font-size:11px;font-weight:700;color:var(--text3);flex-shrink:0;text-align:right;min-width:36px;}
+  .prov-countdown.urgente{color:#E24B4A;}
+  .prov-countdown.breve  {color:#BA7517;}
+  /* edição */
+  .prov-edit-btn{font-size:14px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0 2px;flex-shrink:0;line-height:1;opacity:.55;}
+  .prov-edit-btn:active{opacity:.25;}
+  .prov-edit-row{padding:0 13px 10px 44px;display:none;align-items:center;gap:8px;flex-wrap:wrap;}
+  .prov-edit-row.open{display:flex;}
+  .prov-edit-label{font-size:11px;color:var(--text2);white-space:nowrap;}
+  .prov-edit-input{height:30px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-size:12px;padding:0 8px;flex:1;min-width:130px;}
+  .prov-edit-save{height:30px;padding:0 12px;background:#1D9E75;color:#fff;border:none;border-radius:var(--radius-sm);font-size:11px;font-weight:700;cursor:pointer;}
+  .prov-edit-save:active{opacity:.85;}
   /* ── TOAST UNDO ── */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#eae8e1;border-radius:var(--radius);padding:11px 16px;font-size:13px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;max-width:90vw;}
   .toast.show{transform:translateX(-50%) translateY(0);}
@@ -348,6 +386,7 @@
   <div class="nav">
     <button class="nav-btn active" onclick="setView('estudos',this)">Estudos</button>
     <button class="nav-btn" onclick="setView('agenda',this)">Agenda</button>
+    <button class="nav-btn" onclick="setView('provas',this)">Provas</button>
     <button class="nav-btn" onclick="setView('faltas',this)">Faltas</button>
   </div>
 
@@ -388,6 +427,10 @@
     <div id="ag-content"></div>
   </div>
 
+  <div id="view-provas" style="display:none">
+    <div id="provas-list"></div>
+  </div>
+
   <div id="view-faltas" style="display:none">
     <div class="falta-summary">
       <div class="falta-sum-item"><div class="falta-sum-label">Total de faltas</div><div class="falta-sum-num n-due" id="falta-total">0</div></div>
@@ -420,7 +463,7 @@ const SM_META = {
   'DPP':              {chip:'chip-dpp',   badge:'sb-dpp',   label:'DPP'},
   'FABS 2':           {chip:'chip-fabs',  badge:'sb-fabs',  label:'FABS 2'},
 };
-const DEADLINES={'P1 SAI — 13/04':'2026-04-13','P1 Anat. Topográfica — 14/04':'2026-04-14','P1 BTM — 15/04':'2026-04-15','P1 ICTC — 22/04':'2026-04-22','P1 SCA — 29/04':'2026-04-29','P1 RAMEL — 05/05':'2026-05-05','P1 DPP — 05/05':'2026-05-05','P2 BTM — 13/05':'2026-05-13','P2 SAI — 15/06':'2026-06-15','P2 SCA — 17/06':'2026-06-17','P2 RAMEL — 17/06':'2026-06-17','P2 Anat. Topográfica — 30/06':'2026-06-30','P2 ICTC — 01/07':'2026-07-01','P3 BTM — 10/06':'2026-06-10','Adicionado manualmente':'2026-07-04'};
+const DEADLINES={'P1 SAI — 13/04':'2026-04-13','P1 Anat. Topográfica — 14/04':'2026-04-14','P1 BTM — 15/04':'2026-04-15','P1 ICTC — 22/04':'2026-04-22','P1 SCA — 29/04':'2026-04-29','P1 RAMEL — 05/05':'2026-05-19','P1 DPP — 05/05':'2026-05-05','P2 BTM — 13/05':'2026-05-13','P2 SAI — 15/06':'2026-06-15','P2 SCA — 17/06':'2026-06-17','P2 RAMEL — 17/06':'2026-06-17','P2 Anat. Topográfica — 30/06':'2026-06-30','P2 ICTC — 01/07':'2026-07-01','P3 BTM — 10/06':'2026-06-10','Adicionado manualmente':'2026-07-04'};
 const ORDER={'P1 SAI — 13/04':0,'P1 Anat. Topográfica — 14/04':0,'P1 BTM — 15/04':0,'P1 ICTC — 22/04':1,'P1 SCA — 29/04':1,'P1 RAMEL — 05/05':1,'P1 DPP — 05/05':1,'P2 BTM — 13/05':2,'P2 SAI — 15/06':3,'P2 SCA — 17/06':3,'P2 RAMEL — 17/06':3,'P3 BTM — 10/06':3,'P2 Anat. Topográfica — 30/06':4,'P2 ICTC — 01/07':4,'Adicionado manualmente':5};
 const IV=[1,3,7,14,30,60];
 
@@ -1019,8 +1062,10 @@ function setView(v,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
   document.getElementById('view-estudos').style.display=v==='estudos'?'':'none';
   document.getElementById('view-agenda').style.display=v==='agenda'?'':'none';
+  document.getElementById('view-provas').style.display=v==='provas'?'':'none';
   document.getElementById('view-faltas').style.display=v==='faltas'?'':'none';
   if(v==='agenda')renderAgenda();
+  if(v==='provas')renderProvas();
   if(v==='faltas')renderFaltas();
 }
 
@@ -1689,7 +1734,156 @@ function renderAgDay(){
 }
 
 // ─────────────────────────────────────────────
-//  FALTAS
+//  PROVAS CALENDÁRIO
+// ─────────────────────────────────────────────
+// tipo: 'teo' = teórica | 'prat' = prática/cenários
+const PROVAS_DEF = [
+  // ── Abril ──
+  {id:'p1_sai',        label:'P1 SAI',                        tipo:'teo',  date:'2026-04-13', module:'SAI'},
+  {id:'p1_anat',       label:'P1 Anatomia Topográfica',        tipo:'teo',  date:'2026-04-14', module:'ICTC — Anatomia'},
+  {id:'p1_btm',        label:'P1 BTM',                        tipo:'teo',  date:'2026-04-15', module:'BTM'},
+  {id:'p1_ictc',       label:'P1 ICTC — Cirurgia',             tipo:'teo',  date:'2026-04-22', module:'ICTC — Cirurgia'},
+  {id:'prat_sai_anam', label:'Prática SAI — Anamnese/Cenários',tipo:'prat', date:'2026-04-30', module:'SAI'},
+  {id:'p1_sca',        label:'P1 SCA',                        tipo:'teo',  date:'2026-04-29', module:'SCA'},
+  // ── Maio ──
+  {id:'p1_dpp',        label:'P1 DPP',                        tipo:'teo',  date:'2026-05-05', module:'DPP'},
+  {id:'p1_ramel',      label:'P1 RAMEL',                      tipo:'teo',  date:'2026-05-19', module:'RAMEL'},
+  {id:'p2_btm',        label:'P2 BTM',                        tipo:'teo',  date:'2026-05-13', module:'BTM'},
+  // ── Junho ──
+  {id:'p3_btm',        label:'P3 BTM',                        tipo:'teo',  date:'2026-06-10', module:'BTM'},
+  {id:'p2_sai',        label:'P2 SAI',                        tipo:'teo',  date:'2026-06-15', module:'SAI'},
+  {id:'prat_sai_ef',   label:'Prática SAI — Exame Físico',     tipo:'prat', date:'2026-06-15', module:'SAI'},
+  {id:'p2_sca',        label:'P2 SCA',                        tipo:'teo',  date:'2026-06-17', module:'SCA'},
+  {id:'p2_ramel',      label:'P2 RAMEL',                      tipo:'teo',  date:'2026-06-17', module:'RAMEL'},
+  {id:'prat_ictc',     label:'Prática ICTC — Nó Cirúrgico/Técnica',tipo:'prat',date:'2026-06-24', module:'ICTC — Cirurgia'},
+  // ── Junho/Julho ──
+  {id:'p2_anat',       label:'P2 Anatomia Topográfica',        tipo:'teo',  date:'2026-06-30', module:'ICTC — Anatomia'},
+  {id:'p2_ictc',       label:'P2 ICTC — Cirurgia',             tipo:'teo',  date:'2026-07-01', module:'ICTC — Cirurgia'},
+];
+
+function loadProvasState(){
+  try{ return JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}'); }catch(e){return{};}
+}
+function saveProvasState(state){
+  localStorage.setItem('arthur_provas_cal_v2', JSON.stringify(state));
+}
+
+function fmtDateLong(iso){
+  if(!iso) return '—';
+  const d=new Date(iso+'T12:00:00');
+  return d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'});
+}
+
+function provCountdown(dateISO, isDone){
+  if(isDone) return {txt:'', cls:''};
+  const diff=diffD(todayISO(), dateISO);
+  if(diff<0)  return {txt:`${Math.abs(diff)}d atrás`, cls:''};
+  if(diff===0)return {txt:'Hoje!',     cls:'urgente'};
+  if(diff<=7) return {txt:`${diff}d`,  cls:'urgente'};
+  if(diff<=21)return {txt:`${diff}d`,  cls:'breve'};
+  return       {txt:`${diff}d`,        cls:''};
+}
+
+function renderProvas(){
+  const state=loadProvasState();
+
+  const pending=[], done=[];
+  PROVAS_DEF.forEach(p=>{
+    const st=state[p.id]||{};
+    const dateISO = st.date || p.date;
+    const isDone = !!st.done;
+    const entry={...p, dateISO, isDone};
+    if(isDone) done.push(entry);
+    else pending.push(entry);
+  });
+
+  pending.sort((a,b)=>(a.dateISO||'9999').localeCompare(b.dateISO||'9999'));
+  done.sort((a,b)=>(a.dateISO||'9999').localeCompare(b.dateISO||'9999'));
+
+  function cardHTML(entry){
+    const st=state[entry.id]||{};
+    const {txt:cdTxt, cls:cdCls}=provCountdown(entry.dateISO, entry.isDone);
+    const tipoTag=entry.tipo==='prat'
+      ?'<span class="prov-tipo prov-tipo-prat">Prática</span>'
+      :'<span class="prov-tipo prov-tipo-teo">Teórica</span>';
+    const editOpen=st.editing?'open':'';
+    const doneClass=entry.isDone?' prov-done':' prov-pending';
+    const checkOn=entry.isDone?' on':'';
+    return`<div class="prov-card${doneClass}" id="pcard-${entry.id}">
+      <div class="prov-card-header">
+        <div class="prov-check${checkOn}" onclick="toggleProva('${entry.id}')"></div>
+        <div class="prov-info">
+          <div class="prov-name">${entry.label}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${tipoTag}
+            <span class="prov-date-txt"><strong>${fmtDateLong(entry.dateISO)}</strong></span>
+          </div>
+        </div>
+        ${cdTxt?`<div class="prov-countdown ${cdCls}">${cdTxt}</div>`:''}
+        <button class="prov-edit-btn" onclick="toggleProvaEdit('${entry.id}')" title="Editar data">✏️</button>
+      </div>
+      <div class="prov-edit-row ${editOpen}" id="pedit-${entry.id}">
+        <span class="prov-edit-label">Nova data:</span>
+        <input class="prov-edit-input" type="date" id="pdate-${entry.id}" value="${entry.dateISO||''}" />
+        <button class="prov-edit-save" onclick="saveProvaDate('${entry.id}')">Salvar</button>
+      </div>
+    </div>`;
+  }
+
+  const total=PROVAS_DEF.length;
+  const doneCount=done.length;
+  const pct=Math.round(doneCount/total*100);
+
+  const pendingHTML = pending.length
+    ? pending.map(cardHTML).join('')
+    : '<p class="empty" style="padding:12px 0">Nenhuma prova pendente 🎉</p>';
+
+  const doneHTML = done.length
+    ? `<div class="prov-section-label">Realizadas (${doneCount})</div>`+done.map(cardHTML).join('')
+    : '';
+
+  document.getElementById('provas-list').innerHTML=`
+    <div class="prov-header-row">
+      <div class="prov-header-title">Calendário de Provas</div>
+      <div style="font-size:12px;color:var(--text2)">${doneCount}/${total}</div>
+    </div>
+    <div class="progress-bar" style="margin-bottom:3px"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label" style="margin-bottom:1.1rem">${pct}% concluído</div>
+    <div class="prov-section-label">Pendentes (${pending.length})</div>
+    ${pendingHTML}
+    ${doneHTML}
+  `;
+}
+
+function toggleProva(id){
+  const state=loadProvasState();
+  if(!state[id]) state[id]={};
+  state[id].done = !state[id].done;
+  saveProvasState(state);
+  renderProvas();
+}
+
+function toggleProvaEdit(id){
+  const state=loadProvasState();
+  if(!state[id]) state[id]={};
+  state[id].editing = !state[id].editing;
+  saveProvasState(state);
+  renderProvas();
+}
+
+function saveProvaDate(id){
+  const input=document.getElementById('pdate-'+id);
+  if(!input) return;
+  const val=input.value;
+  if(!val){ alert('Selecione uma data válida.'); return; }
+  const state=loadProvasState();
+  if(!state[id]) state[id]={};
+  state[id].date=val;
+  state[id].editing=false;
+  saveProvasState(state);
+  renderProvas();
+}
+
 // ─────────────────────────────────────────────
 // Carga horária total e limite de 25% (em nº de aulas de 50min)
 // 1h = 1,2 aulas de 50min → limite_aulas = floor(CH_horas * 0.25 * 1.2)
