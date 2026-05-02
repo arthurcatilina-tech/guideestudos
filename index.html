@@ -463,7 +463,31 @@ const SM_META = {
   'DPP':              {chip:'chip-dpp',   badge:'sb-dpp',   label:'DPP'},
   'FABS 2':           {chip:'chip-fabs',  badge:'sb-fabs',  label:'FABS 2'},
 };
-const DEADLINES={'P1 SAI — 13/04':'2026-04-13','P1 Anat. Topográfica — 14/04':'2026-04-14','P1 BTM — 15/04':'2026-04-15','P1 ICTC — 22/04':'2026-04-22','P1 SCA — 29/04':'2026-04-29','P1 RAMEL — 05/05':'2026-05-19','P1 DPP — 05/05':'2026-05-05','P2 BTM — 13/05':'2026-05-13','P2 SAI — 15/06':'2026-06-15','P2 SCA — 17/06':'2026-06-17','P2 RAMEL — 17/06':'2026-06-17','P2 Anat. Topográfica — 30/06':'2026-06-30','P2 ICTC — 01/07':'2026-07-01','P3 BTM — 10/06':'2026-06-10','Adicionado manualmente':'2026-07-04'};
+// DEADLINES é calculado dinamicamente a partir de PROVAS_DEF + localStorage
+// Chave = label da prova (ex: 'P1 RAMEL — 05/05'), valor = data ISO real (pode ser editada)
+function buildDeadlines(){
+  let state={};
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}');}catch(e){}
+  const dl={'Adicionado manualmente':'2026-07-04'};
+  // PROVAS_DEF ainda não está definido aqui — será chamado depois da definição
+  if(typeof PROVAS_DEF!=='undefined'){
+    PROVAS_DEF.forEach(p=>{
+      const effectiveDate=(state[p.id]&&state[p.id].date)||p.date;
+      dl[p.label]=effectiveDate;
+    });
+  }
+  return dl;
+}
+// Proxy dinâmico: sempre reflete o estado atual
+const DEADLINES=new Proxy({},{
+  get(_,key){return buildDeadlines()[key];},
+  has(_,key){return key in buildDeadlines();},
+  ownKeys(_){return Object.keys(buildDeadlines());},
+  getOwnPropertyDescriptor(_,key){
+    const v=buildDeadlines()[key];
+    return v!==undefined?{value:v,writable:true,enumerable:true,configurable:true}:undefined;
+  }
+});
 const ORDER={'P1 SAI — 13/04':0,'P1 Anat. Topográfica — 14/04':0,'P1 BTM — 15/04':0,'P1 ICTC — 22/04':1,'P1 SCA — 29/04':1,'P1 RAMEL — 05/05':1,'P1 DPP — 05/05':1,'P2 BTM — 13/05':2,'P2 SAI — 15/06':3,'P2 SCA — 17/06':3,'P2 RAMEL — 17/06':3,'P3 BTM — 10/06':3,'P2 Anat. Topográfica — 30/06':4,'P2 ICTC — 01/07':4,'Adicionado manualmente':5};
 const IV=[1,3,7,14,30,60];
 
@@ -1208,13 +1232,13 @@ const AGENDA = [
   {date:'2026-04-07',time:'15:40–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Discussão: Ciclo Menstrual (Sub 1)', prof:'Profas. Aurélio e Márcia', local:'Salas 2 e 5 CCM'},
   // Ter 07/04
   {date:'2026-04-07',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-04-07',time:'15:40–17:00',mod:'ICTC-A',tipo:'prova',titulo:'⚠️ P1 ICTC Anatomia — Prova Prática (Teste 1)', prof:'Jailson', local:'Lab. de Anatomia'},
+  {date:'2026-04-07',time:'15:40–17:00',mod:'ICTC-A',tipo:'prova',agendaId:'p1_anat', titulo:'⚠️ P1 ICTC Anatomia — Prova Prática (Teste 1)', prof:'Jailson', local:'Lab. de Anatomia'},
   {date:'2026-04-07',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Personalidade: definição e aspectos (Cap. 25)', prof:'Bruno', local:'Anfiteatro 2 HC'},
   {date:'2026-04-07',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Medicina Nuclear', prof:'Prof. Paulo Almeida', local:'Sala 1 CCM'},
   {date:'2026-04-07',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Tórax (Prática)', prof:'Jailson', local:'Lab. de Anatomia'},
   // Qua 08/04 — P1 BTM
   {date:'2026-04-08',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Aparelho Respiratório', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-04-08',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',titulo:'⚠️ PRIMEIRA AVALIAÇÃO BTM', prof:'Gilson', local:'Sala 1 CCM'},
+  {date:'2026-04-08',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',agendaId:'p1_btm', titulo:'⚠️ PRIMEIRA AVALIAÇÃO BTM', prof:'Gilson', local:'Sala 1 CCM'},
   {date:'2026-04-08',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Função renal e sumário de urina', prof:'Prof. Rodrigo Bezerra', local:'Sala 1 CCM'},
   {date:'2026-04-08',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Infecção em Cirurgia (Biologia e Profilaxia)', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 09/04 — Prática SCA
@@ -1231,7 +1255,7 @@ const AGENDA = [
   {date:'2026-04-13',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
   {date:'2026-04-13',time:'8:00–9:00',  mod:'SAI-C', tipo:'teo',  titulo:'SAI — Revisão de Cardiologia (extra)', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
   {date:'2026-04-13',time:'9:15–10:15', mod:'SAI-C', tipo:'teo',  titulo:'SAI — Revisão de Pneumologia (extra)', prof:'Prof. Rodrigo', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-13',time:'13:00–14:00',mod:'SAI-C', tipo:'prova',titulo:'⚠️ 1º EXERCÍCIO SAI (teórica)', prof:'Profs. de Semiologia', local:'Sala 5 CCM'},
+  {date:'2026-04-13',time:'13:00–14:00',mod:'SAI-C', tipo:'prova',agendaId:'p1_sai', titulo:'⚠️ 1º EXERCÍCIO SAI (teórica)', prof:'Profs. de Semiologia', local:'Sala 5 CCM'},
   // Ter 14/04
   {date:'2026-04-14',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-04-14',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Personalidade normal e patológica e transtornos (Cap. 25)', prof:'Bruno', local:'Anfiteatro 2 HC'},
@@ -1260,7 +1284,7 @@ const AGENDA = [
   {date:'2026-04-22',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos na asma e educação em asma', prof:'Dayanne', local:'Sala 1 CCM'},
   {date:'2026-04-22',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Marcadores tumorais', prof:'Profa. Iris', local:'Sala 1 CCM'},
   {date:'2026-04-22',time:'23:59–23:59',mod:'FABS',  tipo:'prova',titulo:'⚠️ FABS II — PRAZO ENTREGA Relatório 1 (PTS)', prof:'', local:'AVAMED (entrega online)'},
-  {date:'2026-04-22',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',titulo:'⚠️ P1 ICTC — PROVA TEÓRICA', prof:'—', local:'Anfiteatro 3 HC'},
+  {date:'2026-04-22',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',agendaId:'p1_ictc', titulo:'⚠️ P1 ICTC — PROVA TEÓRICA', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 23/04
   {date:'2026-04-23',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 4: Desenvolvimento, Exame neurológico e Locomotor (Sub 1 c/ Edjane)', prof:'Profa. Edjane', local:'Enfermaria HC 6º andar SUL'},
   {date:'2026-04-23',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática Simulada 4: Exame neurológico e locomotor (todos c/ Dayanne)', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
@@ -1283,7 +1307,7 @@ const AGENDA = [
   {date:'2026-04-28',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiologia torácica: cardiovascular e respiratório', prof:'Profa. Audes Feitosa', local:'Sala 1 CCM'},
   {date:'2026-04-28',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Canal Inguinal (Teórica)', prof:'Jailson', local:'Sala 1 CCM'},
   // Qua 29/04 — P1 SCA
-  {date:'2026-04-29',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',titulo:'⚠️ P1 SCA — PRIMEIRA AVALIAÇÃO', prof:'Adriana, Dayanne, Suzana', local:'Salas CCM (1, 3, 4 e 51)'},
+  {date:'2026-04-29',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',agendaId:'p1_sca', titulo:'⚠️ P1 SCA — PRIMEIRA AVALIAÇÃO', prof:'Adriana, Dayanne, Suzana', local:'Salas CCM (1, 3, 4 e 51)'},
   {date:'2026-04-29',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Antifúngicos', prof:'Líbia', local:'Sala 1 CCM'},
   {date:'2026-04-29',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Função endócrina', prof:'Profa. Lúcia Cordeiro', local:'Sala 1 CCM'},
   {date:'2026-04-29',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Choque: Fisiopatologia e Tratamento', prof:'—', local:'Anfiteatro 3 HC'},
@@ -1305,8 +1329,8 @@ const AGENDA = [
   {date:'2026-05-05',time:'15:40–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Tutoria: Exame ginecológico 2 (Sub 1)', prof:'Profs. Aurélio e Lúcia', local:'Salas 2 e 5 CCM'},
   // Ter 05/05 — P1 RAMEL + DPP
   {date:'2026-05-05',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-05-05',time:'10:10–12:00',mod:'DPP',   tipo:'prova',titulo:'⚠️ P1 DPP + RELATÓRIO — entrevista com paciente', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-05',time:'13:00–14:40',mod:'RAMEL', tipo:'prova',titulo:'⚠️ P1 RAMEL — PRIMEIRA AVALIAÇÃO', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
+  {date:'2026-05-05',time:'10:10–12:00',mod:'DPP',   tipo:'prova',agendaId:'p1_dpp', titulo:'⚠️ P1 DPP + RELATÓRIO — entrevista com paciente', prof:'Bruno', local:'Anfiteatro 2 HC'},
+  {date:'2026-05-19',time:'13:00–14:40',mod:'RAMEL', tipo:'prova',titulo:'⚠️ P1 RAMEL — PRIMEIRA AVALIAÇÃO',agendaId:'p1_ramel', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
   {date:'2026-05-05',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Pelve e Períneo (Teórica)', prof:'Jailson', local:'Sala 1 CCM'},
   // Qua 06/05
   {date:'2026-05-06',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia Neurológica na infância e adolescência', prof:'Vários', local:'Salas CCM'},
@@ -1336,7 +1360,7 @@ const AGENDA = [
   {date:'2026-05-12',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Canal Inguinal, Pelve e Períneo (Prática)', prof:'Jailson', local:'Sala 1 CCM'},
   // Qua 13/05 — P2 BTM
   {date:'2026-05-13',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia abdome, ap. digestório e ap. genital', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-05-13',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',titulo:'⚠️ P2 BTM — SEGUNDA AVALIAÇÃO', prof:'Gilson', local:'Sala 1 CCM'},
+  {date:'2026-05-13',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',agendaId:'p2_btm', titulo:'⚠️ P2 BTM — SEGUNDA AVALIAÇÃO', prof:'Gilson', local:'Sala 1 CCM'},
   {date:'2026-05-13',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Diagnóstico de lesão e função cardíaca', prof:'Profa. Audes Feitosa', local:'Sala 1 CCM'},
   {date:'2026-05-13',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Antibioticoterapia em Cirurgia', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 14/05
@@ -1434,7 +1458,7 @@ const AGENDA = [
   {date:'2026-06-09',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — MMII', prof:'Jailson', local:'Sala 1 CCM'},
   // Qua 10/06 — P3 BTM
   {date:'2026-06-10',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Adolescente', prof:'Profa. Suzana', local:'Sala 1 CCM'},
-  {date:'2026-06-10',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',titulo:'⚠️ P3 BTM — TERCEIRA AVALIAÇÃO', prof:'Gilson', local:'Sala 1 CCM'},
+  {date:'2026-06-10',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',agendaId:'p3_btm', titulo:'⚠️ P3 BTM — TERCEIRA AVALIAÇÃO', prof:'Gilson', local:'Sala 1 CCM'},
   {date:'2026-06-10',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Seminários', prof:'Profa. Lúcia Cordeiro', local:'Sala 1 CCM'},
   {date:'2026-06-10',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Cirurgia Oncológica', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 11/06 — P2 SCA (prova prática)
@@ -1447,16 +1471,16 @@ const AGENDA = [
   // ══════════════════════════════════════════════════════════
   // Seg 15/06 — P2 SAI
   {date:'2026-06-15',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-06-15',time:'8:00–10:00', mod:'SAI-C', tipo:'prova',titulo:'⚠️ P2 SAI — SEGUNDA AVALIAÇÃO (teórica)', prof:'Professores de Semiologia', local:'Anfiteatro 2 HC'},
+  {date:'2026-06-15',time:'8:00–10:00', mod:'SAI-C', tipo:'prova',agendaId:'p2_sai', titulo:'⚠️ P2 SAI — SEGUNDA AVALIAÇÃO (teórica)', prof:'Professores de Semiologia', local:'Anfiteatro 2 HC'},
   // Ter 16/06
   {date:'2026-06-16',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-06-16',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — A formação psicológica do médico (1) e (2)', prof:'João Alberto', local:'Anfiteatro 2 HC'},
   {date:'2026-06-16',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Seminários', prof:'Andrea e Paulo', local:'Sala 5 CCM'},
   {date:'2026-06-16',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Prática MMSS e MMII', prof:'Jailson', local:'Lab. de Anatomia'},
   // Qua 17/06 — P2 SCA + P2 RAMEL + Final BTM
-  {date:'2026-06-17',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',titulo:'⚠️ P2 SCA — SEGUNDA AVALIAÇÃO', prof:'Adriana, Almerinda, Dayanne, Suzana', local:'Salas CCM (1, 2, 3 e 4)'},
+  {date:'2026-06-17',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',agendaId:'p2_sca', titulo:'⚠️ P2 SCA — SEGUNDA AVALIAÇÃO', prof:'Adriana, Almerinda, Dayanne, Suzana', local:'Salas CCM (1, 2, 3 e 4)'},
   {date:'2026-06-17',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',titulo:'⚠️ FINAL BTM', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-06-17',time:'10:10–11:00',mod:'RAMEL', tipo:'prova',titulo:'⚠️ P2 RAMEL — SEGUNDA AVALIAÇÃO', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
+  {date:'2026-06-17',time:'10:10–11:00',mod:'RAMEL', tipo:'prova',agendaId:'p2_ramel', titulo:'⚠️ P2 RAMEL — SEGUNDA AVALIAÇÃO', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
   {date:'2026-06-17',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Terminologia Cirúrgica e Laparotomias', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 18/06 — Prova Prática SCA (Subs 9-16)
   {date:'2026-06-18',time:'7:30–9:00',  mod:'SCA',   tipo:'prova',titulo:'⚠️ PROVA PRÁTICA SCA — TODOS OS ALUNOS (Sub 1 aqui!)', prof:'Profa. Adriana, Almerinda, Dayanne, Edjane, Emília, Geórgia, Michela, Maria Júlia, Suzana, Tereza', local:'Salas de simulação CCM 2º andar'},
@@ -1483,11 +1507,11 @@ const AGENDA = [
   {date:'2026-06-30',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-06-30',time:'10:10–12:00',mod:'DPP',   tipo:'prova',titulo:'⚠️ P2 DPP I — SEGUNDA AVALIAÇÃO', prof:'João Alberto', local:'Anfiteatro 2 HC'},
   {date:'2026-06-30',time:'13:00–14:40',mod:'RAMEL', tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA RAMEL', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-06-30',time:'15:40–16:30',mod:'ICTC-A',tipo:'prova',titulo:'⚠️ P2 ICTC — PROVA PRÁTICA Anatomia', prof:'Jailson', local:'Lab. de Anatomia'},
+  {date:'2026-06-30',time:'15:40–16:30',mod:'ICTC-A',tipo:'prova',agendaId:'p2_anat', titulo:'⚠️ P2 ICTC — PROVA PRÁTICA Anatomia', prof:'Jailson', local:'Lab. de Anatomia'},
   // Qua 01/07
   {date:'2026-07-01',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA SCA', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
   {date:'2026-07-01',time:'8:40–9:10',  mod:'RAMEL', tipo:'prova',titulo:'⚠️ AVALIAÇÃO FINAL RAMEL', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-07-01',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',titulo:'⚠️ P2 ICTC — SEGUNDA AVALIAÇÃO (teórica)', prof:'—', local:'Anfiteatro 3 HC'},
+  {date:'2026-07-01',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',agendaId:'p2_ictc', titulo:'⚠️ P2 ICTC — SEGUNDA AVALIAÇÃO (teórica)', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 02/07
   {date:'2026-07-02',time:'7:30–9:00',  mod:'SCA',   tipo:'prova',titulo:'⚠️ AVALIAÇÃO FINAL SCA', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
   // Sex 03/07
@@ -1600,7 +1624,28 @@ function buildAgDays(){
   return days;
 }
 
+// ─────────────────────────────────────────────
+//  SINCRONIZAÇÃO PROVAS → AGENDA
+// ─────────────────────────────────────────────
+// Atualiza as datas das entradas da AGENDA que têm agendaId
+// com a data efetiva do PROVAS_DEF (podendo ser customizada pelo usuário)
+function patchAgendaDates(){
+  if(typeof PROVAS_DEF==='undefined') return;
+  let state={};
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}');}catch(e){}
+  const dateMap={};
+  PROVAS_DEF.forEach(p=>{
+    dateMap[p.id]=(state[p.id]&&state[p.id].date)||p.date;
+  });
+  AGENDA.forEach(a=>{
+    if(a.agendaId && dateMap[a.agendaId]){
+      a.date=dateMap[a.agendaId];
+    }
+  });
+}
+
 function renderAgenda(){
+  patchAgendaDates();
   const days = buildAgDays();
   const today = todayISO();
   const dowNames = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -1882,6 +1927,8 @@ function saveProvaDate(id){
   state[id].editing=false;
   saveProvasState(state);
   renderProvas();
+  // Sincronizar agenda se estiver visível
+  if(document.getElementById('view-agenda').style.display!=='none') renderAgenda();
 }
 
 // ─────────────────────────────────────────────
