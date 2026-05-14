@@ -809,6 +809,21 @@ function initFirebase(dbUrl, apiKey){
       setSyncStatus('ok', 'Sincronizado ✓ — alterações aparecem em todos os dispositivos');
       buildChips(); renderList(); updateStats();
       initFaltasSync();
+      initProvasSync();
+      initNotasSync();
+      // Subir dados locais de provas/notas para o Firebase na primeira conexão
+      firebase.database().ref('dashboard/provas_cal').once('value', snap=>{
+        if(!snap.val()){
+          const local=loadProvasState();
+          if(Object.keys(local).length) firebase.database().ref('dashboard/provas_cal').set(local).catch(console.error);
+        }
+      });
+      firebase.database().ref('dashboard/notas').once('value', snap=>{
+        if(!snap.val()){
+          const local=loadNotas();
+          if(Object.keys(local).length) firebase.database().ref('dashboard/notas').set(local).catch(console.error);
+        }
+      });
     }, err => {
       setSyncStatus('err', 'Erro de conexão — verifique o URL e a apiKey');
       console.error(err);
@@ -1894,6 +1909,19 @@ function loadProvasState(){
 }
 function saveProvasState(state){
   localStorage.setItem('arthur_provas_cal_v2', JSON.stringify(state));
+  // Sincronizar no Firebase se conectado
+  if(typeof firebase!=='undefined' && firebase.apps.length){
+    try{ firebase.database().ref('dashboard/provas_cal').set(state); }catch(e){}
+  }
+}
+function initProvasSync(){
+  if(typeof firebase==='undefined'||!firebase.apps.length) return;
+  firebase.database().ref('dashboard/provas_cal').on('value', snapshot=>{
+    const data=snapshot.val();
+    if(!data) return;
+    localStorage.setItem('arthur_provas_cal_v2', JSON.stringify(data));
+    if(document.getElementById('view-provas').style.display!=='none') renderProvas();
+  });
 }
 
 function fmtDateLong(iso){
@@ -2033,6 +2061,21 @@ function loadNotas(){
 }
 function saveNotas(n){
   localStorage.setItem('arthur_notas_v1', JSON.stringify(n));
+  // Sincronizar no Firebase se conectado
+  if(typeof firebase!=='undefined' && firebase.apps.length){
+    try{ firebase.database().ref('dashboard/notas').set(n); }catch(e){}
+  }
+}
+function initNotasSync(){
+  if(typeof firebase==='undefined'||!firebase.apps.length) return;
+  firebase.database().ref('dashboard/notas').on('value', snapshot=>{
+    const data=snapshot.val();
+    if(!data) return;
+    localStorage.setItem('arthur_notas_v1', JSON.stringify(data));
+    // Re-renderizar sub-aba de notas se estiver visível
+    const notasSub=document.getElementById('prov-sub-notas');
+    if(notasSub && notasSub.style.display!=='none') renderNotas();
+  });
 }
 
 function notaClass(nota){
