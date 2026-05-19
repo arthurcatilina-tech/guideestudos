@@ -242,6 +242,8 @@
   .ag-tipo-prat{background:var(--green-bg);color:var(--green-text);}
   .ag-tipo-prova{background:var(--red-bg);color:var(--red-text);}
   .ag-block-prova{border:2px solid var(--red)!important;background:var(--red-bg)!important;animation:provaGlow 2s ease-in-out infinite;}
+  .ag-block-prat-prova{border:2px solid var(--amber)!important;background:var(--amber-bg)!important;animation:provaGlow 2s ease-in-out infinite;}
+  .ag-tipo-prat-prova{background:#FFF3CC;color:#7A4F00;font-weight:700;padding:2px 8px;border-radius:99px;font-size:10px;white-space:nowrap;border:1px solid var(--amber);}
   @keyframes provaGlow{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.15)}50%{box-shadow:0 0 0 6px rgba(220,38,38,.0)}}
   .ag-titulo-prova{font-size:14px;font-weight:700;color:var(--red-text);}
   .ag-livre{padding:8px 12px;border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green-text);font-size:12px;margin-bottom:6px;opacity:.75;}
@@ -342,6 +344,12 @@
   .nota-sum-num{font-size:24px;font-weight:700;line-height:1;}
   /* seção por módulo */
   .nota-mod-section{margin-bottom:1.6rem;}
+  .nota-grupo-divider{display:flex;align-items:center;gap:10px;margin:14px 0 8px 0;}
+  .nota-grupo-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;padding:3px 10px;border-radius:99px;color:#fff;}
+  .nota-grupo-sub{font-size:10px;color:var(--text3);white-space:nowrap;}
+  .nota-grupo-avg{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;}
+  .nota-grupo-line{flex:1;height:1px;background:var(--border);}
+  .nota-grupo-desc{font-size:10px;color:var(--text3);padding:2px 8px;background:var(--bg2);border-radius:99px;white-space:nowrap;}
   .nota-mod-header{
     display:flex;align-items:center;gap:10px;
     padding:10px 13px;
@@ -1330,7 +1338,7 @@ const AGENDA = [
   {date:'2026-04-07',time:'15:40–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Discussão: Ciclo Menstrual (Sub 1)', prof:'Profas. Aurélio e Márcia', local:'Salas 2 e 5 CCM'},
   // Ter 07/04
   {date:'2026-04-07',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-04-07',time:'15:40–17:00',mod:'ICTC-A',tipo:'prova',agendaId:'p1_anat', titulo:'⚠️ P1 ICTC Anatomia — Prova Prática (Teste 1)', prof:'Jailson', local:'Lab. de Anatomia'},
+  {date:'2026-04-07',time:'15:40–17:00',mod:'ICTC-A',tipo:'prat-prova',agendaId:'prat_ictc_anat_1', titulo:'🩺 Prova Prática ICTC Anatomia — P1', prof:'Jailson', local:'Lab. de Anatomia'},
   {date:'2026-04-07',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Personalidade: definição e aspectos (Cap. 25)', prof:'Bruno', local:'Anfiteatro 2 HC'},
   {date:'2026-04-07',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Medicina Nuclear', prof:'Prof. Paulo Almeida', local:'Sala 1 CCM'},
   {date:'2026-04-07',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Tórax (Prática)', prof:'Jailson', local:'Lab. de Anatomia'},
@@ -1344,7 +1352,7 @@ const AGENDA = [
   // Sex 10/04
   {date:'2026-04-10',time:'7:30–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W1/W2) — Visita Enfermaria de Cirurgia Geral', prof:'Vários', local:'Enfermaria HC 8º andar Norte'},
   // Prova Prática ICTC Anatomia (07/04 - terça)
-  {date:'2026-04-07',time:'15:40–17:30',mod:'ICTC-A',tipo:'prova',titulo:'⚠️ P1 ICTC — PROVA PRÁTICA Anatomia', prof:'Jailson', local:'Lab. de Anatomia'},
+  {date:'2026-04-07',time:'15:40–17:30',mod:'ICTC-A',tipo:'prat-prova',titulo:'🩺 Prova Prática ICTC Anatomia — P1 (extra)', prof:'Jailson', local:'Lab. de Anatomia'},
 
   // ══════════════════════════════════════════════════════════
   // SEMANA 7 — 13/04 a 17/04
@@ -1476,7 +1484,7 @@ const AGENDA = [
   {date:'2026-05-18',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Endócrina', prof:'Profa. Lúcia', local:'Anfiteatro 2 HC'},
   {date:'2026-05-18',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Endócrina', prof:'Profa. Lúcia', local:'Anfiteatro 2 HC'},
   {date:'2026-05-18',time:'13:00–15:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática 5: Sensibilidade e função cortical (Sub 1-2 Marco)', prof:'Marco', local:'Tutorias CCM'},
-  {date:'2026-05-18',time:'15:40–17:00',mod:'SAI-G', tipo:'prova',titulo:'⚠️ PRÁTICA SAI GINECO — Avaliação prática', prof:'Vários', local:'Salas 2 e 5 CCM'},
+  {date:'2026-05-18',time:'15:40–17:00',mod:'SAI-G', tipo:'prat-prova',agendaId:'prat_sai_gineco',titulo:'🩺 Prova Prática SAI Gineco — Exame Físico', prof:'Vários', local:'Salas 2 e 5 CCM'},
   // Ter 19/05
   {date:'2026-05-19',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-05-19',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Desenvolvimento da personalidade — Ciclo vital', prof:'João Alberto', local:'Anfiteatro 2 HC'},
@@ -1524,8 +1532,8 @@ const AGENDA = [
   // SEMANA 14 — 01/06 a 05/06
   // ══════════════════════════════════════════════════════════
   // Seg 01/06 — Prova Prática SAI Clínica (Sub 1 = Grupo A) + Neuro Grupo B
-  {date:'2026-06-01',time:'8:00–12:00', mod:'SAI-C', tipo:'prova',titulo:'⚠️ PROVA PRÁTICA SAI Clínica — GRUPO A (Sub 1 aqui!)', prof:'Todos os professores', local:'Estações CCM'},
-  {date:'2026-06-01',time:'13:00–15:00',mod:'SAI-N', tipo:'prova',titulo:'⚠️ PROVA PRÁTICA SAI Neuro — GRUPO B (Subs 9-16)', prof:'Vários', local:'Tutorias CCM'},
+  {date:'2026-06-01',time:'8:00–12:00', mod:'SAI-C', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI — Clínica Grupo A e Neuro Grupo B', prof:'Todos os professores', local:'Estações CCM'},
+  {date:'2026-06-01',time:'13:00–15:00',mod:'SAI-N', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI Neuro — Grupo B (subs 9-16)', prof:'Vários', local:'Tutorias CCM'},
   // Ter 02/06
   {date:'2026-06-02',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-06-02',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — A teoria dos afetos', prof:'João Alberto', local:'Anfiteatro 2 HC'},
@@ -1547,8 +1555,8 @@ const AGENDA = [
   // SEMANA 15 — 08/06 a 12/06
   // ══════════════════════════════════════════════════════════
   // Seg 08/06 — Prova Prática SAI Clínica Grupo B + SAI NEURO Grupo A (Sub 1 aqui!)
-  {date:'2026-06-08',time:'8:00–12:00', mod:'SAI-C', tipo:'prova',titulo:'⚠️ PROVA PRÁTICA SAI Clínica — GRUPO B', prof:'Todos os professores', local:'Estações CCM'},
-  {date:'2026-06-08',time:'13:00–15:00',mod:'SAI-N', tipo:'prova',titulo:'⚠️ PROVA PRÁTICA SAI Neuro — GRUPO A (Sub 1 aqui! Sub 1-2 Breno)', prof:'Breno e outros', local:'Tutorias CCM'},
+  {date:'2026-06-08',time:'8:00–12:00', mod:'SAI-C', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI — Clínica Grupo B e Neuro Grupo A', prof:'Todos os professores', local:'Estações CCM'},
+  {date:'2026-06-08',time:'13:00–15:00',mod:'SAI-N', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI Neuro — Grupo A (subs 1-8)', prof:'Breno e outros', local:'Tutorias CCM'},
   // Ter 09/06
   {date:'2026-06-09',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-06-09',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Mecanismos psicológicos de defesa (1) e (2)', prof:'João Alberto', local:'Anfiteatro 2 HC'},
@@ -1581,7 +1589,7 @@ const AGENDA = [
   {date:'2026-06-17',time:'10:10–11:00',mod:'RAMEL', tipo:'prova',agendaId:'p2_ramel', titulo:'⚠️ P2 RAMEL — SEGUNDA AVALIAÇÃO', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
   {date:'2026-06-17',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Terminologia Cirúrgica e Laparotomias', prof:'—', local:'Anfiteatro 3 HC'},
   // Qui 18/06 — Prova Prática SCA (Subs 9-16)
-  {date:'2026-06-18',time:'7:30–9:00',  mod:'SCA',   tipo:'prova',titulo:'⚠️ PROVA PRÁTICA SCA — TODOS OS ALUNOS (Sub 1 aqui!)', prof:'Profa. Adriana, Almerinda, Dayanne, Edjane, Emília, Geórgia, Michela, Maria Júlia, Suzana, Tereza', local:'Salas de simulação CCM 2º andar'},
+  {date:'2026-06-18',time:'7:30–9:00',  mod:'SCA',   tipo:'prat-prova',titulo:'🩺 Prova Prática SCA (subs 9-16)', prof:'Profa. Adriana, Almerinda, Dayanne, Edjane, Emília, Geórgia, Michela, Maria Júlia, Suzana, Tereza', local:'Salas de simulação CCM 2º andar'},
   // Sex 19/06
   {date:'2026-06-19',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Nós e Suturas, Punção Periférica & Dissecção Venosa', prof:'Vários', local:'Labs de Habilidades & Morfofuncional'},
 
@@ -1605,7 +1613,7 @@ const AGENDA = [
   {date:'2026-06-30',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
   {date:'2026-06-30',time:'10:10–12:00',mod:'DPP',   tipo:'prova',titulo:'⚠️ P2 DPP I — SEGUNDA AVALIAÇÃO', prof:'João Alberto', local:'Anfiteatro 2 HC'},
   {date:'2026-06-30',time:'13:00–14:40',mod:'RAMEL', tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA RAMEL', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-06-30',time:'15:40–16:30',mod:'ICTC-A',tipo:'prova',agendaId:'p2_anat', titulo:'⚠️ P2 ICTC — PROVA PRÁTICA Anatomia', prof:'Jailson', local:'Lab. de Anatomia'},
+  {date:'2026-06-30',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat-prova',agendaId:'prat_ictc_anat_2', titulo:'🩺 Prova Prática ICTC Anatomia — P2', prof:'Jailson', local:'Lab. de Anatomia'},
   // Qua 01/07
   {date:'2026-07-01',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA SCA', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
   {date:'2026-07-01',time:'8:40–9:10',  mod:'RAMEL', tipo:'prova',titulo:'⚠️ AVALIAÇÃO FINAL RAMEL', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
@@ -1762,7 +1770,7 @@ function renderAgenda(){
     const mm = (dt.getMonth()+1).toString().padStart(2,'0');
     const isToday = iso===today;
     const isActive = iso===agSelectedDate;
-    const hasProva = AGENDA.some(a=>a.date===iso && a.tipo==='prova');
+    const hasProva = AGENDA.some(a=>a.date===iso && (a.tipo==='prova'||a.tipo==='prat-prova'));
     return`<button class="ag-day-btn${isActive?' active':''}${isToday?' today':''}${hasProva?' has-prova':''}"
       onclick="selectAgDay('${iso}')">${dow}<br><span class="ag-dd">${dd}</span><span style="font-size:9px;opacity:.7">/${mm}</span>${hasProva?'<span class="ag-prova-dot">!</span>':''}</button>`;
   }).join('');
@@ -1861,6 +1869,21 @@ function renderAgDay(){
       </div>`;
     }
 
+    if(a.tipo==='prat-prova'){
+      return`<div class="ag-block ag-block-prat-prova">
+        <div class="ag-block-header">
+          <span class="ag-time">${a.time}</span>
+          <span class="ag-modulo">${mm.label}</span>
+          <span class="ag-tipo ag-tipo-prat-prova">🩺 PROVA PRÁTICA</span>
+        </div>
+        <div class="ag-block-body">
+          <div class="ag-titulo ag-titulo-prova">${a.titulo}</div>
+          ${a.prof?`<div class="ag-detail"><span>Prof.</span>${a.prof}</div>`:''}
+          ${a.local?`<div class="ag-detail"><span>Local</span>${a.local}</div>`:''}
+        </div>
+      </div>`;
+    }
+
     return`<div class="ag-block ${mm.cls}">
       <div class="ag-block-header">
         <span class="ag-time">${a.time}</span>
@@ -1882,26 +1905,34 @@ function renderAgDay(){
 // tipo: 'teo' = teórica | 'prat' = prática/cenários
 const PROVAS_DEF = [
   // ── Abril ──
-  {id:'p1_sai',        label:'P1 SAI',                        tipo:'teo',  date:'2026-04-13', module:'SAI'},
-  {id:'p1_anat',       label:'P1 Anatomia Topográfica',        tipo:'teo',  date:'2026-04-14', module:'ICTC — Anatomia'},
-  {id:'p1_btm',        label:'P1 BTM',                        tipo:'teo',  date:'2026-04-15', module:'BTM'},
-  {id:'p1_ictc',       label:'P1 ICTC — Cirurgia',             tipo:'teo',  date:'2026-04-22', module:'ICTC — Cirurgia'},
-  {id:'prat_sai_anam', label:'Prática SAI — Anamnese/Cenários',tipo:'prat', date:'2026-04-30', module:'SAI'},
-  {id:'p1_sca',        label:'P1 SCA',                        tipo:'teo',  date:'2026-04-29', module:'SCA'},
+  {id:'prat_ictc_anat_1',label:'Prática ICTC — Anatomia (P1)',    tipo:'prat', date:'2026-04-07', module:'ICTC — Anatomia', grupo:'P1 ICTC'},
+  {id:'p1_sai',          label:'P1 SAI',                          tipo:'teo',  date:'2026-04-13', module:'SAI',             grupo:'P1 SAI'},
+  {id:'p1_anat',         label:'P1 Anatomia Topográfica',         tipo:'teo',  date:'2026-04-14', module:'ICTC — Anatomia', grupo:'P1 ICTC'},
+  {id:'p1_btm',          label:'P1 BTM',                          tipo:'teo',  date:'2026-04-15', module:'BTM',             grupo:'P1 BTM'},
+  {id:'p1_ictc',         label:'P1 ICTC — Cirurgia',              tipo:'teo',  date:'2026-04-22', module:'ICTC — Cirurgia', grupo:'P1 ICTC'},
+  {id:'p1_sca',          label:'P1 SCA',                          tipo:'teo',  date:'2026-04-29', module:'SCA',             grupo:'P1 SCA'},
+  {id:'prat_sca_cenario',label:'Cenários Clínicos SCA',           tipo:'prat', date:'2026-04-30', module:'SCA',             grupo:'P1 SCA'},
   // ── Maio ──
-  {id:'p1_dpp',        label:'P1 DPP',                        tipo:'teo',  date:'2026-05-05', module:'DPP'},
-  {id:'p1_ramel',      label:'P1 RAMEL',                      tipo:'teo',  date:'2026-05-19', module:'RAMEL'},
-  {id:'p2_btm',        label:'P2 BTM',                        tipo:'teo',  date:'2026-05-13', module:'BTM'},
+  {id:'p1_dpp',          label:'P1 DPP + Relatório',              tipo:'teo',  date:'2026-05-05', module:'DPP',             grupo:'P1 DPP'},
+  {id:'p1_ramel',        label:'P1 RAMEL',                        tipo:'teo',  date:'2026-05-19', module:'RAMEL',           grupo:'P1 RAMEL'},
+  {id:'p2_btm',          label:'P2 BTM',                          tipo:'teo',  date:'2026-05-13', module:'BTM',             grupo:'P2 BTM'},
+  {id:'prat_sai_gineco', label:'Prática SAI — Gineco',            tipo:'prat', date:'2026-05-18', module:'SAI',             grupo:'P2 SAI'},
   // ── Junho ──
-  {id:'p3_btm',        label:'P3 BTM',                        tipo:'teo',  date:'2026-06-10', module:'BTM'},
-  {id:'p2_sai',        label:'P2 SAI',                        tipo:'teo',  date:'2026-06-15', module:'SAI'},
-  {id:'prat_sai_ef',   label:'Prática SAI — Exame Físico',     tipo:'prat', date:'2026-06-15', module:'SAI'},
-  {id:'p2_sca',        label:'P2 SCA',                        tipo:'teo',  date:'2026-06-17', module:'SCA'},
-  {id:'p2_ramel',      label:'P2 RAMEL',                      tipo:'teo',  date:'2026-06-17', module:'RAMEL'},
-  {id:'prat_ictc',     label:'Prática ICTC — Nó Cirúrgico/Técnica',tipo:'prat',date:'2026-06-24', module:'ICTC — Cirurgia'},
+  {id:'prat_sai_clinica_a',label:'Prática Clínica (Sub A)',tipo:'prat', date:'2026-06-01', module:'SAI',            grupo:'P2 SAI'},
+  
+  
+  {id:'prat_sai_neuro_a',  label:'Prática Neuro (Sub A)', tipo:'prat', date:'2026-06-08', module:'SAI',            grupo:'P2 SAI'},
+  {id:'p3_btm',          label:'P3 BTM',                          tipo:'teo',  date:'2026-06-10', module:'BTM',             grupo:'P3 BTM'},
+  {id:'p2_sai',          label:'P2 SAI',                          tipo:'teo',  date:'2026-06-15', module:'SAI',             grupo:'P2 SAI'},
+  {id:'p2_sca',          label:'P2 SCA',                          tipo:'teo',  date:'2026-06-17', module:'SCA',             grupo:'P2 SCA'},
+  {id:'p2_ramel',        label:'P2 RAMEL',                        tipo:'teo',  date:'2026-06-17', module:'RAMEL',           grupo:'P2 RAMEL'},
+  {id:'prat_sca_ef',     label:'Prática SCA',                     tipo:'prat', date:'2026-06-18', module:'SCA',             grupo:'P2 SCA'},
   // ── Junho/Julho ──
-  {id:'p2_anat',       label:'P2 Anatomia Topográfica',        tipo:'teo',  date:'2026-06-30', module:'ICTC — Anatomia'},
-  {id:'p2_ictc',       label:'P2 ICTC — Cirurgia',             tipo:'teo',  date:'2026-07-01', module:'ICTC — Cirurgia'},
+  {id:'p2_dpp',          label:'P2 DPP I',                        tipo:'teo',  date:'2026-06-30', module:'DPP',             grupo:'P2 DPP'},
+  {id:'p2_anat',         label:'P2 Anatomia Topográfica',         tipo:'teo',  date:'2026-06-30', module:'ICTC — Anatomia', grupo:'P2 ICTC'},
+  {id:'prat_ictc_anat_2',label:'Prática ICTC — Anatomia (P2)',    tipo:'prat', date:'2026-06-30', module:'ICTC — Anatomia', grupo:'P2 ICTC'},
+  {id:'p2_ictc',         label:'P2 ICTC — Cirurgia',              tipo:'teo',  date:'2026-07-01', module:'ICTC — Cirurgia', grupo:'P2 ICTC'},
+  {id:'prat_ictc_sut',   label:'Prática ICTC — Suturas/Técnica',  tipo:'prat', date:'2026-06-12', module:'ICTC — Cirurgia', grupo:'P2 ICTC'},
 ];
 
 function loadProvasState(){
@@ -2138,18 +2169,26 @@ function renderNotas(){
   });
 
   // Resumo global
-  const comNota   = provas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
-  const mediaNum  = comNota.length ? comNota.reduce((s,p)=>s+parseFloat(p.nota),0)/comNota.length : null;
-  const media     = mediaNum!==null ? mediaNum.toFixed(1) : '—';
-  const aprovadas = comNota.filter(p=>parseFloat(p.nota)>=7).length;
-  const reprovadas= comNota.filter(p=>parseFloat(p.nota)<5).length;
-  const mediaColor= mediaNum===null?'var(--text)':mediaNum>=7?'var(--green)':mediaNum>=5?'var(--amber)':'var(--red)';
+  const comNota    = provas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
+  const comNotaTeo = comNota.filter(p=>p.tipo==='teo');
+  const mediaNum   = comNota.length ? comNota.reduce((s,p)=>s+parseFloat(p.nota),0)/comNota.length : null;
+  const mediaTeoNum= comNotaTeo.length ? comNotaTeo.reduce((s,p)=>s+parseFloat(p.nota),0)/comNotaTeo.length : null;
+  const media      = mediaNum!==null ? mediaNum.toFixed(1) : '—';
+  const mediaTeo   = mediaTeoNum!==null ? mediaTeoNum.toFixed(1) : '—';
+  const aprovadas  = comNota.filter(p=>parseFloat(p.nota)>=7).length;
+  const reprovadas = comNota.filter(p=>parseFloat(p.nota)<5).length;
+  const mediaColor    = mediaNum===null?'var(--text)':mediaNum>=7?'var(--green)':mediaNum>=5?'var(--amber)':'var(--red)';
+  const mediaTeoColor = mediaTeoNum===null?'var(--text3)':mediaTeoNum>=7?'var(--green)':mediaTeoNum>=5?'var(--amber)':'var(--red)';
 
   let html = `
-  <div class="nota-summary">
+  <div class="nota-summary" style="grid-template-columns:repeat(2,1fr)">
     <div class="nota-sum-item">
       <div class="nota-sum-label">Média geral</div>
       <div class="nota-sum-num" style="color:${mediaColor}">${media}</div>
+    </div>
+    <div class="nota-sum-item">
+      <div class="nota-sum-label">Média teóricas</div>
+      <div class="nota-sum-num" style="color:${mediaTeoColor}">${mediaTeo}</div>
     </div>
     <div class="nota-sum-item">
       <div class="nota-sum-label">Aprovadas ≥7</div>
@@ -2167,11 +2206,21 @@ function renderNotas(){
       .sort((a,b)=>a.dateISO.localeCompare(b.dateISO));
     if(!modProvas.length) return;
 
+    // Agrupar por grupo (P1, P2, P3...)
+    const grupos = {};
+    modProvas.forEach(p=>{
+      const g = p.grupo||p.label;
+      if(!grupos[g]) grupos[g]=[];
+      grupos[g].push(p);
+    });
+    const grupoKeys = Object.keys(grupos).sort((a,b)=>
+      grupos[a][0].dateISO.localeCompare(grupos[b][0].dateISO)
+    );
+
     const modCom   = modProvas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
     const modMedia = modCom.length ? modCom.reduce((s,p)=>s+parseFloat(p.nota),0)/modCom.length : null;
     const modMStr  = modMedia!==null ? modMedia.toFixed(1) : '—';
     const modMColor= modMedia===null?'var(--text3)':modMedia>=7?'var(--green)':modMedia>=5?'var(--amber)':'var(--red)';
-    // progresso: % de provas com nota lançada
     const progPct  = modProvas.length ? Math.round(modCom.length/modProvas.length*100) : 0;
     const progColor= modMedia===null?mod.color:modMedia>=7?'#1D9E75':modMedia>=5?'#BA7517':'#E24B4A';
 
@@ -2191,32 +2240,53 @@ function renderNotas(){
         </div>
       </div>`;
 
-    html += modProvas.map(p=>{
-      const bigCls = notaBigClass(p.nota);
-      const bigTxt = notaBigTxt(p.nota);
-      const tipoTag = p.tipo==='prat'
-        ?'<span class="prov-tipo prov-tipo-prat">Prática</span>'
-        :'<span class="prov-tipo prov-tipo-teo">Teórica</span>';
-      return`<div class="nota-card">
-        <div class="nota-big ${bigCls}">${bigTxt}</div>
-        <div class="nota-card-mid">
-          <div class="nota-card-name">${p.label}</div>
-          <div class="nota-card-meta">
-            ${tipoTag}
-            <span class="prov-date-txt">${fmtDateLong(p.dateISO)}</span>
-          </div>
-          ${p.obs?`<div class="nota-obs-txt">💬 ${p.obs}</div>`:''}
-        </div>
-        <div class="nota-card-right">
-          <input class="nota-obs-input" type="text" id="nobs-${p.id}"
-            value="${p.obs}" placeholder="Obs..." />
-          <input class="nota-input" type="number" min="0" max="10" step="0.1"
-            id="ninput-${p.id}" value="${p.nota}" placeholder="—"
-            onkeydown="if(event.key==='Enter')saveNotaCard('${p.id}')" />
-          <button class="nota-save-btn" onclick="saveNotaCard('${p.id}')">✓</button>
-        </div>
+    grupoKeys.forEach(grupoKey=>{
+      const gProvas = grupos[grupoKey];
+      const gCom = gProvas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
+      const gMedia = gCom.length ? gCom.reduce((s,p)=>s+parseFloat(p.nota),0)/gCom.length : null;
+      const gMStr  = gMedia!==null ? gMedia.toFixed(1) : '—';
+      const gMColor= gMedia===null?'var(--text2)':gMedia>=7?'var(--green)':gMedia>=5?'var(--amber)':'var(--red)';
+      const temPrat = gProvas.some(p=>p.tipo==='prat');
+      const temTeo  = gProvas.some(p=>p.tipo==='teo');
+      const grupoDesc = temTeo && temPrat ? 'Teórica + Prática'
+                      : temPrat ? 'Somente Prática'
+                      : 'Somente Teórica';
+
+      html += `
+      <div class="nota-grupo-divider">
+        <span class="nota-grupo-label" style="background:${mod.color}">${grupoKey}</span>
+        <span class="nota-grupo-desc">${grupoDesc}</span>
+        <div class="nota-grupo-line"></div>
+        <span class="nota-grupo-avg" style="color:${gMColor}">${gMStr}</span>
       </div>`;
-    }).join('');
+
+      html += gProvas.map(p=>{
+        const bigCls = notaBigClass(p.nota);
+        const bigTxt = notaBigTxt(p.nota);
+        const tipoTag = p.tipo==='prat'
+          ?'<span class="prov-tipo prov-tipo-prat">🩺 Prática</span>'
+          :'<span class="prov-tipo prov-tipo-teo">📝 Teórica</span>';
+        return`<div class="nota-card">
+          <div class="nota-big ${bigCls}">${bigTxt}</div>
+          <div class="nota-card-mid">
+            <div class="nota-card-name">${p.label}</div>
+            <div class="nota-card-meta">
+              ${tipoTag}
+              <span class="prov-date-txt">${fmtDateLong(p.dateISO)}</span>
+            </div>
+            ${p.obs?`<div class="nota-obs-txt">💬 ${p.obs}</div>`:''}
+          </div>
+          <div class="nota-card-right">
+            <input class="nota-obs-input" type="text" id="nobs-${p.id}"
+              value="${p.obs}" placeholder="Obs..." />
+            <input class="nota-input" type="number" min="0" max="10" step="0.1"
+              id="ninput-${p.id}" value="${p.nota}" placeholder="—"
+              onkeydown="if(event.key==='Enter')saveNotaCard('${p.id}')" />
+            <button class="nota-save-btn" onclick="saveNotaCard('${p.id}')">✓</button>
+          </div>
+        </div>`;
+      }).join('');
+    });
 
     html += `</div>`;
   });
