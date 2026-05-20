@@ -1902,17 +1902,17 @@ function renderAgDay(){
 // tipo: 'teo' = teórica | 'prat' = prática/cenários
 const PROVAS_DEF = [
   // ── Abril ──
-  {id:'prat_ictc_anat_1',label:'Prática ICTC — Anatomia (P1)',    tipo:'prat', date:'2026-04-07', module:'ICTC — Anatomia', grupo:'P1 ICTC'},
+  {id:'prat_ictc_anat_1',label:'Prática Anatomia (P1)',    tipo:'prat', date:'2026-04-07', module:'ICTC', grupo:'P1 ICTC'},
   {id:'p1_sai',          label:'P1 SAI',                          tipo:'teo',  date:'2026-04-13', module:'SAI',             grupo:'P1 SAI'},
-  {id:'p1_anat',         label:'P1 Anatomia Topográfica',         tipo:'teo',  date:'2026-04-14', module:'ICTC — Anatomia', grupo:'P1 ICTC'},
+  {id:'p1_anat',         label:'P1 Anatomia Topográfica',         tipo:'teo',  date:'2026-04-14', module:'ICTC', grupo:'P1 ICTC'},
   {id:'p1_btm',          label:'P1 BTM',                          tipo:'teo',  date:'2026-04-15', module:'BTM',             grupo:'P1 BTM'},
-  {id:'p1_ictc',         label:'P1 ICTC — Cirurgia',              tipo:'teo',  date:'2026-04-22', module:'ICTC — Cirurgia', grupo:'P1 ICTC'},
-  {id:'p1_sca',          label:'P1 SCA',                          tipo:'teo',  date:'2026-04-29', module:'SCA',             grupo:'P1 SCA'},
+  {id:'p1_ictc',         label:'P1 ICTC — Cirurgia',              tipo:'teo',  date:'2026-04-22', module:'ICTC', grupo:'P1 ICTC'},
+  {id:'p1_sca',          label:'P1 SCA',                           tipo:'teo',  date:'2026-04-29', module:'SCA', grupo:'P1 SCA'},
   // ── P2 SCA (17/06) ──
-  {id:'p2_sca',          label:'P2 SCA',                          tipo:'teo',  date:'2026-06-17', module:'SCA',             grupo:'P2 SCA'},
+  {id:'p2_sca',          label:'P2 SCA',                           tipo:'teo',  date:'2026-06-17', module:'SCA', grupo:'P2 SCA'},
   // ── P3 SCA = Cenários Clínicos (30/04) + Prova Prática Sub A (18/06) ──
-  {id:'prat_sca_cenario',label:'Cenários Clínicos SCA',           tipo:'prat', date:'2026-04-30', module:'SCA',             grupo:'P3 SCA'},
-  {id:'prat_sca_ef',     label:'Prova Prática SCA (Sub A — 18/06)',tipo:'prat',date:'2026-06-18', module:'SCA',             grupo:'P3 SCA'},,
+  {id:'prat_sca_cenario',label:'Cenários Clínicos SCA',            tipo:'prat', date:'2026-04-30', module:'SCA', grupo:'P3 SCA', grupoSort:'2026-06-18'},
+  {id:'prat_sca_ef',     label:'Prova Prática SCA (Sub A — 18/06)',tipo:'prat', date:'2026-06-18', module:'SCA', grupo:'P3 SCA', grupoSort:'2026-06-18'},
   // ── Maio ──
   {id:'p1_dpp',          label:'P1 DPP + Relatório',              tipo:'teo',  date:'2026-05-05', module:'DPP',             grupo:'P1 DPP'},
   {id:'p1_ramel',        label:'P1 RAMEL',                        tipo:'teo',  date:'2026-05-19', module:'RAMEL',           grupo:'P1 RAMEL'},
@@ -1925,14 +1925,13 @@ const PROVAS_DEF = [
   {id:'prat_sai_neuro_a',  label:'Prática Neuro (Sub A)', tipo:'prat', date:'2026-06-08', module:'SAI',            grupo:'P2 SAI'},
   {id:'p3_btm',          label:'P3 BTM',                          tipo:'teo',  date:'2026-06-10', module:'BTM',             grupo:'P3 BTM'},
   {id:'p2_sai',          label:'P2 SAI',                          tipo:'teo',  date:'2026-06-15', module:'SAI',             grupo:'P2 SAI'},
-  {id:'p2_sca',          label:'P2 SCA',                          tipo:'teo',  date:'2026-06-17', module:'SCA',             grupo:'P2 SCA'},
   {id:'p2_ramel',        label:'P2 RAMEL',                        tipo:'teo',  date:'2026-06-17', module:'RAMEL',           grupo:'P2 RAMEL'},
   // ── Junho/Julho ──
   {id:'p2_dpp',          label:'P2 DPP I',                        tipo:'teo',  date:'2026-06-30', module:'DPP',             grupo:'P2 DPP'},
-  {id:'p2_anat',         label:'P2 Anatomia Topográfica',         tipo:'teo',  date:'2026-06-30', module:'ICTC — Anatomia', grupo:'P2 ICTC'},
-  {id:'prat_ictc_anat_2',label:'Prática ICTC — Anatomia (P2)',    tipo:'prat', date:'2026-06-30', module:'ICTC — Anatomia', grupo:'P2 ICTC'},
-  {id:'p2_ictc',         label:'P2 ICTC — Cirurgia',              tipo:'teo',  date:'2026-07-01', module:'ICTC — Cirurgia', grupo:'P2 ICTC'},
-  {id:'prat_ictc_sut',   label:'Prática ICTC — Suturas/Técnica',  tipo:'prat', date:'2026-06-12', module:'ICTC — Cirurgia', grupo:'P2 ICTC'},
+  {id:'p2_anat',         label:'P2 Anatomia Topográfica',         tipo:'teo',  date:'2026-06-30', module:'ICTC', grupo:'P2 ICTC'},
+  {id:'prat_ictc_anat_2',label:'Prática Anatomia (P2)',    tipo:'prat', date:'2026-06-30', module:'ICTC', grupo:'P2 ICTC'},
+  {id:'p2_ictc',         label:'P2 ICTC — Cirurgia',              tipo:'teo',  date:'2026-07-01', module:'ICTC', grupo:'P2 ICTC'},
+  {id:'prat_ictc_sut',   label:'Prática Cirurgia — Suturas',  tipo:'prat', date:'2026-06-12', module:'ICTC', grupo:'P2 ICTC'},
 ];
 
 function loadProvasState(){
@@ -2134,13 +2133,12 @@ function saveNotaCard(id){
 
 // Ordem e cores dos módulos
 const NOTA_MODULES = [
-  {key:'SAI',             label:'SAI',             sub:'Semiologia do Adulto e Idoso',              color:'#D07050'},
-  {key:'SCA',             label:'SCA',             sub:'Semiologia da Criança e Adolescente',        color:'#EF9F27'},
-  {key:'BTM',             label:'BTM',             sub:'Bases do Tratamento Médico',                 color:'#378ADD'},
-  {key:'ICTC — Cirurgia', label:'ICTC — Cirurgia', sub:'Técnica Cirúrgica',                          color:'#1D9E75'},
-  {key:'ICTC — Anatomia', label:'ICTC — Anatomia', sub:'Anatomia Topográfica',                       color:'#0F6E56'},
-  {key:'RAMEL',           label:'RAMEL',           sub:'Radiologia e Exames Laboratoriais',          color:'#D85A30'},
-  {key:'DPP',             label:'DPP',             sub:'Desenvolvimento Pessoal e Profissional',     color:'#639922'},
+  {key:'SAI',   label:'SAI',   sub:'Semiologia do Adulto e Idoso',          color:'#D07050'},
+  {key:'SCA',   label:'SCA',   sub:'Semiologia da Criança e Adolescente',    color:'#EF9F27'},
+  {key:'BTM',   label:'BTM',   sub:'Bases do Tratamento Médico',             color:'#378ADD'},
+  {key:'ICTC',  label:'ICTC',  sub:'Clínica e Técnica Cirúrgica + Anatomia', color:'#1D9E75'},
+  {key:'RAMEL', label:'RAMEL', sub:'Radiologia e Exames Laboratoriais',      color:'#D85A30'},
+  {key:'DPP',   label:'DPP',   sub:'Desenvolvimento Pessoal e Profissional', color:'#639922'},
 ];
 
 function notaBigClass(nota){
@@ -2213,9 +2211,11 @@ function renderNotas(){
       if(!grupos[g]) grupos[g]=[];
       grupos[g].push(p);
     });
-    const grupoKeys = Object.keys(grupos).sort((a,b)=>
-      grupos[a][0].dateISO.localeCompare(grupos[b][0].dateISO)
-    );
+    const grupoKeys = Object.keys(grupos).sort((a,b)=>{
+      const da = grupos[a][0].grupoSort || grupos[a][0].dateISO;
+      const db = grupos[b][0].grupoSort || grupos[b][0].dateISO;
+      return da.localeCompare(db);
+    });
 
     const modCom   = modProvas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
     const modMedia = modCom.length ? modCom.reduce((s,p)=>s+parseFloat(p.nota),0)/modCom.length : null;
