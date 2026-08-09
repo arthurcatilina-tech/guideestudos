@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Dashboard — Arthur Henrique | Medicina UFPE</title>
+<title>Dashboard — Arthur Henrique | Medicina UFPE | M5 2025.2</title>
 
 <!--
   ╔══════════════════════════════════════════════════════════════════╗
@@ -102,6 +102,11 @@
   .chip-ramel  {background:#F0997B;color:#4A1B0C;}
   .chip-dpp    {background:#C0DD97;color:#173404;}
   .chip-fabs   {background:#D3D1C7;color:#2C2C2A;}
+  .chip-mulh   {background:#F4C0D1;color:#8A1F45;}
+  .chip-grn    {background:#D8CFF5;color:#4A2E8C;}
+  .chip-cria   {background:#FAC775;color:#8A5A0B;}
+  .chip-pgss   {background:#B7DCE3;color:#1F5866;}
+  .chip-asa1   {background:#E8C7A3;color:#7A3E0F;}
   .add-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem;}
   .add-row input,.add-row select{height:36px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:13px;padding:0 10px;}
   .add-row input{flex:1;min-width:140px;}
@@ -133,6 +138,11 @@
   .item[data-sub="RAMEL"]            {border-left-color:#D85A30;}
   .item[data-sub="DPP"]              {border-left-color:#639922;}
   .item[data-sub="FABS 2"]           {border-left-color:#888780;}
+  .item[data-sub="Assistência à Saúde da Mulher"]                  {border-left-color:#D4537E;}
+  .item[data-sub="Assistência à Saúde da Gestante e do Recém-Nascido"]{border-left-color:#7B5EC7;}
+  .item[data-sub="Assistência à Saúde da Criança e do Adolescente"] {border-left-color:#EF9F27;}
+  .item[data-sub="Planejamento e Gestão de Serviços de Saúde"]     {border-left-color:#4A90A4;}
+  .item[data-sub="ASA 1 (Dermato)"]                                {border-left-color:#B5651D;}
   .check{width:18px;height:18px;border:1.5px solid var(--border2);border-radius:5px;cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
   .check.on{background:#1D9E75;border-color:#1D9E75;}
   .check.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);}
@@ -151,6 +161,11 @@
   .sb-ramel  {background:#F0997B;color:#4A1B0C;}
   .sb-dpp    {background:#C0DD97;color:#173404;}
   .sb-fabs   {background:#D3D1C7;color:#2C2C2A;}
+  .sb-mulh   {background:#F4C0D1;color:#8A1F45;}
+  .sb-grn    {background:#D8CFF5;color:#4A2E8C;}
+  .sb-cria   {background:#FAC775;color:#8A5A0B;}
+  .sb-pgss   {background:#B7DCE3;color:#1F5866;}
+  .sb-asa1   {background:#E8C7A3;color:#7A3E0F;}
   .aula-tag{font-size:10px;padding:1px 7px;border-radius:99px;white-space:nowrap;font-weight:600;}
   .aula-past  {background:#E8E7E3;color:#9e9d99;}
   .aula-today {background:#1D9E75;color:#fff;}
@@ -264,8 +279,13 @@
   .mod-ramel{background:#FFF2EC;color:#A03010;border-left:3px solid #D85A30;}
   .mod-dpp  {background:#F2F8E8;color:#3A6008;border-left:3px solid #78B020;}
   .mod-fabs {background:#F5F0FF;color:#5A2090;border-left:3px solid #9B60D0;}
+  .mod-mulh {background:#FFF0F5;color:#8A1F45;border-left:3px solid #D4537E;}
+  .mod-grn  {background:#F2EFFF;color:#4A2E8C;border-left:3px solid #7B5EC7;}
+  .mod-cria {background:#FFF8E6;color:#8A5A0B;border-left:3px solid #EF9F27;}
+  .mod-pgss {background:#EAF6F8;color:#1F5866;border-left:3px solid #4A90A4;}
+  .mod-asa1 {background:#FBF0E4;color:#7A3E0F;border-left:3px solid #B5651D;}
   @media(prefers-color-scheme:dark){
-    .mod-sai-c,.mod-sai-n,.mod-sai-g,.mod-sca,.mod-ictc,.mod-btm,.mod-ramel,.mod-dpp,.mod-fabs{background:var(--bg2);}
+    .mod-sai-c,.mod-sai-n,.mod-sai-g,.mod-sca,.mod-ictc,.mod-btm,.mod-ramel,.mod-dpp,.mod-fabs,.mod-mulh,.mod-grn,.mod-cria,.mod-pgss,.mod-asa1{background:var(--bg2);}
   }
 
   /* ── FALTAS ── */
@@ -443,6 +463,7 @@
   <div class="header">
     <h1>Dashboard — Arthur Henrique</h1>
     <div class="header-sub" id="date-label"></div>
+    <div class="header-sub" style="margin-top:3px;font-weight:600;">M5 — 2025.2 · Coord. Profa. Elisabete Pereira</div>
   </div>
 
   <div class="stats">
@@ -500,6 +521,35 @@
   </div>
 
   <div id="view-agenda" style="display:none">
+    <details class="hp-wrap" open style="margin-bottom:1.1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);">
+      <summary style="cursor:pointer;padding:11px 13px;font-size:13px;font-weight:700;">📌 Horário Padrão — grade semanal fixa (M5 2025.2)</summary>
+      <div style="padding:0 13px 13px;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">Grade base recorrente, sem cronograma diário ainda. Assim que o cronograma detalhado (com datas e tópicos por aula) for divulgado, ele substitui/complementa esta grade na visão semanal abaixo.</div>
+        <div style="overflow-x:auto;">
+          <table style="border-collapse:collapse;width:100%;min-width:640px;font-size:10.5px;">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Horário</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Segunda</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Terça</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Quarta</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Quinta</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Sexta</th>
+              </tr>
+            </thead>
+            <tbody id="hp-tbody"></tbody>
+          </table>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:10px;color:var(--text2);">
+          <span><span class="sub-badge sb-mulh">Mulher</span></span>
+          <span><span class="sub-badge sb-grn">Gestante/RN</span></span>
+          <span><span class="sub-badge sb-cria">Criança/Adol.</span></span>
+          <span><span class="sub-badge sb-pgss">Planej./Gestão</span></span>
+          <span><span class="sub-badge sb-asa1">ASA1 (Dermato)</span></span>
+          <span style="background:var(--green-bg);color:var(--green-text);font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;">Horário Verde</span>
+        </div>
+      </div>
+    </details>
     <div id="ag-week-nav" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;"></div>
     <div class="ag-day-nav" id="ag-day-nav"></div>
     <div class="ag-week-label" id="ag-week-label"></div>
@@ -540,22 +590,17 @@
 //  SUBJECT META
 // ─────────────────────────────────────────────
 const SM_META = {
-  'SAI — Clínica':    {chip:'chip-sai-c', badge:'sb-sai-c', label:'SAI — Clínica'},
-  'SAI — Neurologia': {chip:'chip-sai-n', badge:'sb-sai-n', label:'SAI — Neurologia'},
-  'SAI — Gineco':     {chip:'chip-sai-g', badge:'sb-sai-g', label:'SAI — Gineco'},
-  'SCA':              {chip:'chip-sca',   badge:'sb-sca',   label:'SCA'},
-  'ICTC — Cirurgia':  {chip:'chip-ictc-c',badge:'sb-ictc-c',label:'ICTC — Cirurgia'},
-  'ICTC — Anatomia':  {chip:'chip-ictc-a',badge:'sb-ictc-a',label:'ICTC — Anatomia'},
-  'BTM':              {chip:'chip-btm',   badge:'sb-btm',   label:'BTM'},
-  'RAMEL':            {chip:'chip-ramel', badge:'sb-ramel', label:'RAMEL'},
-  'DPP':              {chip:'chip-dpp',   badge:'sb-dpp',   label:'DPP'},
-  'FABS 2':           {chip:'chip-fabs',  badge:'sb-fabs',  label:'FABS 2'},
+  'Assistência à Saúde da Mulher':                       {chip:'chip-mulh', badge:'sb-mulh', label:'Saúde da Mulher'},
+  'Assistência à Saúde da Gestante e do Recém-Nascido':  {chip:'chip-grn',  badge:'sb-grn',  label:'Gestante e RN'},
+  'Assistência à Saúde da Criança e do Adolescente':     {chip:'chip-cria', badge:'sb-cria', label:'Criança e Adolescente'},
+  'Planejamento e Gestão de Serviços de Saúde':          {chip:'chip-pgss', badge:'sb-pgss', label:'Planej. e Gestão'},
+  'ASA 1 (Dermato)':                                     {chip:'chip-asa1', badge:'sb-asa1', label:'ASA 1 (Dermato)'},
 };
 // DEADLINES é calculado dinamicamente a partir de PROVAS_DEF + localStorage
 // Chave = label da prova (ex: 'P1 RAMEL — 05/05'), valor = data ISO real (pode ser editada)
 function buildDeadlines(){
   let state={};
-  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}');}catch(e){}
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}');}catch(e){}
   const dl={'Adicionado manualmente':'2026-07-04'};
   // PROVAS_DEF ainda não está definido aqui — será chamado depois da definição
   if(typeof PROVAS_DEF!=='undefined'){
@@ -576,7 +621,7 @@ const DEADLINES=new Proxy({},{
     return v!==undefined?{value:v,writable:true,enumerable:true,configurable:true}:undefined;
   }
 });
-const ORDER={'P1 SAI — 13/04':0,'P1 Anat. Topográfica — 14/04':0,'P1 BTM — 15/04':0,'P1 ICTC — 22/04':1,'P1 SCA — 29/04':1,'P1 RAMEL — 05/05':1,'P1 DPP — 05/05':1,'P2 BTM — 13/05':2,'P2 SAI — 15/06':3,'P2 SCA — 17/06':3,'P2 RAMEL — 17/06':3,'P3 BTM — 10/06':3,'P2 Anat. Topográfica — 30/06':4,'P2 ICTC — 01/07':4,'Adicionado manualmente':5};
+const ORDER={'Adicionado manualmente':5}; // reservado — não utilizado no código atual
 const IV=[1,3,7,14,30,60];
 
 // ─────────────────────────────────────────────
@@ -614,127 +659,10 @@ function calcNext(item,q){
 //  DEFAULT DATA
 // ─────────────────────────────────────────────
 const DEFAULT_ITEMS=[
-  {id:9, text:'Recepção, exame físico geral e febre',                         aulaDate:'2026-03-02',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:10,text:'Introdução à semiologia, ficha médica, queixas respiratórias', aulaDate:'2026-03-02',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:11,text:'Exame físico do aparelho respiratório',                        aulaDate:'2026-03-09',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:12,text:'Síndromes respiratórias',                                      aulaDate:'2026-03-16',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:13,text:'Introdução à fisiologia cardíaca e queixas cardíacas',         aulaDate:'2026-03-23',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:14,text:'Exame cardíaco e síndrome cardiovascular I',                   aulaDate:'2026-03-30',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:15,text:'Síndrome cardiovascular II',                                   aulaDate:'2026-04-06',subject:'SAI — Clínica',   prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:16,text:'Nervos cranianos I, II, III, IV e VI',                         aulaDate:'2026-03-02',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:17,text:'Nervos cranianos V e VII',                                     aulaDate:'2026-03-02',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:18,text:'Nervos cranianos VIII, IX, X, XI e XII',                       aulaDate:'2026-03-16',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:19,text:'Síndrome extrapiramidal',                                      aulaDate:'2026-03-16',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:20,text:'Coordenação',                                                  aulaDate:'2026-03-30',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:21,text:'Síndrome do neurônio motor superior e inferior',               aulaDate:'2026-03-30',subject:'SAI — Neurologia',prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:22,text:'Anamnese ginecológica',                                        aulaDate:'2026-03-02',subject:'SAI — Gineco',    prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:23,text:'Exame físico ginecológico',                                    aulaDate:'2026-03-16',subject:'SAI — Gineco',    prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:24,text:'Ciclo menstrual',                                              aulaDate:'2026-03-30',subject:'SAI — Gineco',    prova:'P1 SAI — 13/04',urgency:'high',status:'todo'},
-  {id:25,text:'Intro à anatomia topográfica e sistema tegumentar',            aulaDate:'2026-03-03',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
-  {id:26,text:'Anatomia topográfica da cabeça',                               aulaDate:'2026-03-10',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
-  {id:27,text:'Anatomia topográfica cabeça e pescoço (prática)',              aulaDate:'2026-03-24',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
-  {id:28,text:'Anatomia topográfica do tórax',                                aulaDate:'2026-04-07',subject:'ICTC — Anatomia', prova:'P1 Anat. Topográfica — 14/04',urgency:'high',status:'todo'},
-  {id:82,text:'Anatomia do canal inguinal (teórica)',                         aulaDate:'2026-04-28',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:83,text:'Anatomia da pelve e períneo (teórica)',                        aulaDate:'2026-05-05',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:84,text:'Anatomia do canal inguinal, pelve e períneo (prática)',        aulaDate:'2026-05-12',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:85,text:'Anatomia topográfica do abdome (teórica)',                     aulaDate:'2026-05-19',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:86,text:'Anatomia topográfica dos MMSS (teórica)',                      aulaDate:'2026-06-02',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:87,text:'Anatomia topográfica dos MMII (teórica)',                      aulaDate:'2026-06-09',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:88,text:'Anatomia topográfica do abdome (prática)',                     aulaDate:'2026-05-26',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:89,text:'Anatomia dos MMSS e MMII (prática)',                           aulaDate:'2026-06-17',subject:'ICTC — Anatomia', prova:'P2 Anat. Topográfica — 30/06',urgency:'low',status:'todo'},
-  {id:1, text:'Diuréticos (parte 1)',                                         aulaDate:'2026-03-04',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:2, text:'Diuréticos (parte 2)',                                         aulaDate:'2026-03-11',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:3, text:'Fármacos na HAS (parte 1)',                                    aulaDate:'2026-03-13',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:4, text:'Fármacos na HAS (parte 2)',                                    aulaDate:'2026-03-18',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:5, text:'Fármacos na angina do peito',                                  aulaDate:'2026-03-20',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:6, text:'Fármacos na IC (parte 1)',                                     aulaDate:'2026-03-25',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:7, text:'Fármacos na IC (parte 2)',                                     aulaDate:'2026-03-27',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:8, text:'Fármacos anticoagulantes, antiplaquetários e trombolíticos',   aulaDate:'2026-04-01',subject:'BTM',prova:'P1 BTM — 15/04',urgency:'high',status:'todo'},
-  {id:29,text:'Assepsia e antissepsia',                                       aulaDate:'2026-03-11',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
-  {id:30,text:'Água e eletrólitos',                                           aulaDate:'2026-03-18',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
-  {id:31,text:'REMIT (resposta endócrino-metabólica ao trauma)',              aulaDate:'2026-03-25',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
-  {id:32,text:'Proteção profissional',                                        aulaDate:'2026-04-01',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
-  {id:33,text:'Infecção em cirurgia (biologia e profilaxia)',                 aulaDate:'2026-04-08',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
-  {id:34,text:'Equilíbrio ácido-básico',                                      aulaDate:'2026-04-15',subject:'ICTC — Cirurgia',prova:'P1 ICTC — 22/04',urgency:'med',status:'todo'},
-  {id:90,text:'Choque — fisiopatologia e tratamento',                         aulaDate:'2026-04-29',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:91,text:'Cicatrização de feridas',                                      aulaDate:'2026-05-06',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:92,text:'Princípios da antibióticoterapia em cirurgia',                 aulaDate:'2026-05-13',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:93,text:'Princípios da cirurgia minimamente invasiva',                  aulaDate:'2026-05-20',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:94,text:'Princípios da transplantação de órgãos e tecidos',             aulaDate:'2026-05-27',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:95,text:'Princípios da cirurgia oncológica',                            aulaDate:'2026-06-03',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:96,text:'Nutrição em cirurgia',                                         aulaDate:'2026-06-10',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:97,text:'Terminologia cirúrgica e laparotomias',                        aulaDate:'2026-06-17',subject:'ICTC — Cirurgia',prova:'P2 ICTC — 01/07',urgency:'low',status:'todo'},
-  {id:35,text:'Introdução à semiologia pediátrica',                           aulaDate:'2026-03-04',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:36,text:'Anamnese pediátrica',                                          aulaDate:'2026-03-05',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:37,text:'Acompanhamento do crescimento infantil',                       aulaDate:'2026-03-11',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:38,text:'Exame físico geral pediátrico',                                aulaDate:'2026-03-18',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:39,text:'Semiologia da cabeça, pescoço e ORL pediátrica',              aulaDate:'2026-04-01',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:40,text:'Semiologia do aparelho respiratório pediátrico',               aulaDate:'2026-04-08',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:41,text:'Semiologia do aparelho cardiovascular pediátrico',             aulaDate:'2026-04-15',subject:'SCA',prova:'P1 SCA — 29/04',urgency:'med',status:'todo'},
-  {id:42,text:'Introdução ao laboratório clínico',                            aulaDate:'2026-03-04',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:43,text:'Radiografia e mamografia',                                     aulaDate:'2026-03-10',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:44,text:'Tomografia computadorizada (RX)',                              aulaDate:'2026-03-11',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:45,text:'Ultrassonografia',                                             aulaDate:'2026-03-17',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:46,text:'Eritrograma',                                                  aulaDate:'2026-03-18',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:47,text:'Hemostasia — plaquetas, vasos e coagulação',                   aulaDate:'2026-03-24',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:48,text:'Leucograma',                                                   aulaDate:'2026-03-25',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:49,text:'Tomografia por ressonância magnética',                         aulaDate:'2026-03-31',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:50,text:'Imunoensaios',                                                 aulaDate:'2026-04-01',subject:'RAMEL',prova:'P1 RAMEL — 05/05',urgency:'med',status:'todo'},
-  {id:51,text:'Comunicação com o paciente: anamnese e entrevista clínica',    aulaDate:'2026-03-03',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
-  {id:52,text:'Raciocínio sindrômico em psiquiatria',                         aulaDate:'2026-03-10',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
-  {id:53,text:'Relações entre doenças físicas e transtornos psiquiátricos',   aulaDate:'2026-03-24',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
-  {id:54,text:'Avaliação psiquiátrica de crianças e adolescentes',            aulaDate:'2026-03-31',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
-  {id:55,text:'Entrevista com paciente — relatório',                          aulaDate:'2026-04-07',subject:'DPP',prova:'P1 DPP — 05/05',urgency:'med',status:'todo'},
-  {id:56,text:'Antimicrobianos antibacterianos (parte 1)', aulaDate:'2026-04-04',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:57,text:'Antimicrobianos antibacterianos (parte 2)', aulaDate:'2026-04-17',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:58,text:'Terapia com glicocorticoides',              aulaDate:'2026-04-15',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:59,text:'Fármacos na asma e educação em asma',       aulaDate:'2026-04-22',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:60,text:'Fármacos em doenças dispépticas',           aulaDate:'2026-04-24',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:61,text:'Antifúngicos',                              aulaDate:'2026-04-29',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:62,text:'Antivirais e antirretrovirais',             aulaDate:'2026-05-06',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:63,text:'Antiparasitários',                          aulaDate:'2026-05-08',subject:'BTM',prova:'P2 BTM — 13/05',urgency:'low',status:'todo'},
-  {id:64,text:'Semiologia do idoso',                        aulaDate:'2026-04-20',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:65,text:'Semiologia reumatológica',                   aulaDate:'2026-04-27',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:66,text:'Queixas e exame físico digestivo',           aulaDate:'2026-05-04',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:67,text:'Fígado, vesícula, pâncreas e síndromes dig.',aulaDate:'2026-05-11',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:68,text:'Semiologia endócrina',                       aulaDate:'2026-05-18',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:69,text:'Semiologia renal e edema',                   aulaDate:'2026-05-25',subject:'SAI — Clínica',   prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:70,text:'Sistema sensitivo e nervos periféricos',     aulaDate:'2026-04-27',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:71,text:'Síndromes medulares',                        aulaDate:'2026-04-27',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:72,text:'Funções corticais superiores',               aulaDate:'2026-05-11',subject:'SAI — Neurologia',prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:73,text:'Investigação ginecológica complementar',     aulaDate:'2026-04-27',subject:'SAI — Gineco',    prova:'P2 SAI — 15/06',urgency:'low',status:'todo'},
-  {id:74,text:'Acompanhamento do desenvolvimento infantil',         aulaDate:'2026-03-25',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:75,text:'Semiologia do aparelho locomotor pediátrico',        aulaDate:'2026-04-22',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:76,text:'Semiologia neurológica pediátrica',                  aulaDate:'2026-05-06',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:77,text:'Semiologia do abdome e ap. digestório pediátrico',   aulaDate:'2026-05-13',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:78,text:'Semiologia do aparelho genital pediátrico',          aulaDate:'2026-05-20',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:79,text:'Semiologia nefrológica pediátrica',                  aulaDate:'2026-05-27',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:80,text:'Semiologia do recém-nascido',                        aulaDate:'2026-06-03',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  {id:81,text:'Semiologia do adolescente',                          aulaDate:'2026-06-10',subject:'SCA',prova:'P2 SCA — 17/06',urgency:'low',status:'todo'},
-  // P2 RAMEL
-  {id:98, text:'Medicina nuclear',                                             aulaDate:'2026-04-07',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:99, text:'Função renal e sumário de urina',                              aulaDate:'2026-04-09',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:100,text:'Radioproteção',                                                aulaDate:'2026-04-14',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:101,text:'Diagnóstico de lesão hepática e vias biliares',                aulaDate:'2026-04-16',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:102,text:'Marcadores tumorais',                                          aulaDate:'2026-04-21',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:103,text:'Radiologia torácica — sistema cardiovascular e respiratório',  aulaDate:'2026-04-28',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:104,text:'Função endócrina',                                             aulaDate:'2026-05-05',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:105,text:'Proteínas de fase aguda',                                      aulaDate:'2026-05-12',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:106,text:'Radiologia do sistema digestivo e urinário',                   aulaDate:'2026-05-19',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:107,text:'Diagnóstico de lesão e função cardíaca',                       aulaDate:'2026-05-26',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:108,text:'Radiologia do sistema nervoso (RX, TC, US, RM, nuclear)',      aulaDate:'2026-06-02',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:109,text:'Distúrbio acidobásico e gasimetria',                           aulaDate:'2026-06-09',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:110,text:'Radiologia ginecológica — mama e pelves',                      aulaDate:'2026-06-10',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:111,text:'Diagnóstico em neurologia (LCR)',                              aulaDate:'2026-06-17',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  {id:112,text:'Radiologia do sistema musculoesquelético',                     aulaDate:'2026-06-23',subject:'RAMEL',prova:'P2 RAMEL — 17/06',urgency:'low',status:'todo'},
-  // P3 BTM
-  {id:113,text:'Fármacos em doenças tireoidianas',                             aulaDate:'2026-05-15',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
-  {id:114,text:'Vitaminoterapia — fundamentos da nutrição médica',              aulaDate:'2026-05-20',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
-  {id:115,text:'Fármacos na Diabetes Mellitus',                                aulaDate:'2026-05-22',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
-  {id:116,text:'Vitaminoterapia',                                               aulaDate:'2026-05-27',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
-  {id:117,text:'Educação em diabetes',                                          aulaDate:'2026-05-29',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
-  {id:118,text:'Farmacoterapia e dietoterapia nas dislipidemias e obesidade',   aulaDate:'2026-06-03',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
-  {id:119,text:'Métodos contraceptivos',                                        aulaDate:'2026-06-05',subject:'BTM',prova:'P3 BTM — 10/06',urgency:'low',status:'todo'},
+  // Lista de tópicos de estudo do M5 (2025.2) — vazia por enquanto.
+  // Assim que os cronogramas detalhados de cada módulo (MED0033, MED0030, MED0031, MED0029, MED0032)
+  // forem divulgados, os tópicos/aulas entram aqui no formato:
+  // {id:1, text:'Nome do tópico', aulaDate:'AAAA-MM-DD', subject:'Assistência à Saúde da Mulher', prova:'P1 Saúde da Mulher — DD/MM', urgency:'high', status:'todo'},
 ];
 
 // ─────────────────────────────────────────────
@@ -779,7 +707,7 @@ function initFirebase(dbUrl, apiKey){
     document.getElementById('setup-card').style.display='block';
     setSyncStatus('warn', 'Firebase não configurado — dados salvos só neste dispositivo');
     // fallback to localStorage
-    const saved = localStorage.getItem('arthur_local');
+    const saved = localStorage.getItem('arthur_local_m5');
     items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
     nid = Math.max(...items.map(i=>i.id), 0) + 1;
     buildChips(); renderList(); updateStats();
@@ -797,7 +725,7 @@ function initFirebase(dbUrl, apiKey){
         projectId: dbUrl.replace('https://','').replace('.firebaseio.com','').replace('-default-rtdb',''),
       });
     }
-    dbRef = firebase.database().ref('dashboard/items');
+    dbRef = firebase.database().ref('dashboard/m5/items');
 
     // listen for real-time updates
     dbRef.on('value', snapshot => {
@@ -817,23 +745,23 @@ function initFirebase(dbUrl, apiKey){
       initProvasSync();
       initNotasSync();
       // Subir dados locais de provas/notas para o Firebase na primeira conexão
-      firebase.database().ref('dashboard/provas_cal').once('value', snap=>{
+      firebase.database().ref('dashboard/m5/provas_cal').once('value', snap=>{
         if(!snap.val()){
           const local=loadProvasState();
-          if(Object.keys(local).length) firebase.database().ref('dashboard/provas_cal').set(local).catch(console.error);
+          if(Object.keys(local).length) firebase.database().ref('dashboard/m5/provas_cal').set(local).catch(console.error);
         }
       });
-      firebase.database().ref('dashboard/notas').once('value', snap=>{
+      firebase.database().ref('dashboard/m5/notas').once('value', snap=>{
         if(!snap.val()){
           const local=loadNotas();
-          if(Object.keys(local).length) firebase.database().ref('dashboard/notas').set(local).catch(console.error);
+          if(Object.keys(local).length) firebase.database().ref('dashboard/m5/notas').set(local).catch(console.error);
         }
       });
     }, err => {
       setSyncStatus('err', 'Erro de conexão — verifique o URL e a apiKey');
       console.error(err);
       // fallback
-      const saved = localStorage.getItem('arthur_local');
+      const saved = localStorage.getItem('arthur_local_m5');
       items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
       nid = Math.max(...items.map(i=>i.id), 0) + 1;
       buildChips(); renderList(); updateStats();
@@ -841,7 +769,7 @@ function initFirebase(dbUrl, apiKey){
 
   } catch(e){
     setSyncStatus('err', 'Erro ao inicializar Firebase: ' + e.message);
-    const saved = localStorage.getItem('arthur_local');
+    const saved = localStorage.getItem('arthur_local_m5');
     items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
     nid = Math.max(...items.map(i=>i.id), 0) + 1;
     buildChips(); renderList(); updateStats();
@@ -859,7 +787,7 @@ function saveItem(item){
   if(dbRef){
     dbRef.child('item_'+item.id).set(item).catch(console.error);
   } else {
-    localStorage.setItem('arthur_local', JSON.stringify(items));
+    localStorage.setItem('arthur_local_m5', JSON.stringify(items));
   }
 }
 
@@ -867,7 +795,7 @@ function deleteItemRemote(id){
   if(dbRef){
     dbRef.child('item_'+id).remove().catch(console.error);
   } else {
-    localStorage.setItem('arthur_local', JSON.stringify(items));
+    localStorage.setItem('arthur_local_m5', JSON.stringify(items));
   }
 }
 
@@ -1201,485 +1129,12 @@ function setView(v,btn){
 // ─────────────────────────────────────────────
 // Cada entrada: { date:'YYYY-MM-DD', time:'HH:MM–HH:MM', mod:'BTM', tipo:'teo'|'prat'|'prova'|'dpp'|'fabs', titulo:'...', prof:'...', local:'...' }
 const AGENDA = [
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 1 — 02/03 a 06/03
-  // ══════════════════════════════════════════════════════════
-  // Seg 02/03
-  {date:'2026-03-02',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-03-02',time:'8:40–9:10',  mod:'SAI-C', tipo:'livre',titulo:'🟢 Horário livre (Sub 1 sem prática extra)', prof:'', local:''},
-  {date:'2026-03-02',time:'9:20–10:00',  mod:'SAI-C', tipo:'prat', titulo:'SAI — Recepção e orientações (turma toda, presença obrigatória)', prof:'Profa. Emmanuelle e Profs. Semiologia', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-02',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'Exame físico geral / Febre', prof:'Profa. Emmanuelle', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-02',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'Introdução à Semiologia / Ficha Médica / Queixas Respiratórias', prof:'Profa. Adriana', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-02',time:'13:00–13:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Nervos cranianos I, II, III, IV e VI', prof:'Profa. Carolina', local:'Sala 5 CCM'},
-  {date:'2026-03-02',time:'13:50–14:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Nervos cranianos V e VII', prof:'Profa. Carolina', local:'Sala 5 CCM'},
-  {date:'2026-03-02',time:'15:10–17:00',mod:'SAI-G', tipo:'teo',  titulo:'SAI Gineco — Anamnese', prof:'Profa. Helena', local:'Sala 5 CCM'},
-  // Ter 03/03
-  {date:'2026-03-03',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-03-03',time:'15:10–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Tutoria: Anamnese', prof:'Profs. Aurélio e Márcia', local:'Salas 2 e 5 CCM'},
-  // Qua 04/03
-  {date:'2026-03-04',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Introdução à Semiologia Pediátrica', prof:'Profa. Dayanne', local:'Sala 1 CCM'},
-  {date:'2026-03-04',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Apresentação / Diuréticos (parte 1)', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-03-04',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Introdução ao laboratório clínico', prof:'Profa. Lúcia Cordeiro', local:'Sala 1 CCM'},
-  {date:'2026-03-04',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Acolhimento: ICTC, CCIH, monitoria', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 05/03
-  {date:'2026-03-05',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Anamnese pediátrica (Sub 1 c/ Dayanne, subs 1-8)', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  // Sex 06/03
-  {date:'2026-03-06',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'🏛️ Data Magna do Estado — Feriado Estadual', prof:'', local:''},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 2 — 09/03 a 13/03
-  // ══════════════════════════════════════════════════════════
-  // Seg 09/03
-  {date:'2026-03-09',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-03-09',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Exame físico do Aparelho Respiratório', prof:'Prof. Rodrigo', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-09',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Exame físico do Aparelho Respiratório', prof:'Prof. Rodrigo', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-09',time:'15:15–17:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática 1: Cranianos I–VI (Sub 1-2 c/ Marco/Luciana)', prof:'Marco / Luciana', local:'Tutorias CCM'},
-  // Ter 10/03
-  {date:'2026-03-10',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-03-10',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Raciocínio sindrômico em Psiquiatria (Cap. 3)', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-10',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiografia e mamografia', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-03-10',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Topográfica da Cabeça', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 11/03
-  {date:'2026-03-11',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Acompanhamento do Crescimento Infantil', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-03-11',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Diuréticos (parte 2)', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-03-11',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Tomografia computadorizada por raio-X', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-03-11',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Assepsia e Antissepsia', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 12/03
-  {date:'2026-03-12',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 1: Anamnese e Avaliação do Crescimento (Sub 1 c/ Emília)', prof:'Profa. Emília', local:'Ambulatório Pediatria 2º andar'},
-  // Sex 13/03
-  {date:'2026-03-13',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W1/W2) — Visita ao Bloco Cirúrgico', prof:'Vários', local:'Bloco Geral HC 5º andar'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 3 — 16/03 a 20/03
-  // ══════════════════════════════════════════════════════════
-  // Seg 16/03
-  {date:'2026-03-16',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-03-16',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Síndromes Respiratórias', prof:'Prof. Rodrigo', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-16',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Síndromes Respiratórias', prof:'Prof. Rodrigo', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-16',time:'13:00–13:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Cranianos VIII, IX, X, XI e XII', prof:'Prof. Eduardo', local:'Sala 5 CCM'},
-  {date:'2026-03-16',time:'13:50–14:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Síndrome extrapiramidal', prof:'Prof. Breno', local:'Sala 5 CCM'},
-  {date:'2026-03-16',time:'15:10–17:00',mod:'SAI-G', tipo:'teo',  titulo:'SAI Gineco — Exame físico', prof:'Profa. Helena', local:'Sala 5 CCM'},
-  // Ter 17/03
-  {date:'2026-03-17',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-03-17',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — ?', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-17',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Ultrassonografia', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-03-17',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Topográfica do Pescoço', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 18/03
-  {date:'2026-03-18',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Exame Físico geral na faixa etária pediátrica', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-03-18',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos utilizados na HAS (parte 2)', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-03-18',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Eritrograma', prof:'Prof. Laurindo', local:'Sala 1 CCM'},
-  {date:'2026-03-18',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Água e Eletrólitos', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 19/03
-  {date:'2026-03-19',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática Simulada 1: Avaliação do Crescimento (Sub 1, subs 1-4, c/ Dayanne)', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  // Sex 20/03
-  {date:'2026-03-20',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W1/W2) — Curativo e Retirada de Pontos', prof:'Vários', local:'Ambulatório Egressos HC Térreo'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 4 — 23/03 a 27/03
-  // ══════════════════════════════════════════════════════════
-  // Seg 23/03
-  {date:'2026-03-23',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-03-23',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Introdução à fisiologia cardíaca / Queixas cardíacas', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-23',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Introdução à fisiologia cardíaca / Queixas cardíacas', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-23',time:'15:15–17:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática 2: Cranianos VII-XII (Sub 1-2 Pedro)', prof:'Pedro', local:'Tutorias CCM'},
-  {date:'2026-03-24',time:'15:40–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Tutoria: Exame ginecológico 1 (Sub 1)', prof:'Profs. Aurélio e Lúcia', local:'Salas 2 e 5 CCM'},
-  // Ter 24/03
-  {date:'2026-03-24',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-03-24',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Relações doenças físicas e transtornos psiquiátricos (Cap. 4 e 6)', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-24',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Hemostasia: plaquetas, vasos e fatores da coagulação', prof:'Profa. Conceição Barros', local:'Sala 1 CCM'},
-  {date:'2026-03-24',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Cabeça e Pescoço (Prática)', prof:'Jailson', local:'Lab. de Anatomia'},
-  // Qua 25/03
-  {date:'2026-03-25',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Acompanhamento do Desenvolvimento Infantil', prof:'Profa. Sophie', local:'Sala 1 CCM'},
-  {date:'2026-03-25',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos na IC (parte 1)', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-03-25',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Leucograma', prof:'Prof. Glauber', local:'Sala 1 CCM'},
-  {date:'2026-03-25',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — REMIT (Resposta Endócrino, Metabólica e Imunológica ao Trauma)', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 26/03
-  {date:'2026-03-26',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 2: Desenvolvimento, Exercícios (Sub 1, todos c/ Sophie)', prof:'Profa. Sophie', local:'Sala 2 CCM'},
-  {date:'2026-03-26',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática Simulada 3: AR e ACV (Sub 1, subs 1-4, c/ Almerinda)', prof:'Profa. Almerinda', local:'Sala 4 CCM'},
-  // Sex 27/03
-  {date:'2026-03-27',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W1/W2) — Visita à CME (Material e Esterilização)', prof:'Vários', local:'CME HC 3º andar'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 5 — 30/03 a 03/04
-  // ══════════════════════════════════════════════════════════
-  // Seg 30/03
-  {date:'2026-03-30',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-03-30',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Exame cardíaco / Síndrome cardiovascular I', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-30',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Exame cardíaco / Síndrome cardiovascular I', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-30',time:'13:00–13:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Coordenação', prof:'Profa. Luciana', local:'Sala 5 CCM'},
-  {date:'2026-03-30',time:'13:50–14:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Síndrome neurônio motor superior e inferior', prof:'Prof. Pedro', local:'Sala 5 CCM'},
-  {date:'2026-03-30',time:'15:40–17:00',mod:'SAI-G', tipo:'teo',  titulo:'SAI Gineco — Ciclo Menstrual', prof:'Profa. Márcia', local:'Sala 5 CCM'},
-  // Ter 31/03
-  {date:'2026-03-31',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-03-31',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Entrevista com paciente (discussão com alunos)', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-03-31',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Tomografia por ressonância magnética', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-03-31',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Tórax (Teórica)', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 01/04
-  {date:'2026-04-01',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia da cabeça, pescoço e ORL', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-04-01',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos anticoagulantes, antiplaquetários e trombolíticos', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-04-01',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Imunoensaios', prof:'Prof. Laurindo', local:'Sala 1 CCM'},
-  {date:'2026-04-01',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Proteção Profissional', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 02/04 — Feriado
-  {date:'2026-04-02',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'✝️ Quinta-feira Santa — Feriado Nacional', prof:'', local:''},
-  // Sex 03/04 — Feriado
-  {date:'2026-04-03',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'✝️ Sexta-feira Santa — Feriado Nacional', prof:'', local:''},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 6 — 06/04 a 10/04
-  // ══════════════════════════════════════════════════════════
-  // Seg 06/04
-  {date:'2026-04-06',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-04-06',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Síndrome cardiovascular II', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-06',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Síndrome cardiovascular II', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-06',time:'13:00–15:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática 3: Motricidade (Sub 1-2 Carolina)', prof:'Carolina', local:'Tutorias CCM'},
-  {date:'2026-04-07',time:'15:40–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Discussão: Ciclo Menstrual (Sub 1)', prof:'Profas. Aurélio e Márcia', local:'Salas 2 e 5 CCM'},
-  // Ter 07/04
-  {date:'2026-04-07',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-04-07',time:'15:40–17:00',mod:'ICTC-A',tipo:'prat-prova',agendaId:'prat_ictc_anat_1', titulo:'🩺 Prova Prática ICTC Anatomia — P1', prof:'Jailson', local:'Lab. de Anatomia'},
-  {date:'2026-04-07',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Personalidade: definição e aspectos (Cap. 25)', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-07',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Medicina Nuclear', prof:'Prof. Paulo Almeida', local:'Sala 1 CCM'},
-  {date:'2026-04-07',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Tórax (Prática)', prof:'Jailson', local:'Lab. de Anatomia'},
-  // Qua 08/04 — P1 BTM
-  {date:'2026-04-08',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Aparelho Respiratório', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-04-08',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',agendaId:'p1_btm', titulo:'⚠️ PRIMEIRA AVALIAÇÃO BTM', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-04-08',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Função renal e sumário de urina', prof:'Prof. Rodrigo Bezerra', local:'Sala 1 CCM'},
-  {date:'2026-04-08',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Infecção em Cirurgia (Biologia e Profilaxia)', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 09/04 — Prática SCA
-  {date:'2026-04-09',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática Simulada 3: AR e ACV (Sub 1, subs 1-4, c/ Almerinda)', prof:'Profa. Almerinda', local:'Sala 4 CCM'},
-  // Sex 10/04
-  {date:'2026-04-10',time:'7:30–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W1/W2) — Visita Enfermaria de Cirurgia Geral', prof:'Vários', local:'Enfermaria HC 8º andar Norte'},
-  // Prova Prática ICTC Anatomia (07/04 - terça)
-  {date:'2026-04-07',time:'15:40–17:30',mod:'ICTC-A',tipo:'prat-prova',titulo:'🩺 Prova Prática ICTC Anatomia — P1 (extra)', prof:'Jailson', local:'Lab. de Anatomia'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 7 — 13/04 a 17/04
-  // ══════════════════════════════════════════════════════════
-  // Seg 13/04
-  {date:'2026-04-13',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-04-13',time:'8:00–9:00',  mod:'SAI-C', tipo:'teo',  titulo:'SAI — Revisão de Cardiologia (extra)', prof:'Prof. Audes', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-13',time:'9:15–10:15', mod:'SAI-C', tipo:'teo',  titulo:'SAI — Revisão de Pneumologia (extra)', prof:'Prof. Rodrigo', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-13',time:'13:00–14:00',mod:'SAI-C', tipo:'prova',agendaId:'p1_sai', titulo:'⚠️ 1º EXERCÍCIO SAI (teórica)', prof:'Profs. de Semiologia', local:'Sala 5 CCM'},
-  // Ter 14/04
-  {date:'2026-04-14',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-04-14',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Personalidade normal e patológica e transtornos (Cap. 25)', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-14',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radioproteção', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  // Qua 15/04
-  {date:'2026-04-15',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Aparelho Cardiovascular', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-04-15',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Terapia com Glicocorticóides', prof:'Nadja', local:'Sala 1 CCM'},
-  {date:'2026-04-15',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Diagnóstico de lesões hepáticas e vias biliares', prof:'Prof. Edmundo Lopes', local:'Sala 1 CCM'},
-  {date:'2026-04-15',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Equilíbrio Ácido-Básico', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 16/04
-  {date:'2026-04-16',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 3: Exame Físico AR e ACV (Sub 1 c/ Michela)', prof:'Profa. Michela', local:'Ambulatório Pediatria 2º andar'},
-  {date:'2026-04-16',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 3: AR e ACV — Enfermaria (Sub 1 c/ Edjane para sub 1 no enf.)', prof:'Profa. Edjane', local:'Enfermaria HC 6º andar SUL'},
-  // Sex 17/04
-  {date:'2026-04-17',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Atendimento Inicial ao Politrauma', prof:'Vários', local:'Labs de Habilidades & Morfofuncional'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 8 — 20/04 a 24/04
-  // ══════════════════════════════════════════════════════════
-  // Seg 20/04
-  {date:'2026-04-20',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-04-20',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia do Idoso', prof:'Profa. Emmanuelle', local:'Anfiteatro 2 HC'},
-  // Ter 21/04 — Tiradentes
-  {date:'2026-04-21',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'🏛️ Tiradentes — Feriado Nacional', prof:'', local:''},
-  // Qua 22/04 — P1 ICTC
-  {date:'2026-04-22',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia aparelho locomotor na infância', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-04-22',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos na asma e educação em asma', prof:'Dayanne', local:'Sala 1 CCM'},
-  {date:'2026-04-22',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Marcadores tumorais', prof:'Profa. Iris', local:'Sala 1 CCM'},
-  {date:'2026-04-22',time:'23:59–23:59',mod:'FABS',  tipo:'prova',titulo:'⚠️ FABS II — PRAZO ENTREGA Relatório 1 (PTS)', prof:'', local:'AVAMED (entrega online)'},
-  {date:'2026-04-22',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',agendaId:'p1_ictc', titulo:'⚠️ P1 ICTC — PROVA TEÓRICA', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 23/04
-  {date:'2026-04-23',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 4: Desenvolvimento, Exame neurológico e Locomotor (Sub 1 c/ Edjane)', prof:'Profa. Edjane', local:'Enfermaria HC 6º andar SUL'},
-  {date:'2026-04-23',time:'7:30–10:00', mod:'SCA',   tipo:'prat', titulo:'SCA — Prática Simulada 4: Exame neurológico e locomotor (todos c/ Dayanne)', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  // Sex 24/04
-  {date:'2026-04-24',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Sondas, Drenos e Catéteres', prof:'Vários', local:'Lab de Habilidades'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 9 — 27/04 a 01/05
-  // ══════════════════════════════════════════════════════════
-  // Seg 27/04 — hoje!
-  {date:'2026-04-27',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-04-27',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Reumatológica', prof:'Prof. Laurindo', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-27',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Reumatológica', prof:'Prof. Laurindo', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-27',time:'13:00–13:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Sistema sensitivo e nervos periféricos', prof:'Prof. Mário', local:'Sala 5 CCM'},
-  {date:'2026-04-27',time:'13:50–14:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Síndromes medulares', prof:'Profa. Durce', local:'Sala 5 CCM'},
-  {date:'2026-04-27',time:'15:10–17:00',mod:'SAI-G', tipo:'teo',  titulo:'SAI Gineco — Investigação ginecológica complementar', prof:'Profa. Helena', local:'Sala 5 CCM'},
-  // Ter 28/04
-  {date:'2026-04-28',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-04-28',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Personalidade – transtornos (Cap. 25)', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-04-28',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiologia torácica: cardiovascular e respiratório', prof:'Profa. Audes Feitosa', local:'Sala 1 CCM'},
-  {date:'2026-04-28',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Canal Inguinal (Teórica)', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 29/04 — P1 SCA
-  {date:'2026-04-29',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',agendaId:'p1_sca', titulo:'⚠️ P1 SCA — PRIMEIRA AVALIAÇÃO', prof:'Adriana, Dayanne, Suzana', local:'Salas CCM (1, 3, 4 e 51)'},
-  {date:'2026-04-29',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Antifúngicos', prof:'Líbia', local:'Sala 1 CCM'},
-  {date:'2026-04-29',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Função endócrina', prof:'Profa. Lúcia Cordeiro', local:'Sala 1 CCM'},
-  {date:'2026-04-29',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Choque: Fisiopatologia e Tratamento', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 30/04 — Cenários SCA
-  {date:'2026-04-30',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Cenários Clínicos (40% da Nota 3) — todos os alunos', prof:'Profs. Adriana, Dayanne, Emília, Edjane, Geórgia, Maria Júlia, Michela, Tereza, Suzana', local:'Salas CCM'},
-  // SAI Neuro Prática 4 is on Monday 04/05 - see semana 10
-  // removed wrong 30/04 qui SAI Gineco entry (was on FABS day)
-  // Sex 01/05 — Feriado
-  {date:'2026-05-01',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'🇧🇷 Dia do Trabalho — Feriado Nacional', prof:'', local:''},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 10 — 04/05 a 08/05
-  // ══════════════════════════════════════════════════════════
-  // Seg 04/05
-  {date:'2026-05-04',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-05-04',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Queixas digestivas / Exame físico digestivo', prof:'Profa. Norma', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-04',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Queixas digestivas / Exame físico digestivo', prof:'Profa. Norma', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-04',time:'15:15–17:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática 4: Equilíbrio (Sub 1-2 Breno)', prof:'Breno', local:'Tutorias CCM'},
-  {date:'2026-05-05',time:'15:40–17:00',mod:'SAI-G', tipo:'prat', titulo:'SAI Gineco — Tutoria: Exame ginecológico 2 (Sub 1)', prof:'Profs. Aurélio e Lúcia', local:'Salas 2 e 5 CCM'},
-  // Ter 05/05 — P1 RAMEL + DPP
-  {date:'2026-05-05',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-05-05',time:'10:10–12:00',mod:'DPP',   tipo:'prova',agendaId:'p1_dpp', titulo:'⚠️ P1 DPP + RELATÓRIO — entrevista com paciente', prof:'Bruno', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-19',time:'13:00–14:40',mod:'RAMEL', tipo:'prova',titulo:'⚠️ P1 RAMEL — PRIMEIRA AVALIAÇÃO',agendaId:'p1_ramel', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-05-05',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Pelve e Períneo (Teórica)', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 06/05
-  {date:'2026-05-06',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia Neurológica na infância e adolescência', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-05-06',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Antivirais e antirretrovirais', prof:'Líbia', local:'Sala 1 CCM'},
-  {date:'2026-05-06',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Proteínas de fase aguda', prof:'Prof. Laurindo', local:'Sala 1 CCM'},
-  {date:'2026-05-06',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Cicatrização de Feridas', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 07/05
-  {date:'2026-05-07',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática Simulada 4: Exame neurológico e locomotor (Sub 1, subs 1-4, c/ Dayanne)', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  // Sex 08/05
-  {date:'2026-05-08',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — PVC: VJI e VS - Landmarks Anatômicos', prof:'Vários', local:'Lab de Habilidades'},
-  {date:'2026-05-08',time:'10:10–11:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Antiparasitários', prof:'Líbia', local:'Sala 5 CCM'},
-  {date:'2026-05-08',time:'11:10–12:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Antiparasitários', prof:'Líbia', local:'Sala 5 CCM'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 11 — 11/05 a 15/05
-  // ══════════════════════════════════════════════════════════
-  // Seg 11/05
-  {date:'2026-05-11',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-05-11',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Fígado, vesícula e pâncreas / Síndromes digestivas I', prof:'Profa. Norma', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-11',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Fígado, vesícula e pâncreas / Síndromes digestivas I', prof:'Profa. Norma', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-11',time:'13:00–13:50',mod:'SAI-N', tipo:'teo',  titulo:'SAI Neuro — Funções corticais superiores (reposição extra)', prof:'Prof. Pedro', local:'Sala 5 CCM'},
-  {date:'2026-05-19',time:'15:40–17:00',mod:'SAI-G', tipo:'prova',titulo:'⚠️ SAI Gineco — Avaliação prática Exame físico (Sub 1)', prof:'Profs. Aurélio e Márcia', local:'Salas 2 e 5 CCM'},
-  // Ter 12/05
-  {date:'2026-05-12',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-05-12',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Psicologia Médica: interpelações com Ciências Humanas', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-12',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiologia: digestivo e urinário', prof:'Profa. Andrea Farias', local:'Sala 1 CCM'},
-  {date:'2026-05-12',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Canal Inguinal, Pelve e Períneo (Prática)', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 13/05 — P2 BTM
-  {date:'2026-05-13',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia abdome, ap. digestório e ap. genital', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-05-13',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',agendaId:'p2_btm', titulo:'⚠️ P2 BTM — SEGUNDA AVALIAÇÃO', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-05-13',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Diagnóstico de lesão e função cardíaca', prof:'Profa. Audes Feitosa', local:'Sala 1 CCM'},
-  {date:'2026-05-13',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Antibioticoterapia em Cirurgia', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 14/05
-  {date:'2026-05-14',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 5: Caso Clínico Dor Abdominal (Sub 1, subs 1-8, c/ Dayanne)', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  // Sex 15/05 — Prática GINECO (18/05 confirmado na agenda M4 como segunda 18/05)
-  {date:'2026-05-15',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Cricostomia, Traqueostomia e Drenagem Torácica', prof:'Vários', local:'Labs de Habilidades & Morfofuncional'},
-  {date:'2026-05-15',time:'10:10–11:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos em doenças tireoidianas', prof:'Marise', local:'Sala 5 CCM'},
-  {date:'2026-05-15',time:'11:10–12:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos em doenças tireoidianas', prof:'Marise', local:'Sala 5 CCM'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 12 — 18/05 a 22/05
-  // ══════════════════════════════════════════════════════════
-  // Seg 18/05 — Prova Prática Gineco
-  {date:'2026-05-18',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-05-18',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Endócrina', prof:'Profa. Lúcia', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-18',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Endócrina', prof:'Profa. Lúcia', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-18',time:'13:00–15:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática 5: Sensibilidade e função cortical (Sub 1-2 Marco)', prof:'Marco', local:'Tutorias CCM'},
-  {date:'2026-05-18',time:'15:40–17:00',mod:'SAI-G', tipo:'prat-prova',agendaId:'prat_sai_gineco',titulo:'🩺 Prova Prática SAI Gineco — Exame Físico', prof:'Vários', local:'Salas 2 e 5 CCM'},
-  // Ter 19/05
-  {date:'2026-05-19',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-05-19',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Desenvolvimento da personalidade — Ciclo vital', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-19',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiologia do sistema nervoso (RX, CT, US, RM)', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-05-19',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Abdome (Teórica)', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 20/05
-  {date:'2026-05-20',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Aparelho Genital', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-05-20',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Vitaminoterapia — Fundamentos da nutrição médica', prof:'Mara', local:'Sala 1 CCM'},
-  {date:'2026-05-20',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Noções de distúrbio acidobásico e gasimetria', prof:'Prof. Rodrigo Bezerra', local:'Sala 1 CCM'},
-  {date:'2026-05-20',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Cirurgia Minimamente Invasiva', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 21/05
-  {date:'2026-05-21',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 5: Exame Abdome e Ap. Digestório (Sub 1 c/ Geórgia)', prof:'Profa. Geórgia', local:'Ambulatório Pediatria 2º andar'},
-  // Sex 22/05
-  {date:'2026-05-22',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Caso Clínico: Pré e Pós Operatório', prof:'Vários', local:'Sala 51 Curso Médico 1º andar'},
-  {date:'2026-05-22',time:'10:10–11:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos na Diabetes Mellitus', prof:'Lúcia', local:'Sala 5 CCM'},
-  {date:'2026-05-22',time:'11:10–12:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Fármacos na Diabetes Mellitus', prof:'Lúcia', local:'Sala 5 CCM'},
-
-  {date:'2026-05-27',time:'23:59–23:59',mod:'FABS',  tipo:'prova',titulo:'⚠️ FABS II — Entrega Relatório 2 (PTS) — prazo final hoje!', prof:'', local:'AVAMED (entrega online)'},
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 13 — 25/05 a 29/05
-  // ══════════════════════════════════════════════════════════
-  // Seg 25/05
-  {date:'2026-05-25',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-05-25',time:'10:10–11:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Renal / Edema', prof:'Prof. Fred', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-25',time:'11:10–12:00',mod:'SAI-C', tipo:'teo',  titulo:'SAI — Semiologia Renal / Edema', prof:'Prof. Fred', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-25',time:'15:15–17:00',mod:'SAI-N', tipo:'prat', titulo:'SAI Neuro — Prática Revisão: Semiologia (Sub 1-2 Pedro)', prof:'Pedro', local:'Tutorias CCM'},
-  // Ter 26/05
-  {date:'2026-05-26',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-05-26',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Hipótese Topográfica e Estrutural (Id, Ego, Superego)', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-05-26',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiologia ginecológica: mama e pelves', prof:'Prof. Agostinho', local:'Sala 1 CCM'},
-  {date:'2026-05-26',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Abdome (Prática)', prof:'Jailson', local:'Dep. de Anatomia'},
-  // Qua 27/05
-  {date:'2026-05-27',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia Nefrológica', prof:'Vários', local:'Salas CCM'},
-  {date:'2026-05-27',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Vitaminoterapia', prof:'Nadja', local:'Sala 1 CCM'},
-  {date:'2026-05-27',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Diagnóstico em neurologia (LCR)', prof:'Prof. Mario Luciano', local:'Sala 1 CCM'},
-  {date:'2026-05-27',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Transplantação de Órgãos e Tecidos', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 28/05
-  {date:'2026-05-28',time:'7:30–9:00',  mod:'SCA',   tipo:'prat', titulo:'SCA — Prática 6: Exame Geniturinário (Sub 1 c/ Tereza)', prof:'Profa. Tereza', local:'Ambulatório Pediatria 2º andar'},
-  // Sex 29/05
-  {date:'2026-05-29',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Caso Clínico: Ostomias (Digestivas, Respiratórias, Urinárias)', prof:'Vários', local:'Sala 05 Curso Médico 1º andar'},
-  {date:'2026-05-29',time:'10:10–11:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Educação em diabetes', prof:'Lúcia', local:'Sala 5 CCM'},
-  {date:'2026-05-29',time:'11:10–12:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Educação em diabetes', prof:'Lúcia', local:'Sala 5 CCM'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 14 — 01/06 a 05/06
-  // ══════════════════════════════════════════════════════════
-  // Seg 01/06 — Prova Prática SAI Clínica (Sub 1 = Grupo A) + Neuro Grupo B
-  {date:'2026-06-01',time:'8:00–12:00', mod:'SAI-C', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI — Clínica Grupo A e Neuro Grupo B', prof:'Todos os professores', local:'Estações CCM'},
-  {date:'2026-06-01',time:'13:00–15:00',mod:'SAI-N', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI Neuro — Grupo B (subs 9-16)', prof:'Vários', local:'Tutorias CCM'},
-  // Ter 02/06
-  {date:'2026-06-02',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-06-02',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — A teoria dos afetos', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-06-02',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Radiologia musculoesquelético', prof:'Prof. Henrique Mariz', local:'Sala 1 CCM'},
-  {date:'2026-06-02',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — MMSS', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 03/06
-  {date:'2026-06-03',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Recém-nascido', prof:'Profa. Fátima', local:'Sala 1 CCM'},
-  {date:'2026-06-03',time:'8:40–9:10',  mod:'BTM',   tipo:'teo',  titulo:'BTM — Farmacoterapia e dietoterapia nas dislipidemias e obesidade', prof:'Lúcia', local:'Sala 1 CCM'},
-  {date:'2026-06-03',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Seminários', prof:'Profa. Lúcia Cordeiro', local:'Sala 1 CCM'},
-  {date:'2026-06-03',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Transplantação de Órgãos e Tecidos', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 04/06 — Corpus Christi
-  {date:'2026-06-04',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'✝️ Corpus Christi — Feriado Nacional', prof:'', local:''},
-  // Sex 05/06
-  {date:'2026-06-05',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Caso Clínico: Pré e Pós Operatório', prof:'Vários', local:'Sala 51 Curso Médico 1º andar'},
-  {date:'2026-06-05',time:'10:10–11:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Métodos contraceptivos', prof:'Márcia', local:'Sala 5 CCM'},
-  {date:'2026-06-05',time:'11:10–12:00',mod:'BTM',   tipo:'teo',  titulo:'BTM — Métodos contraceptivos', prof:'Márcia', local:'Sala 5 CCM'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 15 — 08/06 a 12/06
-  // ══════════════════════════════════════════════════════════
-  // Seg 08/06 — Prova Prática SAI Clínica Grupo B + SAI NEURO Grupo A (Sub 1 aqui!)
-  {date:'2026-06-08',time:'8:00–12:00', mod:'SAI-C', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI — Clínica Grupo B e Neuro Grupo A', prof:'Todos os professores', local:'Estações CCM'},
-  {date:'2026-06-08',time:'13:00–15:00',mod:'SAI-N', tipo:'prat-prova',titulo:'🩺 Prova Prática SAI Neuro — Grupo A (subs 1-8)', prof:'Breno e outros', local:'Tutorias CCM'},
-  // Ter 09/06
-  {date:'2026-06-09',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-06-09',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Mecanismos psicológicos de defesa (1) e (2)', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-06-09',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Seminários', prof:'Andrea e Paulo', local:'Sala 1 CCM'},
-  {date:'2026-06-09',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — MMII', prof:'Jailson', local:'Sala 1 CCM'},
-  // Qua 10/06 — P3 BTM
-  {date:'2026-06-10',time:'7:30–8:30',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Semiologia do Adolescente', prof:'Profa. Suzana', local:'Sala 1 CCM'},
-  {date:'2026-06-10',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',agendaId:'p3_btm', titulo:'⚠️ P3 BTM — TERCEIRA AVALIAÇÃO', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-06-10',time:'10:10–11:00',mod:'RAMEL', tipo:'lab',  titulo:'RAMEL — Seminários', prof:'Profa. Lúcia Cordeiro', local:'Sala 1 CCM'},
-  {date:'2026-06-10',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Princípios da Cirurgia Oncológica', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 11/06 — P2 SCA (prova prática)
-  {date:'2026-06-11',time:'7:30–9:00',  mod:'SCA',   tipo:'prova',titulo:'SCA — Prática 6: Caso Clínico Edema (Sub 1, subs 1-4, c/ Almerinda)', prof:'Profa. Almerinda', local:'Sala 4 CCM'},
-  // Sex 12/06 — Facultativo
-  {date:'2026-06-12',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'⛪ Facultativo Corpus Christi — sem aulas', prof:'', local:''},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 16 — 15/06 a 19/06
-  // ══════════════════════════════════════════════════════════
-  // Seg 15/06 — P2 SAI
-  {date:'2026-06-15',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-06-15',time:'8:00–10:00', mod:'SAI-C', tipo:'prova',agendaId:'p2_sai', titulo:'⚠️ P2 SAI — SEGUNDA AVALIAÇÃO (teórica)', prof:'Professores de Semiologia', local:'Anfiteatro 2 HC'},
-  // Ter 16/06
-  {date:'2026-06-16',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-06-16',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — A formação psicológica do médico (1) e (2)', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-06-16',time:'13:30–14:40',mod:'RAMEL', tipo:'teo',  titulo:'RAMEL — Seminários', prof:'Andrea e Paulo', local:'Sala 5 CCM'},
-  {date:'2026-06-16',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat', titulo:'ICTC Anatomia — Prática MMSS e MMII', prof:'Jailson', local:'Lab. de Anatomia'},
-  // Qua 17/06 — P2 SCA + P2 RAMEL + Final BTM
-  {date:'2026-06-17',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',agendaId:'p2_sca', titulo:'⚠️ P2 SCA — SEGUNDA AVALIAÇÃO', prof:'Adriana, Almerinda, Dayanne, Suzana', local:'Salas CCM (1, 2, 3 e 4)'},
-  {date:'2026-06-17',time:'8:40–9:10',  mod:'BTM',   tipo:'prova',titulo:'⚠️ FINAL BTM', prof:'Gilson', local:'Sala 1 CCM'},
-  {date:'2026-06-17',time:'10:10–11:00',mod:'RAMEL', tipo:'prova',agendaId:'p2_ramel', titulo:'⚠️ P2 RAMEL — SEGUNDA AVALIAÇÃO', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-06-17',time:'13:00–14:40',mod:'ICTC-C',tipo:'teo',  titulo:'ICTC — Terminologia Cirúrgica e Laparotomias', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 18/06 — Prova Prática SCA (Subs 9-16)
-  {date:'2026-06-18',time:'7:30–9:00',  mod:'SCA',   tipo:'prat-prova',titulo:'🩺 Prova Prática SCA (subs 9-16)', prof:'Profa. Adriana, Almerinda, Dayanne, Edjane, Emília, Geórgia, Michela, Maria Júlia, Suzana, Tereza', local:'Salas de simulação CCM 2º andar'},
-  // Sex 19/06
-  {date:'2026-06-19',time:'8:00–10:30', mod:'ICTC-C',tipo:'prat', titulo:'ICTC Prática (W/X) — Nós e Suturas, Punção Periférica & Dissecção Venosa', prof:'Vários', local:'Labs de Habilidades & Morfofuncional'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 17 — 22/06 a 26/06
-  // ══════════════════════════════════════════════════════════
-  {date:'2026-06-22',time:'',           mod:'FERIADO',tipo:'feriado',titulo:'🎉 São João — Feriado Estadual', prof:'', local:''},
-  {date:'2026-06-23',time:'10:10–12:00',mod:'DPP',   tipo:'dpp',  titulo:'DPP I — Revisão dos temas', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-06-23',time:'15:40–16:30',mod:'ICTC-A',tipo:'teo',  titulo:'ICTC Anatomia — Facultativo', prof:'Jailson', local:'—'},
-  {date:'2026-06-25',time:'7:30–9:00',  mod:'SCA',   tipo:'teo',  titulo:'SCA — Revisão de Provas', prof:'Profa. Dayanne', local:'Salas CCM'},
-  {date:'2026-06-25',time:'10:10–12:00',mod:'SAI-C', tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA SAI', prof:'Profa. Emmanuelle', local:'—'},
-  {date:'2026-06-26',time:'7:00–9:00',  mod:'ICTC-C',tipo:'prat', titulo:'ICTC Práticas — Caso clínico: Queimados', prof:'Vários', local:'Anfiteatro 3 HC'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 18 — 29/06 a 03/07
-  // ══════════════════════════════════════════════════════════
-  // Seg 29/06 — FINAL SAI
-  {date:'2026-06-29',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Enfermaria (Sub 1)', prof:'Prof. Laurindo', local:'10º andar Norte HC'},
-  {date:'2026-06-29',time:'8:00–10:00', mod:'SAI-C', tipo:'prova',titulo:'⚠️ FINAL SAI', prof:'Profa. Adriana', local:'Anfiteatro 2 HC'},
-  // Ter 30/06
-  {date:'2026-06-30',time:'7:30–8:30',  mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Práticas (HC)', prof:'Vários', local:'HC'},
-  {date:'2026-06-30',time:'10:10–12:00',mod:'DPP',   tipo:'prova',titulo:'⚠️ P2 DPP I — SEGUNDA AVALIAÇÃO', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-06-30',time:'13:00–14:40',mod:'RAMEL', tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA RAMEL', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-06-30',time:'15:40–16:30',mod:'ICTC-A',tipo:'prat-prova',agendaId:'prat_ictc_anat_2', titulo:'🩺 Prova Prática ICTC Anatomia — P2', prof:'Jailson', local:'Lab. de Anatomia'},
-  // Qua 01/07
-  {date:'2026-07-01',time:'7:30–8:30',  mod:'SCA',   tipo:'prova',titulo:'⚠️ SEGUNDA CHAMADA SCA', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  {date:'2026-07-01',time:'8:40–9:10',  mod:'RAMEL', tipo:'prova',titulo:'⚠️ AVALIAÇÃO FINAL RAMEL', prof:'Profa. Paula Diniz', local:'Sala 1 CCM'},
-  {date:'2026-07-01',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',agendaId:'p2_ictc', titulo:'⚠️ P2 ICTC — SEGUNDA AVALIAÇÃO (teórica)', prof:'—', local:'Anfiteatro 3 HC'},
-  // Qui 02/07
-  {date:'2026-07-02',time:'7:30–9:00',  mod:'SCA',   tipo:'prova',titulo:'⚠️ AVALIAÇÃO FINAL SCA', prof:'Profa. Dayanne', local:'Sala 3 CCM'},
-  // Sex 03/07
-  {date:'2026-07-03',time:'7:00–9:00',  mod:'ICTC-C',tipo:'prat', titulo:'ICTC Práticas — CCIH equipe multidisciplinar', prof:'Vários', local:'Anfiteatro 3 HC'},
-
-  // ══════════════════════════════════════════════════════════
-  // SEMANA 19 — 06/07 a 10/07
-  // ══════════════════════════════════════════════════════════
-  {date:'2026-07-07',time:'10:10–12:00',mod:'DPP',   tipo:'prova',titulo:'⚠️ 2ª CHAMADA DPP I', prof:'João Alberto', local:'Anfiteatro 2 HC'},
-  {date:'2026-07-08',time:'13:00–14:40',mod:'ICTC-C',tipo:'prova',titulo:'⚠️ 2ª CHAMADA ICTC', prof:'—', local:'Anfiteatro 3 HC'},
-
-  {date:'2026-03-05',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-03-12',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-03-19',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-03-26',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-04-09',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-04-16',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-04-23',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-04-30',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-05-07',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-05-14',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-05-21',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-05-28',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-06-11',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-06-18',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-  {date:'2026-07-02',time:'10:00–12:00',mod:'SAI-C', tipo:'prat', titulo:'SAI Clínica — Prática com monitores (Sub 1 — verificar escala)', prof:'Monitores', local:'Tutorias CCM'},
-
-  // ══════════════════════════════════════════════════════════
-  // FABS II — Sub A (quintas 13:30)
-  // ══════════════════════════════════════════════════════════
-  // Qui 05/03 — Introdução ao módulo (todos)
-  {date:'2026-03-05',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — Introdução ao módulo / Estudo de Caso 1 (Documentário Hospital Sofia Feldman) / Leitura Texto PTS e Caso 2', prof:'Oscar, Bernadete, Camila, Gabriella, Paloma, Tiago, Amanda, Cláudia Cazal, Claudia Aguiar', local:'Auditório CCM'},
-  // Qui 12/03 — Sub A: 1ª Tutoria (CCM)
-  {date:'2026-03-12',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — 1ª Tutoria: Clínica Ampliada, PTS e Prontuário Transdisciplinar / Rodas de Conversa / Seminários 1 e 2 / Pós-testes 1 e 2 (Sub A)', prof:'Vários tutores', local:'Tutorias CCM'},
-  // Qui 19/03 — Sub A: Prática da Tutoria 1 (USF)
-  {date:'2026-03-19',time:'13:30–17:00',mod:'FABS', tipo:'prat', titulo:'FABS II — Prática da Tutoria 1: Clínica Ampliada, PTS e Prontuário Transdisciplinar (Sub A na USF)', prof:'Vários tutores', local:'Unidade de Saúde da Família (USF)'},
-  // Qui 26/03 — Sub A: 2ª Tutoria (CCM)
-  {date:'2026-03-26',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — 2ª Tutoria: Redes Integradas de Saúde / Roda de Conversa / Seminário 3 / Pós-teste 3 (Sub A)', prof:'Vários tutores', local:'Tutorias CCM'},
-  // Qui 02/04 — FERIADO (Quinta-feira Santa)
-  // Qui 09/04 — Sub A: Prática da Tutoria 2 (USF) — Relatório 1 entrega 22/04
-  {date:'2026-04-09',time:'13:30–17:00',mod:'FABS', tipo:'prat', titulo:'FABS II — Prática da Tutoria 2: Redes Integradas de Saúde (Sub A na USF) ⚠️ Relatório 1: entrega 22/04', prof:'Vários tutores', local:'Unidade de Saúde da Família (USF)'},
-  // Qui 16/04 — Sub A: Apresentação PTS Monitores + Debate Caso 2
-  {date:'2026-04-16',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — Apresentação PTS - Monitores / Debate Estudo de Caso 2 (Sub A)', prof:'Profas. Camila e Paloma', local:'Tutorias CCM'},
-  // Qui 23/04 — Sub A: 3ª Tutoria (CCM)
-  {date:'2026-04-23',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — 3ª Tutoria: Diagnóstico Ampliado e Compartilhado / Roda de Conversa / Seminário 4 / Pós-teste 4 (Sub A)', prof:'Vários tutores', local:'Tutorias CCM'},
-  // Qui 30/04 — Sub A: Prática da Tutoria 3 (USF)
-  {date:'2026-04-30',time:'13:30–17:00',mod:'FABS', tipo:'prat', titulo:'FABS II — Prática da Tutoria 3: Diagnóstico Ampliado e Compartilhado (Sub A na USF)', prof:'Vários tutores', local:'Unidade de Saúde da Família (USF)'},
-  // Qui 07/05 — Sub A: 4ª Tutoria (CCM)
-  {date:'2026-05-07',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — 4ª Tutoria: Acolhimento com Avaliação de Risco e Vulnerabilidade na APS / Seminário 5 / Pós-teste 5 (Sub A)', prof:'Vários tutores', local:'Tutorias CCM'},
-  // Qui 14/05 — Sub A: Prática da Tutoria 4 (USF) — Relatório 2 entrega 27/05
-  {date:'2026-05-14',time:'13:30–17:00',mod:'FABS', tipo:'prat', titulo:'FABS II — Prática da Tutoria 4: Acolhimento com Avaliação de Risco (Sub A na USF) ⚠️ Relatório 2: entrega 27/05', prof:'Vários tutores', local:'Unidade de Saúde da Família (USF)'},
-  // Qui 21/05 — Sub A: Debate Estudo de Caso 1 (Sofia Feldman)
-  {date:'2026-05-21',time:'13:30–17:00',mod:'FABS', tipo:'fabs', titulo:'FABS II — Debate Estudo de Caso 1: Documentário Maternidade Sofia Feldman (Sub A)', prof:'Vários tutores', local:'Tutorias CCM'},
-  // Qui 28/05 — Prática na APS/Rede de Saúde relativa ao PTS (todos)
-  {date:'2026-05-28',time:'13:30–17:00',mod:'FABS', tipo:'prat', titulo:'FABS II — Prática na APS/Rede de Saúde relativa ao PTS (Sub A)', prof:'Vários tutores', local:'Unidade de Saúde da Família (USF)'},
-  // Qui 04/06 — Corpus Christi (facultativo) — sem aula
-  // Qui 11/06 — Prática na APS/Rede de Saúde relativa ao PTS (todos)
-  {date:'2026-06-11',time:'13:30–17:00',mod:'FABS', tipo:'prat', titulo:'FABS II — Prática na APS/Rede de Saúde relativa ao PTS (Sub A)', prof:'Vários tutores', local:'Unidade de Saúde da Família (USF)'},
-  // Qui 18/06 — Apresentação Trabalho Final (todos)
-  {date:'2026-06-18',time:'13:30–17:00',mod:'FABS', tipo:'prova',titulo:'⚠️ FABS II — Apresentação do Trabalho Final / Estudo de Caso / PTS', prof:'Oscar, Bernadete, Camila, Gabriella, Paloma, Tiago, Amanda, Cláudia Cazal, Claudia Aguiar', local:'CCM'},
-  // Qui 25/06 — Apresentação Trabalho Final (todos)
-  {date:'2026-06-25',time:'13:30–17:00',mod:'FABS', tipo:'prova',titulo:'⚠️ FABS II — Apresentação do Trabalho Final / Estudo de Caso / PTS', prof:'Oscar, Bernadete, Camila, Gabriella, Paloma, Tiago, Amanda, Cláudia Cazal, Claudia Aguiar', local:'CCM'},
-  // Qui 02/07 — Prova Final (todos)
-  {date:'2026-07-02',time:'13:30–17:00',mod:'FABS', tipo:'prova',titulo:'⚠️ FABS II — PROVA FINAL', prof:'Oscar, Bernadete, Camila, Gabriella, Paloma, Tiago, Amanda, Cláudia Cazal, Claudia Aguiar', local:'CCM'},
-  {date:'2026-07-10',time:'7:30–8:00',  mod:'ICTC-C',tipo:'prova',titulo:'⚠️ PROVA FINAL ICTC', prof:'—', local:'Anfiteatro 3 HC'},
+  // Calendário de aulas com datas reais do M5 (2025.2) — vazio por enquanto.
+  // O horário SEMANAL padrão (recorrente, sem datas) já está disponível na aba
+  // Agenda, no bloco "Horário Padrão", com base na grade oficial da coordenação.
+  // Assim que o cronograma detalhado com datas por aula sair, os compromissos entram
+  // aqui no formato:
+  // {date:'AAAA-MM-DD', time:'HH:MM–HH:MM', mod:'MULH', tipo:'teo'|'prat', titulo:'...', prof:'...', local:'...'},
 ];
 
 const MOD_META = {
@@ -1694,7 +1149,110 @@ const MOD_META = {
   'DPP':   {label:'DPP I',        cls:'mod-dpp'},
   'FABS':  {label:'FABS II',      cls:'mod-fabs'},
   'FERIADO':{label:'Feriado',     cls:''},
+  'MULH':  {label:'Saúde da Mulher',       cls:'mod-mulh'},
+  'GRN':   {label:'Gestante e RN',         cls:'mod-grn'},
+  'CRIA':  {label:'Criança e Adolescente', cls:'mod-cria'},
+  'PGSS':  {label:'Planej. e Gestão',      cls:'mod-pgss'},
+  'ASA1':  {label:'ASA 1 (Dermato)',       cls:'mod-asa1'},
 };
+
+// ─────────────────────────────────────────────
+//  HORÁRIO PADRÃO — grade semanal fixa (M5 2025.2)
+//  Fonte: plano de horário oficial da coordenação (documento M5_2025_2.pdf)
+// ─────────────────────────────────────────────
+const HP_VERDE = {mod:null, txt:'Horário Verde', local:'', verde:true};
+const HORARIO_PADRAO = [
+  {time:'7H30–8H20', dias:[
+    {mod:'MULH', txt:'Prática Ginecologia', local:'Metade: Amb. Gineco HC · Metade: Salas 3, 4 e Tutorias FMR'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Prática', local:'Amb. Dermato HC / Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica CIPE · Metade: Prática', local:'Anfiteatro 4 HC / HC'},
+    {mod:'MULH', txt:'Patologia / Imagem', local:'Sala 1 FMR'},
+    {mod:'GRN',  txt:'Prática', local:'Vários locais — vide plano'},
+  ]},
+  {time:'8H20–9H10', dias:[
+    {mod:'MULH', txt:'Prática Ginecologia', local:'Metade: Amb. Gineco HC · Metade: Salas 3, 4 e Tutorias FMR'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Prática', local:'Amb. Dermato HC / Anfiteatro 4 HC'},
+    {mod:'MULH', txt:'Patologia / Imagem', local:'Sala 1 FMR'},
+    {mod:'CRIA', txt:'Metade: Teórica Pediatria · Metade: Prática', local:'Anfiteatro 4 HC / HC'},
+    {mod:'GRN',  txt:'Prática', local:'Vários locais — vide plano'},
+  ]},
+  {time:'9H20–10H10', dias:[
+    {mod:'MULH', txt:'Prática Ginecologia', local:'Metade: Amb. Gineco HC · Metade: Salas 3, 4 e Tutorias FMR'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Prática', local:'Amb. Dermato HC / Anfiteatro 4 HC'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'GRN',  txt:'Prática', local:'Vários locais — vide plano'},
+  ]},
+  {time:'10H10–11H', dias:[
+    {mod:'GRN',  txt:'Teórica Obstetrícia', local:'Sala 5 FMR'},
+    {mod:'GRN',  txt:'Teórica Neonatologia', local:'Anfiteatro 4 HC'},
+    {mod:'MULH', txt:'Teórica Ginecologia', local:'Anfiteatro 4 HC'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Teórica', local:'Anfiteatro 4 HC'},
+  ]},
+  {time:'11H10–12H', dias:[
+    {mod:'GRN',  txt:'Teórica Obstetrícia', local:'Sala 5 FMR'},
+    {mod:'GRN',  txt:'Teórica Neonatologia', local:'Anfiteatro 4 HC'},
+    {mod:'MULH', txt:'Teórica Ginecologia', local:'Anfiteatro 4 HC'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Teórica', local:'Anfiteatro 4 HC'},
+  ]},
+  {time:'12H–12H50', dias:[
+    {mod:'GRN', txt:'Teórica Obstetrícia', local:'Sala 5 FMR'},
+    null, null, null,
+    HP_VERDE,
+  ]},
+  {time:'13H–13H50', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Teórica Pediatria', local:'Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    HP_VERDE,
+  ]},
+  {time:'13H50–14H40', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Teórica Pediatria', local:'Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    HP_VERDE,
+  ]},
+  {time:'14H50–15H40', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Teórica Pediatria', local:'Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    HP_VERDE,
+  ]},
+  {time:'15H40–16H30', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    null,
+    HP_VERDE,
+  ]},
+  {time:'16H40–17H30', dias:[
+    HP_VERDE, null, null, null, HP_VERDE,
+  ]},
+];
+function renderHorarioPadrao(){
+  const el=document.getElementById('hp-tbody');
+  if(!el) return;
+  el.innerHTML = HORARIO_PADRAO.map(row=>{
+    const cells = row.dias.map(d=>{
+      if(!d) return '<td style="padding:4px 6px;color:var(--text3);border-top:1px solid var(--border);">—</td>';
+      if(d.verde) return '<td style="padding:4px 6px;border-top:1px solid var(--border);background:var(--green-bg);color:var(--green-text);font-weight:700;border-radius:4px;">Horário Verde</td>';
+      const meta=MOD_META[d.mod]||{label:d.mod,cls:''};
+      return `<td style="padding:4px 6px;border-top:1px solid var(--border);vertical-align:top;">
+        <div class="${meta.cls}" style="padding:3px 6px;border-radius:5px;">
+          <div style="font-weight:700;">${meta.label}</div>
+          <div style="font-weight:400;">${d.txt}</div>
+          <div style="font-size:9px;opacity:.75;">${d.local}</div>
+        </div>
+      </td>`;
+    }).join('');
+    return `<tr><td style="padding:4px 6px;font-weight:700;white-space:nowrap;border-top:1px solid var(--border);vertical-align:top;">${row.time}</td>${cells}</tr>`;
+  }).join('');
+}
 
 const TIPO_META = {
   'teo':    {label:'Teórica',  cls:'ag-tipo-teo'},
@@ -1735,7 +1293,7 @@ function buildAgDays(){
 function patchAgendaDates(){
   if(typeof PROVAS_DEF==='undefined') return;
   let state={};
-  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}');}catch(e){}
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}');}catch(e){}
   const dateMap={};
   PROVAS_DEF.forEach(p=>{
     dateMap[p.id]=(state[p.id]&&state[p.id].date)||p.date;
@@ -1901,55 +1459,28 @@ function renderAgDay(){
 // ─────────────────────────────────────────────
 // tipo: 'teo' = teórica | 'prat' = prática/cenários
 const PROVAS_DEF = [
-  // ── Abril ──
-  {id:'prat_ictc_anat_1',label:'Prática Anatomia (P1)',    tipo:'prat', date:'2026-04-07', module:'ICTC', grupo:'P1 ICTC'},
-  {id:'p1_sai',          label:'P1 SAI',                          tipo:'teo',  date:'2026-04-13', module:'SAI',             grupo:'P1 SAI'},
-  {id:'p1_anat',         label:'P1 Anatomia Topográfica',         tipo:'teo',  date:'2026-04-14', module:'ICTC', grupo:'P1 ICTC'},
-  {id:'p1_btm',          label:'P1 BTM',                          tipo:'teo',  date:'2026-04-15', module:'BTM',             grupo:'P1 BTM'},
-  {id:'p1_ictc',         label:'P1 ICTC — Cirurgia',              tipo:'teo',  date:'2026-04-22', module:'ICTC', grupo:'P1 ICTC'},
-  {id:'p1_sca',          label:'P1 SCA',                           tipo:'teo',  date:'2026-04-29', module:'SCA', grupo:'P1 SCA'},
-  // ── P2 SCA (17/06) ──
-  {id:'p2_sca',          label:'P2 SCA',                           tipo:'teo',  date:'2026-06-17', module:'SCA', grupo:'P2 SCA'},
-  // ── P3 SCA = Cenários Clínicos (30/04) + Prova Prática Sub A (18/06) ──
-  {id:'prat_sca_cenario',label:'Cenários Clínicos SCA',            tipo:'prat', date:'2026-04-30', module:'SCA', grupo:'P3 SCA', grupoSort:'2026-06-18'},
-  {id:'prat_sca_ef',     label:'Prova Prática SCA (Sub A — 18/06)',tipo:'prat', date:'2026-06-18', module:'SCA', grupo:'P3 SCA', grupoSort:'2026-06-18'},
-  // ── Maio ──
-  {id:'p1_dpp',          label:'P1 DPP + Relatório',              tipo:'teo',  date:'2026-05-05', module:'DPP',             grupo:'P1 DPP'},
-  {id:'p1_ramel',        label:'P1 RAMEL',                        tipo:'teo',  date:'2026-05-19', module:'RAMEL',           grupo:'P1 RAMEL'},
-  {id:'p2_btm',          label:'P2 BTM',                          tipo:'teo',  date:'2026-05-13', module:'BTM',             grupo:'P2 BTM'},
-  {id:'prat_sai_gineco', label:'Prática SAI — Gineco',            tipo:'prat', date:'2026-05-18', module:'SAI',             grupo:'P2 SAI'},
-  // ── Junho ──
-  {id:'prat_sai_clinica_a',label:'Prática Clínica (Sub A)',tipo:'prat', date:'2026-06-01', module:'SAI',            grupo:'P2 SAI'},
-  
-  
-  {id:'prat_sai_neuro_a',  label:'Prática Neuro (Sub A)', tipo:'prat', date:'2026-06-08', module:'SAI',            grupo:'P2 SAI'},
-  {id:'p3_btm',          label:'P3 BTM',                          tipo:'teo',  date:'2026-06-10', module:'BTM',             grupo:'P3 BTM'},
-  {id:'p2_sai',          label:'P2 SAI',                          tipo:'teo',  date:'2026-06-15', module:'SAI',             grupo:'P2 SAI'},
-  {id:'p2_ramel',        label:'P2 RAMEL',                        tipo:'teo',  date:'2026-06-17', module:'RAMEL',           grupo:'P2 RAMEL'},
-  // ── Junho/Julho ──
-  {id:'p2_dpp',          label:'P2 DPP I',                        tipo:'teo',  date:'2026-06-30', module:'DPP',             grupo:'P2 DPP'},
-  {id:'p2_anat',         label:'P2 Anatomia Topográfica',         tipo:'teo',  date:'2026-06-30', module:'ICTC', grupo:'P2 ICTC'},
-  {id:'prat_ictc_anat_2',label:'Prática Anatomia (P2)',    tipo:'prat', date:'2026-06-30', module:'ICTC', grupo:'P2 ICTC'},
-  {id:'p2_ictc',         label:'P2 ICTC — Cirurgia',              tipo:'teo',  date:'2026-07-01', module:'ICTC', grupo:'P2 ICTC'},
-  {id:'prat_ictc_sut',   label:'Prática Cirurgia — Suturas',  tipo:'prat', date:'2026-06-12', module:'ICTC', grupo:'P2 ICTC'},
+  // Calendário de provas do M5 (2025.2) — vazio por enquanto.
+  // Assim que as datas de P1/P2/P3 de cada módulo saírem, entram aqui no formato:
+  // {id:'p1_mulh', label:'P1 Saúde da Mulher', tipo:'teo', date:'AAAA-MM-DD', module:'MULH', grupo:'P1 Saúde da Mulher'},
+  // module deve usar uma das chaves: MULH, GRN, CRIA, PGSS, ASA1
 ];
 
 function loadProvasState(){
-  try{ return JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}'); }catch(e){return{};}
+  try{ return JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}'); }catch(e){return{};}
 }
 function saveProvasState(state){
-  localStorage.setItem('arthur_provas_cal_v2', JSON.stringify(state));
+  localStorage.setItem('arthur_provas_cal_m5', JSON.stringify(state));
   // Sincronizar no Firebase se conectado
   if(typeof firebase!=='undefined' && firebase.apps.length){
-    try{ firebase.database().ref('dashboard/provas_cal').set(state); }catch(e){}
+    try{ firebase.database().ref('dashboard/m5/provas_cal').set(state); }catch(e){}
   }
 }
 function initProvasSync(){
   if(typeof firebase==='undefined'||!firebase.apps.length) return;
-  firebase.database().ref('dashboard/provas_cal').on('value', snapshot=>{
+  firebase.database().ref('dashboard/m5/provas_cal').on('value', snapshot=>{
     const data=snapshot.val();
     if(!data) return;
-    localStorage.setItem('arthur_provas_cal_v2', JSON.stringify(data));
+    localStorage.setItem('arthur_provas_cal_m5', JSON.stringify(data));
     if(document.getElementById('view-provas').style.display!=='none') renderProvas();
   });
 }
@@ -2087,21 +1618,21 @@ function setProvSubTab(tab, btn){
 //  NOTAS DE PROVAS
 // ─────────────────────────────────────────────
 function loadNotas(){
-  try{ return JSON.parse(localStorage.getItem('arthur_notas_v1')||'{}'); }catch(e){return{};}
+  try{ return JSON.parse(localStorage.getItem('arthur_notas_m5')||'{}'); }catch(e){return{};}
 }
 function saveNotas(n){
-  localStorage.setItem('arthur_notas_v1', JSON.stringify(n));
+  localStorage.setItem('arthur_notas_m5', JSON.stringify(n));
   // Sincronizar no Firebase se conectado
   if(typeof firebase!=='undefined' && firebase.apps.length){
-    try{ firebase.database().ref('dashboard/notas').set(n); }catch(e){}
+    try{ firebase.database().ref('dashboard/m5/notas').set(n); }catch(e){}
   }
 }
 function initNotasSync(){
   if(typeof firebase==='undefined'||!firebase.apps.length) return;
-  firebase.database().ref('dashboard/notas').on('value', snapshot=>{
+  firebase.database().ref('dashboard/m5/notas').on('value', snapshot=>{
     const data=snapshot.val();
     if(!data) return;
-    localStorage.setItem('arthur_notas_v1', JSON.stringify(data));
+    localStorage.setItem('arthur_notas_m5', JSON.stringify(data));
     // Re-renderizar sub-aba de notas se estiver visível
     const notasSub=document.getElementById('prov-sub-notas');
     if(notasSub && notasSub.style.display!=='none') renderNotas();
@@ -2133,12 +1664,11 @@ function saveNotaCard(id){
 
 // Ordem e cores dos módulos
 const NOTA_MODULES = [
-  {key:'SAI',   label:'SAI',   sub:'Semiologia do Adulto e Idoso',          color:'#D07050'},
-  {key:'SCA',   label:'SCA',   sub:'Semiologia da Criança e Adolescente',    color:'#EF9F27'},
-  {key:'BTM',   label:'BTM',   sub:'Bases do Tratamento Médico',             color:'#378ADD'},
-  {key:'ICTC',  label:'ICTC',  sub:'Clínica e Técnica Cirúrgica + Anatomia', color:'#1D9E75'},
-  {key:'RAMEL', label:'RAMEL', sub:'Radiologia e Exames Laboratoriais',      color:'#D85A30'},
-  {key:'DPP',   label:'DPP',   sub:'Desenvolvimento Pessoal e Profissional', color:'#639922'},
+  {key:'MULH', label:'Saúde da Mulher',       sub:'Ginecologia, Patologia, Imagem',           color:'#D4537E'},
+  {key:'GRN',  label:'Gestante e RN',         sub:'Obstetrícia, Neonatologia',                color:'#7B5EC7'},
+  {key:'CRIA', label:'Criança e Adolescente', sub:'Pediatria, Cirurgia Pediátrica (CIPE)',    color:'#EF9F27'},
+  {key:'PGSS', label:'Planej. e Gestão',      sub:'Planejamento e Gestão de Serviços de Saúde',color:'#4A90A4'},
+  {key:'ASA1', label:'ASA 1 (Dermato)',       sub:'Assistência à Saúde do Adulto 1',          color:'#B5651D'},
 ];
 
 function notaBigClass(nota){
@@ -2158,7 +1688,7 @@ function notaBigTxt(nota){
 function renderNotas(){
   const notas = loadNotas();
   let state={};
-  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_v2')||'{}');}catch(e){}
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}');}catch(e){}
 
   const provas = PROVAS_DEF.map(p=>{
     const dateISO=(state[p.id]&&state[p.id].date)||p.date;
@@ -2295,57 +1825,49 @@ function renderNotas(){
 // Carga horária total e limite de 25% (em nº de aulas de 50min)
 // 1h = 1,2 aulas de 50min → limite_aulas = floor(CH_horas * 0.25 * 1.2)
 const FALTA_META = {
-  'SAI — Clínica':    {ch:150, label:'SAI (Clínica)'},
-  'SAI — Neurologia': {ch:150, label:'SAI (Neurologia)'},
-  'SAI — Gineco':     {ch:150, label:'SAI (Gineco)'},
-  'SCA':              {ch:60,  label:'SCA'},
-  'ICTC — Cirurgia':  {ch:135, label:'ICTC (Cirurgia)'},
-  'ICTC — Anatomia':  {ch:135, label:'ICTC (Anatomia)'},
-  'BTM':              {ch:60,  label:'BTM'},
-  'RAMEL':            {ch:75,  label:'RAMEL'},
-  'DPP':              {ch:45,  label:'DPP 1'},
-  'FABS 2':           {ch:75,  label:'FABS 2'},
+  'Assistência à Saúde da Mulher':                      {ch:105, label:'Saúde da Mulher'},
+  'Assistência à Saúde da Gestante e do Recém-Nascido': {ch:120, label:'Gestante e RN'},
+  'Assistência à Saúde da Criança e do Adolescente':    {ch:210, label:'Criança e Adolescente'},
+  'Planejamento e Gestão de Serviços de Saúde':         {ch:45,  label:'Planej. e Gestão'},
+  'ASA 1 (Dermato)':                                    {ch:75,  label:'ASA 1 (Dermato)'},
 };
-// SAI é um módulo único de 150h que engloba Clínica, Neuro e Gineco juntos.
-// Para fins de falta, agrupamos SAI como um só bloco.
+// Cada módulo do M5 já é um bloco único (sem submódulos como no M4/SAI).
 const FALTA_GROUPS = [
-  {key:'SAI',      label:'SAI — Semiologia do Adulto e Idoso', ch:150, subjects:['SAI — Clínica','SAI — Neurologia','SAI — Gineco'], badge:'sb-sai-c'},
-  {key:'SCA',      label:'SCA — Semiologia da Criança e Adolescente', ch:60,  subjects:['SCA'],             badge:'sb-sca'},
-  {key:'ICTC',     label:'ICTC — Introdução à Clínica e Técnica Cirúrgica', ch:135, subjects:['ICTC — Cirurgia','ICTC — Anatomia'], badge:'sb-ictc-c'},
-  {key:'BTM',      label:'BTM — Bases do Tratamento Médico', ch:60,  subjects:['BTM'],             badge:'sb-btm'},
-  {key:'RAMEL',    label:'RAMEL — Radiologia e Exames Laboratoriais', ch:75,  subjects:['RAMEL'],           badge:'sb-ramel'},
-  {key:'DPP',      label:'DPP 1 — Desenvolvimento Pessoal e Profissional', ch:45,  subjects:['DPP'],             badge:'sb-dpp'},
-  {key:'FABS 2',   label:'FABS 2 — Fundamentos da Atenção Básica', ch:75,  subjects:['FABS 2'],          badge:'sb-fabs'},
+  {key:'MULH', label:'Assistência à Saúde da Mulher',                      ch:105, subjects:['Assistência à Saúde da Mulher'],                      badge:'sb-mulh'},
+  {key:'GRN',  label:'Assistência à Saúde da Gestante e do Recém-Nascido', ch:120, subjects:['Assistência à Saúde da Gestante e do Recém-Nascido'], badge:'sb-grn'},
+  {key:'CRIA', label:'Assistência à Saúde da Criança e do Adolescente',    ch:210, subjects:['Assistência à Saúde da Criança e do Adolescente'],    badge:'sb-cria'},
+  {key:'PGSS', label:'Planejamento e Gestão de Serviços de Saúde',         ch:45,  subjects:['Planejamento e Gestão de Serviços de Saúde'],         badge:'sb-pgss'},
+  {key:'ASA1', label:'ASA 1 (Dermato) — Assist. à Saúde do Adulto 1',      ch:75,  subjects:['ASA 1 (Dermato)'],                                    badge:'sb-asa1'},
 ];
 // limite em aulas de 50min: floor(ch * 0.25 * 60/50)
 function calcLimiteAulas(ch){ return Math.floor(ch * 0.25 * 60 / 50); }
 
 function loadFaltas(){
   let saved={};
-  try{ saved=JSON.parse(localStorage.getItem('arthur_faltas_v2')||'{}'); }catch(e){}
+  try{ saved=JSON.parse(localStorage.getItem('arthur_faltas_m5')||'{}'); }catch(e){}
   const result={};
   FALTA_GROUPS.forEach(g=>{ result[g.key]={count: saved[g.key]?.count ?? 0}; });
   return result;
 }
 function saveFaltas(f){
-  localStorage.setItem('arthur_faltas_v2', JSON.stringify(f));
+  localStorage.setItem('arthur_faltas_m5', JSON.stringify(f));
   // sincronizar no Firebase se estiver conectado
   if(typeof firebase!=='undefined' && firebase.apps.length){
-    try{ firebase.database().ref('dashboard/faltas').set(f); }catch(e){}
+    try{ firebase.database().ref('dashboard/m5/faltas').set(f); }catch(e){}
   }
 }
 
 // ouvir mudanças de faltas do Firebase em tempo real
 function initFaltasSync(){
   if(typeof firebase==='undefined'||!firebase.apps.length) return;
-  firebase.database().ref('dashboard/faltas').on('value', snapshot=>{
+  firebase.database().ref('dashboard/m5/faltas').on('value', snapshot=>{
     const data=snapshot.val();
     if(!data) return;
     // merge com todos os grupos conhecidos
     const merged={};
     FALTA_GROUPS.forEach(g=>{ merged[g.key]={count: data[g.key]?.count ?? 0}; });
     // salvar local também para fallback offline
-    localStorage.setItem('arthur_faltas_v2', JSON.stringify(merged));
+    localStorage.setItem('arthur_faltas_m5', JSON.stringify(merged));
     // re-renderizar se a aba estiver visível
     if(document.getElementById('view-faltas').style.display!=='none') renderFaltas();
   });
@@ -2414,6 +1936,7 @@ document.getElementById('new-text').addEventListener('keydown',e=>{if(e.key==='E
 const now=new Date();
 document.getElementById('date-label').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 initDragDrop();
+renderHorarioPadrao();
 const cfg=loadConfig();
 initFirebase(cfg.dbUrl, cfg.apiKey);
 </script>
