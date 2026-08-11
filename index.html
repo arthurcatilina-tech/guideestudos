@@ -2,283 +2,2316 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>Gastos</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Arthur Henrique | Medicina UFPE | M5 2025.2</title>
+
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CONFIGURAÇÃO DO FIREBASE — FAÇA ISSO UMA VEZ SÓ               ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║  1. Acesse: https://console.firebase.google.com                 ║
+  ║  2. Clique em "Adicionar projeto" → dê um nome → continuar      ║
+  ║  3. No menu lateral: Build → Realtime Database → Criar banco     ║
+  ║     - Escolha "Modo de teste" (por 30 dias, depois ajusta)      ║
+  ║  4. No menu lateral: Configurações do projeto (⚙️)              ║
+  ║     - Role até "Seus apps" → clique em </> (Web)                ║
+  ║     - Copie o bloco firebaseConfig e cole SUBSTITUINDO           ║
+  ║       o objeto FIREBASE_CONFIG abaixo                           ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+
 <style>
-:root {
-  --bg:#0b0f1a; --bg2:#111827; --bg3:#1a2235; --bg4:#222d42;
-  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
-  --silver:#a8b4c8; --silver2:#cdd5e0; --silver3:#e8edf4;
-  --muted:#4a5568; --accent:#4f8ef7; --accent2:#7eb3ff;
-  --text:#e8edf4; --text2:#a8b4c8; --text3:#5a6880;
-  --danger:#e07070; --success:#5db88a;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{background:var(--bg);font-size:16px;}
-.app{max-width:480px;margin:0 auto;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);min-height:100vh;}
-.screen{display:none;padding:24px 18px 110px;animation:fadeUp .3s ease;}
-.screen.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.month-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.month-bar button{background:none;border:1px solid var(--border2);border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;color:var(--silver);display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.month-bar button:active{background:var(--bg3);}
-.month-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;letter-spacing:.02em;color:var(--text);}
-.hero{background:linear-gradient(135deg,#131d35 0%,#0d1628 100%);border:1px solid var(--border2);border-radius:24px;padding:32px 26px 26px;margin-bottom:24px;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(79,142,247,.12);}
-.hero::after{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;border:1px solid rgba(79,142,247,.07);}
-.hero-label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;}
-.hero-value{font-family:'Cormorant Garamond',serif;font-size:58px;font-weight:300;color:var(--silver3);line-height:1;margin-bottom:26px;letter-spacing:-.01em;}
-.hero-value .prefix{font-size:24px;color:var(--accent2);font-weight:400;vertical-align:top;margin-top:14px;display:inline-block;margin-right:3px;}
-.hero-row{display:flex;border-top:1px solid rgba(255,255,255,.06);padding-top:20px;}
-.hero-stat{flex:1;}
-.hero-stat+.hero-stat{border-left:1px solid rgba(255,255,255,.06);padding-left:18px;}
-.hero-stat-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(168,180,200,.4);margin-bottom:5px;}
-.hero-stat-val{font-size:16px;font-weight:300;color:var(--silver2);}
-.hero-stat-val.accent{color:var(--accent2);}
-.hero-stat-val.danger{color:var(--danger);}
-.hero-stat-val.success{color:var(--success);}
-.meta-wrap{margin-bottom:24px;}
-.meta-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.meta-label-row span{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);}
-.meta-label-row .meta-pct{font-size:13px;color:var(--accent2);}
-.meta-bar-track{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
-.meta-bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .5s ease;}
-.meta-bar-fill.over{background:var(--danger);}
-.meta-input-row{display:flex;align-items:center;gap:10px;margin-top:12px;}
-.meta-input-row label{font-size:13px;color:var(--text3);white-space:nowrap;}
-.meta-input-row input{flex:1;font-size:16px;font-family:'DM Sans',sans-serif;border:none;border-bottom:1px solid var(--border2);padding:8px 0;background:transparent;color:var(--text);outline:none;}
-.meta-input-row input:focus{border-bottom-color:var(--accent);}
-.section-head{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;font-style:italic;color:var(--silver);margin-bottom:14px;}
-.cat-bars{display:flex;flex-direction:column;background:var(--bg2);border-radius:20px;border:1px solid var(--border);overflow:hidden;margin-bottom:24px;}
-.cat-bar-row{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border);}
-.cat-bar-row:last-child{border-bottom:none;}
-.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.cat-name{font-size:14px;color:var(--silver);width:95px;flex-shrink:0;}
-.cat-track{flex:1;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
-.cat-fill{height:100%;border-radius:2px;transition:width .5s;}
-.cat-amt{font-size:13px;color:var(--text3);min-width:78px;text-align:right;font-variant-numeric:tabular-nums;}
-.chart-wrap{background:var(--bg2);border-radius:20px;border:1px solid var(--border);padding:18px;margin-bottom:24px;}
-.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);}
-.legend-sq{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
-.form-wrap{background:var(--bg2);border-radius:20px;border:1px solid var(--border);padding:22px 20px;margin-bottom:24px;}
-.field{margin-bottom:22px;}
-.field label{display:block;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
-.field input,.field select{width:100%;font-size:17px;font-family:'DM Sans',sans-serif;border:none;border-bottom:1px solid var(--border2);padding:10px 0;background:transparent;color:var(--text);outline:none;-webkit-appearance:none;appearance:none;border-radius:0;}
-.field input::placeholder{color:var(--muted);}
-.field input:focus,.field select:focus{border-bottom-color:var(--accent);}
-.field select option{background:var(--bg2);color:var(--text);}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.btn-add{width:100%;background:var(--accent);border:none;border-radius:14px;padding:18px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;margin-top:6px;}
-.btn-add:active{opacity:.8;}
-.expense-list{display:flex;flex-direction:column;background:var(--bg2);border-radius:20px;border:1px solid var(--border);overflow:hidden;}
-.day-group-label{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--text3);padding:12px 18px 8px;background:var(--bg3);}
-.expense-item{display:flex;align-items:center;gap:14px;padding:18px;border-bottom:1px solid var(--border);}
-.expense-item:last-child{border-bottom:none;}
-.cat-dot-lg{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.e-info{flex:1;min-width:0;}
-.e-desc{font-size:16px;color:var(--silver2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.e-cat{font-size:12px;color:var(--text3);margin-top:3px;}
-.e-amt{font-size:16px;color:var(--silver);font-variant-numeric:tabular-nums;flex-shrink:0;}
-.e-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:22px;padding:6px;flex-shrink:0;}
-.e-del:active{color:var(--danger);}
-.empty{font-size:18px;color:var(--text3);text-align:center;padding:3rem 0;font-style:italic;font-family:'Cormorant Garamond',serif;}
-.annual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;}
-.annual-cell{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 12px;}
-.annual-cell.current{border-color:rgba(79,142,247,.4);}
-.annual-month{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
-.annual-val{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--silver);}
-.annual-val.current{color:var(--accent2);}
-.annual-val.empty-val{color:var(--muted);font-style:italic;}
-.bottom-nav{display:flex;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(11,15,26,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border2);z-index:100;}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 4px 18px;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);transition:color .2s;}
-.nav-btn.active{color:var(--accent2);}
-.nav-icon{font-size:22px;line-height:1;}
+  :root {
+    --bg:#f5f4f0; --bg2:#edecea; --bg3:#e4e2dc;
+    --text:#1a1a18; --text2:#6b6b67; --text3:#9e9d99;
+    --border:rgba(0,0,0,0.1); --border2:rgba(0,0,0,0.18);
+    --white:#ffffff;
+    --green:#1D9E75; --green-bg:#EAF3DE; --green-text:#3B6D11;
+    --blue:#378ADD;  --blue-bg:#E6F1FB;  --blue-text:#185FA5;
+    --amber:#BA7517; --amber-bg:#FAEEDA; --amber-text:#854F0B;
+    --red:#E24B4A;   --red-bg:#FCEBEB;   --red-text:#A32D2D;
+    --radius:10px; --radius-sm:7px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{
+      --bg:#1a1a18; --bg2:#242422; --bg3:#2e2e2b;
+      --text:#eae8e1; --text2:#9e9d99; --text3:#6b6b67;
+      --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
+      --white:#242422;
+      --green-bg:#0d2e1a; --green-text:#5fcfa0;
+      --blue-bg:#0d1e30;  --blue-text:#7ab8f0;
+      --amber-bg:#2e1e06; --amber-text:#f0b060;
+      --red-bg:#2e0d0d;   --red-text:#f07070;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .app{max-width:680px;margin:0 auto;padding:1.2rem 1rem 4rem;}
+
+  /* sync banner */
+  .sync-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:var(--radius-sm);font-size:11px;margin-bottom:1rem;transition:all .3s;}
+  .sync-bar.ok   {background:#EAF3DE;color:#3B6D11;}
+  .sync-bar.err  {background:#FCEBEB;color:#A32D2D;}
+  .sync-bar.load {background:#E6F1FB;color:#185FA5;}
+  .sync-bar.warn {background:#FAEEDA;color:#854F0B;}
+  .sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .sync-bar.ok   .sync-dot{background:#1D9E75;}
+  .sync-bar.err  .sync-dot{background:#E24B4A;}
+  .sync-bar.load .sync-dot{background:#378ADD;animation:pulse 1s infinite;}
+  .sync-bar.warn .sync-dot{background:#BA7517;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* setup card */
+  .setup-card{background:var(--amber-bg);border:1px solid rgba(186,117,23,.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:1rem;font-size:12px;color:var(--amber-text);line-height:1.7;}
+  .setup-card h3{font-size:13px;font-weight:700;margin-bottom:6px;}
+  .setup-card code{background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:11px;}
+  .setup-card a{color:var(--amber-text);font-weight:700;}
+  .setup-input{width:100%;margin-top:8px;height:34px;border:1px solid rgba(186,117,23,.4);border-radius:var(--radius-sm);padding:0 10px;font-size:12px;background:var(--white);color:var(--text);font-family:monospace;}
+  .setup-btn{margin-top:8px;height:34px;padding:0 16px;background:#BA7517;color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+  .setup-btn:active{opacity:.85;}
+
+  .header{margin-bottom:1rem;}
+  .header h1{font-size:19px;font-weight:600;letter-spacing:-.3px;}
+  .header-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:1rem;}
+  .stat{background:var(--bg2);border-radius:var(--radius-sm);padding:9px 10px;}
+  .stat-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
+  .stat-num{font-size:20px;font-weight:600;}
+  .n-done{color:#1D9E75;} .n-todo{color:#378ADD;} .n-due{color:#E24B4A;} .n-rev{color:#BA7517;}
+  .progress-bar{height:5px;background:var(--bg3);border-radius:99px;overflow:hidden;margin-bottom:3px;}
+  .progress-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width .4s;}
+  .progress-label{font-size:11px;color:var(--text3);text-align:right;margin-bottom:1.1rem;}
+  .section-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+  .status-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+  .stab{height:28px;padding:0 13px;font-size:12px;border:1px solid var(--border2);border-radius:99px;background:none;color:var(--text2);cursor:pointer;white-space:nowrap;}
+  .stab.active{background:var(--bg2);color:var(--text);font-weight:600;}
+  .nav{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.1rem;}
+  .nav-btn{flex:1;height:36px;border:none;background:none;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .nav-btn.active{color:var(--text);border-bottom-color:var(--text);}
+  .sub-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+  .chip{height:28px;padding:0 12px;font-size:11px;border-radius:99px;cursor:pointer;border:none;font-weight:700;transition:opacity .15s;opacity:1;}
+  .chip:not(.active){opacity:.3;}
+  .chip-all    {background:#e4e2dc;color:#1a1a18;}
+  .chip-sai-c  {background:#F5C4B3;color:#993C1D;}
+  .chip-sai-n  {background:#AFA9EC;color:#26215C;}
+  .chip-sai-g  {background:#F4C0D1;color:#4B1528;}
+  .chip-sca    {background:#FAC775;color:#412402;}
+  .chip-ictc-c {background:#9FE1CB;color:#04342C;}
+  .chip-ictc-a {background:#5DCAA5;color:#04342C;}
+  .chip-btm    {background:#B5D4F4;color:#042C53;}
+  .chip-ramel  {background:#F0997B;color:#4A1B0C;}
+  .chip-dpp    {background:#C0DD97;color:#173404;}
+  .chip-fabs   {background:#D3D1C7;color:#2C2C2A;}
+  .chip-mulh   {background:#F4C0D1;color:#8A1F45;}
+  .chip-grn    {background:#D8CFF5;color:#4A2E8C;}
+  .chip-cria   {background:#FAC775;color:#8A5A0B;}
+  .chip-pgss   {background:#B7DCE3;color:#1F5866;}
+  .chip-asa1   {background:#E8C7A3;color:#7A3E0F;}
+  .add-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem;}
+  .add-row input,.add-row select{height:36px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:13px;padding:0 10px;}
+  .add-row input{flex:1;min-width:140px;}
+  .add-row select{font-size:12px;padding:0 7px;}
+  .add-row button{height:36px;padding:0 14px;border:none;border-radius:var(--radius-sm);background:#1D9E75;color:#fff;font-size:13px;font-weight:600;cursor:pointer;}
+  .add-row button:active{opacity:.85;}
+  .lembrete{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:var(--radius-sm);background:#FAEEDA;border:1px solid rgba(186,117,23,.25);margin-bottom:1rem;font-size:12px;color:#854F0B;}
+  .lembrete-dot{width:7px;height:7px;border-radius:50%;background:#BA7517;flex-shrink:0;}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;font-size:11px;color:var(--text2);align-items:center;}
+  .prova-group{margin-bottom:1.3rem;}
+  .prova-header{display:flex;align-items:center;gap:8px;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+  .prova-tag{font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px;white-space:nowrap;}
+  .tag-high{background:#FCEBEB;color:#A32D2D;}
+  .tag-med {background:#FAEEDA;color:#854F0B;}
+  .tag-low {background:#edecea;color:#6b6b67;}
+  .prova-count{margin-left:auto;font-size:11px;color:#9e9d99;display:flex;align-items:center;gap:5px;}
+  .mini-bar{width:52px;height:4px;background:#e4e2dc;border-radius:99px;overflow:hidden;}
+  .mini-fill{height:100%;border-radius:99px;}
+  .mf-high{background:#E24B4A;} .mf-med{background:#BA7517;} .mf-done{background:#1D9E75;}
+  .item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border:1px solid var(--border);border-left:3px solid #ccc;border-radius:var(--radius);background:var(--white);margin-bottom:6px;transition:opacity .2s;}
+  .item.dim{opacity:1;}
+  .item[data-sub="SAI — Clínica"]    {border-left-color:#D07050;}
+  .item[data-sub="SAI — Neurologia"] {border-left-color:#AFA9EC;}
+  .item[data-sub="SAI — Gineco"]     {border-left-color:#D4537E;}
+  .item[data-sub="SCA"]              {border-left-color:#EF9F27;}
+  .item[data-sub="ICTC — Cirurgia"]  {border-left-color:#1D9E75;}
+  .item[data-sub="ICTC — Anatomia"]  {border-left-color:#0F6E56;}
+  .item[data-sub="BTM"]              {border-left-color:#378ADD;}
+  .item[data-sub="RAMEL"]            {border-left-color:#D85A30;}
+  .item[data-sub="DPP"]              {border-left-color:#639922;}
+  .item[data-sub="FABS 2"]           {border-left-color:#888780;}
+  .item[data-sub="Assistência à Saúde da Mulher"]                  {border-left-color:#D4537E;}
+  .item[data-sub="Assistência à Saúde da Gestante e do Recém-Nascido"]{border-left-color:#7B5EC7;}
+  .item[data-sub="Assistência à Saúde da Criança e do Adolescente"] {border-left-color:#EF9F27;}
+  .item[data-sub="Planejamento e Gestão de Serviços de Saúde"]     {border-left-color:#4A90A4;}
+  .item[data-sub="ASA 1 (Dermato)"]                                {border-left-color:#B5651D;}
+  .check{width:18px;height:18px;border:1.5px solid var(--border2);border-radius:5px;cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+  .check.on{background:#1D9E75;border-color:#1D9E75;}
+  .check.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);}
+  .item-body{flex:1;min-width:0;}
+  .item-text{font-size:13px;line-height:1.4;}
+  .item-text.done{text-decoration:line-through;color:var(--text2);}
+  .item-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;align-items:center;}
+  .sub-badge{font-size:10px;padding:2px 8px;border-radius:99px;white-space:nowrap;font-weight:700;}
+  .sb-sai-c  {background:#F5C4B3;color:#993C1D;}
+  .sb-sai-n  {background:#AFA9EC;color:#26215C;}
+  .sb-sai-g  {background:#F4C0D1;color:#4B1528;}
+  .sb-sca    {background:#FAC775;color:#412402;}
+  .sb-ictc-c {background:#9FE1CB;color:#04342C;}
+  .sb-ictc-a {background:#5DCAA5;color:#04342C;}
+  .sb-btm    {background:#B5D4F4;color:#042C53;}
+  .sb-ramel  {background:#F0997B;color:#4A1B0C;}
+  .sb-dpp    {background:#C0DD97;color:#173404;}
+  .sb-fabs   {background:#D3D1C7;color:#2C2C2A;}
+  .sb-mulh   {background:#F4C0D1;color:#8A1F45;}
+  .sb-grn    {background:#D8CFF5;color:#4A2E8C;}
+  .sb-cria   {background:#FAC775;color:#8A5A0B;}
+  .sb-pgss   {background:#B7DCE3;color:#1F5866;}
+  .sb-asa1   {background:#E8C7A3;color:#7A3E0F;}
+  .aula-tag{font-size:10px;padding:1px 7px;border-radius:99px;white-space:nowrap;font-weight:600;}
+  .aula-past  {background:#E8E7E3;color:#9e9d99;}
+  .aula-today {background:#1D9E75;color:#fff;}
+  .aula-future{background:#E6F1FB;color:#185FA5;}
+  /* ── Aulas já ministradas (passadas, não estudadas) ── */
+  .item.ministrada{
+    background: var(--bg2);
+    border-left-color:#bbb !important;
+    border-left-width:3px;
+  }
+  .item.ministrada .item-text{color:var(--text2);}
+  .item.ministrada .item-right::before{
+    content:'aula passada';
+    font-size:9px;
+    color:var(--text3);
+    display:block;
+    text-align:right;
+    margin-bottom:2px;
+  }
+  @media(prefers-color-scheme:dark){.item.ministrada{background:#222220;}}
+
+  /* ── Aulas futuras (ainda não ocorreram) ── */
+  .item.futura{
+    border-left-width:4px;
+    background: var(--white);
+    box-shadow: 0 1px 5px rgba(55,138,221,.12);
+  }
+  .item.futura .item-text{font-weight:500;}
+  .rev-tag{font-size:10px;padding:1px 6px;border-radius:99px;white-space:nowrap;font-weight:500;}
+  .rt-late {background:#FCEBEB;color:#A32D2D;}
+  .rt-today{background:#FAEEDA;color:#854F0B;}
+  .rt-soon {background:#E6F1FB;color:#185FA5;}
+  .rt-fut  {background:#edecea;color:#9e9d99;}
+  .item-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+  .status-badge{font-size:10px;padding:2px 7px;border-radius:99px;white-space:nowrap;font-weight:600;}
+  .sb-done{background:#EAF3DE;color:#3B6D11;}
+  .sb-todo{background:#E6F1FB;color:#185FA5;}
+  .del{font-size:17px;color:#9e9d99;background:none;border:none;cursor:pointer;line-height:1;padding:0;}
+  .del:hover{color:#E24B4A;}
+  .quality-row{display:flex;gap:5px;margin-top:6px;align-items:center;flex-wrap:wrap;}
+  .q-label{font-size:10px;color:#9e9d99;}
+  .qbtn{font-size:10px;padding:2px 8px;border-radius:99px;background:none;cursor:pointer;}
+  .qbtn-hard{border:1px solid #E24B4A;color:#A32D2D;}
+  .qbtn-ok  {border:1px solid #BA7517;color:#854F0B;}
+  .qbtn-easy{border:1px solid #1D9E75;color:#3B6D11;}
+  .qbtn:active{opacity:.75;}
+  .rev-banner{font-size:12px;color:var(--text2);padding:9px 13px;background:var(--bg2);border-radius:var(--radius-sm);margin-bottom:1rem;line-height:1.6;}
+  .empty{font-size:13px;color:var(--text3);text-align:center;padding:16px 0;line-height:1.8;}
+  .show-more{font-size:12px;color:var(--text2);cursor:pointer;padding:3px 0;display:inline-block;}
+  .show-more:hover{color:var(--text);}
+  .item-move-row{display:flex;align-items:center;gap:5px;margin-top:6px;}
+  .item-move-label{font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0;}
+  .item-move-sel{font-size:10px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text2);padding:2px 5px;cursor:pointer;flex:1;min-width:0;}
+  .item-origin-badge{font-size:10px;padding:1px 7px;border-radius:99px;background:var(--bg3);color:var(--text3);white-space:nowrap;font-style:italic;margin-top:3px;display:inline-block;}
+  .drag-handle{cursor:grab;color:var(--text3);font-size:16px;padding:0 4px 0 0;flex-shrink:0;margin-top:1px;user-select:none;touch-action:none;}
+  .drag-handle:active{cursor:grabbing;}
+  .item.dragging{opacity:.4;border-style:dashed;}
+  .prova-group.drag-over .prova-header{background:var(--blue-bg);border-radius:var(--radius-sm);transition:background .15s;}
+  .drop-label{font-size:11px;color:var(--blue-text);display:none;padding:2px 0 0 2px;}
+  .prova-group.drag-over .drop-label{display:block;}
+
+  /* ── AGENDA ── */
+  .ag-day-nav{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:1rem;scrollbar-width:none;}
+  .ag-day-nav::-webkit-scrollbar{display:none;}
+  .ag-day-btn{flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:7px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);cursor:pointer;min-width:52px;}
+  .ag-day-btn.active{background:var(--text);border-color:var(--text);}
+  .ag-day-btn.active .ag-dow{color:#fff;}
+  .ag-day-btn.active .ag-dd{color:#fff;}
+  .ag-day-btn.today{border-color:var(--green);border-width:2px;}
+  .ag-day-btn.today .ag-dow{color:var(--green);}
+  .ag-day-btn.today .ag-dd{color:var(--green);}
+  .ag-day-btn.active.today{background:var(--green);border-color:var(--green);}
+  .ag-day-btn.active.today .ag-dow,.ag-day-btn.active.today .ag-dd{color:#fff;}
+  .ag-dow{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;}
+  .ag-dd{font-size:17px;font-weight:700;color:var(--text);line-height:1.2;}
+  .ag-week-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+  .ag-week-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text1);transition:.15s;}
+  .ag-week-btn:hover{background:var(--accent);color:#fff;}
+  .ag-day-btn.has-prova{border-color:var(--red)!important;}
+  .ag-prova-dot{display:block;width:6px;height:6px;background:var(--red);border-radius:50%;margin:2px auto 0;}
+  #ag-week-nav span{font-size:12px;font-weight:700;color:var(--text1);white-space:nowrap;}
+  .ag-empty{font-size:13px;color:var(--text3);text-align:center;padding:24px 0;line-height:1.8;}
+  .ag-block{border:1px solid var(--border);border-radius:var(--radius);background:var(--white);margin-bottom:8px;overflow:hidden;}
+  .ag-block-header{display:flex;align-items:center;gap:8px;padding:9px 12px 7px;}
+  .ag-time{font-size:11px;font-weight:600;color:var(--text3);white-space:nowrap;min-width:80px;}
+  .ag-modulo{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;}
+  .ag-tipo{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600;white-space:nowrap;}
+  .ag-tipo-teo{background:var(--blue-bg);color:var(--blue-text);}
+  .ag-tipo-prat{background:var(--green-bg);color:var(--green-text);}
+  .ag-tipo-prova{background:var(--red-bg);color:var(--red-text);}
+  .ag-block-prova{border:2px solid var(--red)!important;background:var(--red-bg)!important;animation:provaGlow 2s ease-in-out infinite;}
+  .ag-block-prat-prova{border:2px solid var(--amber)!important;background:var(--amber-bg)!important;animation:provaGlow 2s ease-in-out infinite;}
+  .ag-tipo-prat-prova{background:#FFF3CC;color:#7A4F00;font-weight:700;padding:2px 8px;border-radius:99px;font-size:10px;white-space:nowrap;border:1px solid var(--amber);}
+  @keyframes provaGlow{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.15)}50%{box-shadow:0 0 0 6px rgba(220,38,38,.0)}}
+  .ag-titulo-prova{font-size:14px;font-weight:700;color:var(--red-text);}
+  .ag-livre{padding:8px 12px;border-radius:var(--radius-sm);background:var(--green-bg);color:var(--green-text);font-size:12px;margin-bottom:6px;opacity:.75;}
+  .ag-tipo-fabs{background:#F0EBF8;color:#6B3FA0;}
+  .ag-tipo-dpp{background:var(--amber-bg);color:var(--amber-text);}
+  .ag-block-body{padding:0 12px 10px;}
+  .ag-titulo{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:4px;}
+  .ag-detail{font-size:11px;color:var(--text2);margin-bottom:2px;}
+  .ag-detail span{color:var(--text3);margin-right:4px;}
+  .ag-feriado{background:var(--amber-bg);border-color:rgba(186,117,23,.2);padding:14px 14px;border-radius:var(--radius);margin-bottom:8px;font-size:13px;color:var(--amber-text);font-weight:600;}
+  /* cores por módulo */
+  .mod-sai-c{background:#FFF0EB;color:#C05020;border-left:3px solid #D07050;}
+  .mod-sai-n{background:#F4F2FF;color:#5A50C0;border-left:3px solid #8A80D0;}
+  .mod-sai-g{background:#FFF0F5;color:#C03070;border-left:3px solid #D06090;}
+  .mod-sca  {background:#FFF8E6;color:#8A6010;border-left:3px solid #EF9F27;}
+  .mod-ictc {background:#F0FFF8;color:#0A6040;border-left:3px solid #1D9E75;}
+  .mod-btm  {background:#EDF5FF;color:#1050A0;border-left:3px solid #378ADD;}
+  .mod-ramel{background:#FFF2EC;color:#A03010;border-left:3px solid #D85A30;}
+  .mod-dpp  {background:#F2F8E8;color:#3A6008;border-left:3px solid #78B020;}
+  .mod-fabs {background:#F5F0FF;color:#5A2090;border-left:3px solid #9B60D0;}
+  .mod-mulh {background:#FFF0F5;color:#8A1F45;border-left:3px solid #D4537E;}
+  .mod-grn  {background:#F2EFFF;color:#4A2E8C;border-left:3px solid #7B5EC7;}
+  .mod-cria {background:#FFF8E6;color:#8A5A0B;border-left:3px solid #EF9F27;}
+  .mod-pgss {background:#EAF6F8;color:#1F5866;border-left:3px solid #4A90A4;}
+  .mod-asa1 {background:#FBF0E4;color:#7A3E0F;border-left:3px solid #B5651D;}
+  @media(prefers-color-scheme:dark){
+    .mod-sai-c,.mod-sai-n,.mod-sai-g,.mod-sca,.mod-ictc,.mod-btm,.mod-ramel,.mod-dpp,.mod-fabs,.mod-mulh,.mod-grn,.mod-cria,.mod-pgss,.mod-asa1{background:var(--bg2);}
+  }
+
+  /* ── FALTAS ── */
+  .falta-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:13px 14px;margin-bottom:8px;}
+  .falta-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .falta-name{font-size:13px;font-weight:600;flex:1;}
+  .falta-status{font-size:10px;padding:2px 8px;border-radius:99px;white-space:nowrap;font-weight:600;}
+  .fs-ok    {background:var(--green-bg);color:var(--green-text);}
+  .fs-warn  {background:var(--amber-bg);color:var(--amber-text);}
+  .fs-danger{background:var(--red-bg);color:var(--red-text);}
+  .fs-none  {background:var(--bg2);color:var(--text3);}
+  .falta-bar-wrap{height:6px;background:var(--bg3);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .falta-bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+  .fb-ok    {background:var(--green);}
+  .fb-warn  {background:var(--amber);}
+  .fb-danger{background:var(--red);}
+  .falta-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .falta-count{font-size:22px;font-weight:600;min-width:30px;text-align:center;}
+  .falta-btn{width:32px;height:32px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+  .falta-btn:active{opacity:.7;}
+  .falta-limit-row{display:flex;align-items:center;gap:6px;margin-left:auto;}
+  .falta-limit-label{font-size:11px;color:var(--text3);}
+  .falta-limit-input{width:48px;height:28px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:12px;text-align:center;padding:0 4px;}
+  .falta-summary{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem;}
+  .falta-sum-item{flex:1;min-width:120px;background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;}
+  .falta-sum-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
+  .falta-sum-num{font-size:18px;font-weight:600;}
+  /* ── PROVAS CALENDÁRIO ── */
+  .prov-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
+  .prov-header-title{font-size:15px;font-weight:700;}
+  .prov-section-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 7px;}
+  /* card */
+  .prov-card{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--border2);border-radius:var(--radius);margin-bottom:6px;overflow:hidden;transition:all .3s;}
+  .prov-card.prov-pending{border-left:3px solid #1D9E75;}
+  .prov-card.prov-done{background:var(--bg2);border-left:3px solid transparent;border-color:var(--border);opacity:.38;filter:grayscale(.6);}
+  .prov-card-header{display:flex;align-items:center;gap:11px;padding:10px 13px;}
+  /* checkbox */
+  .prov-check{width:20px;height:20px;border:1.5px solid var(--border2);border-radius:6px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+  .prov-check.on{background:#1D9E75;border-color:#1D9E75;}
+  .prov-check.on::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);}
+  .prov-info{flex:1;min-width:0;}
+  .prov-name{font-size:13px;font-weight:600;line-height:1.35;color:var(--text);}
+  .prov-done .prov-name{color:var(--text3);text-decoration:line-through;}
+  /* tipo tag */
+  .prov-tipo{font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;white-space:nowrap;display:inline-block;margin-top:3px;}
+  .prov-tipo-teo {background:var(--blue-bg);color:var(--blue-text);}
+  .prov-tipo-prat{background:var(--green-bg);color:var(--green-text);}
+  /* data — só texto */
+  .prov-date-txt{font-size:12px;color:var(--text2);margin-top:1px;}
+  .prov-done .prov-date-txt{color:var(--text3);}
+  .prov-date-txt strong{color:var(--text);font-weight:600;}
+  .prov-done .prov-date-txt strong{color:var(--text3);}
+  /* countdown */
+  .prov-countdown{font-size:11px;font-weight:700;color:var(--text3);flex-shrink:0;text-align:right;min-width:36px;}
+  .prov-countdown.urgente{color:#E24B4A;}
+  .prov-countdown.breve  {color:#BA7517;}
+  /* edição */
+  .prov-edit-btn{font-size:14px;color:var(--text3);background:none;border:none;cursor:pointer;padding:0 2px;flex-shrink:0;line-height:1;opacity:.55;}
+  .prov-edit-btn:active{opacity:.25;}
+  .prov-edit-row{padding:0 13px 10px 44px;display:none;align-items:center;gap:8px;flex-wrap:wrap;}
+  .prov-edit-row.open{display:flex;}
+  .prov-edit-label{font-size:11px;color:var(--text2);white-space:nowrap;}
+  .prov-edit-input{height:30px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-size:12px;padding:0 8px;flex:1;min-width:130px;}
+  .prov-edit-save{height:30px;padding:0 12px;background:#1D9E75;color:#fff;border:none;border-radius:var(--radius-sm);font-size:11px;font-weight:700;cursor:pointer;}
+  .prov-edit-save:active{opacity:.85;}
+  /* ── PROVAS SUB-ABAS ── */
+  .prov-subtabs{display:flex;gap:0;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;}
+  .prov-subtab{flex:1;height:34px;border:none;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s;}
+  .prov-subtab.active{background:var(--text);color:var(--bg);}
+  .prov-subtab:not(:last-child){border-right:1px solid var(--border2);}
+  /* ── NOTAS — redesign ── */
+  /* painel de resumo */
+  .nota-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:1.2rem;}
+  .nota-sum-item{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:11px 12px;text-align:center;}
+  .nota-sum-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+  .nota-sum-num{font-size:24px;font-weight:700;line-height:1;}
+  /* seção por módulo */
+  .nota-mod-section{margin-bottom:1.6rem;}
+  .nota-grupo-divider{display:flex;align-items:center;gap:10px;margin:14px 0 8px 0;}
+  .nota-grupo-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;padding:3px 10px;border-radius:99px;color:#fff;}
+  .nota-grupo-sub{font-size:10px;color:var(--text3);white-space:nowrap;}
+  .nota-grupo-avg{margin-left:auto;font-size:13px;font-weight:700;white-space:nowrap;}
+  .nota-grupo-line{flex:1;height:1px;background:var(--border);}
+  .nota-grupo-desc{font-size:10px;color:var(--text3);padding:2px 8px;background:var(--bg2);border-radius:99px;white-space:nowrap;}
+  .nota-mod-header{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 13px;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    margin-bottom:8px;
+  }
+  .nota-mod-color-bar{width:3px;height:32px;border-radius:99px;flex-shrink:0;}
+  .nota-mod-info{flex:1;min-width:0;}
+  .nota-mod-label{font-size:12px;font-weight:700;color:var(--text);line-height:1.3;}
+  .nota-mod-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+  .nota-mod-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0;}
+  .nota-mod-avg-num{font-size:20px;font-weight:700;line-height:1;}
+  .nota-mod-avg-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;}
+  /* barra de progresso do módulo */
+  .nota-mod-prog{height:3px;background:var(--bg3);border-radius:99px;overflow:hidden;margin-top:5px;}
+  .nota-mod-prog-fill{height:100%;border-radius:99px;transition:width .5s ease;}
+  /* cards de prova — layout horizontal */
+  .nota-card{
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    margin-bottom:5px;
+    padding:9px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  /* quadrado de nota — à esquerda */
+  .nota-big{
+    width:44px;height:44px;
+    border-radius:var(--radius-sm);
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:700;
+    flex-shrink:0;
+    transition:all .2s;
+  }
+  .nota-big-none {background:var(--bg3);color:var(--text3);}
+  .nota-big-green{background:var(--green-bg);color:var(--green-text);}
+  .nota-big-amber{background:var(--amber-bg);color:var(--amber-text);}
+  .nota-big-red  {background:var(--red-bg);color:var(--red-text);}
+  /* centro: nome + meta */
+  .nota-card-mid{flex:1;min-width:0;}
+  .nota-card-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nota-card-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;}
+  /* direita: input + salvar */
+  .nota-card-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .nota-input{width:56px;height:32px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-size:14px;font-weight:700;text-align:center;padding:0 4px;}
+  .nota-input:focus{outline:none;border-color:#378ADD;}
+  .nota-save-btn{height:32px;padding:0 10px;background:#1D9E75;color:#fff;border:none;border-radius:var(--radius-sm);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .nota-save-btn:active{opacity:.85;}
+  /* tipo badge */
+  .nota-badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap;}
+  .nb-green{background:var(--green-bg);color:var(--green-text);}
+  .nb-amber{background:var(--amber-bg);color:var(--amber-text);}
+  .nb-red  {background:var(--red-bg);color:var(--red-text);}
+  .nb-none {background:var(--bg3);color:var(--text3);}
+  /* ── TOAST UNDO ── */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#eae8e1;border-radius:var(--radius);padding:11px 16px;font-size:13px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;max-width:90vw;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .toast-msg{flex:1;overflow:hidden;text-overflow:ellipsis;}
+  .toast-undo{background:#1D9E75;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;}
+  .toast-undo:active{opacity:.8;}
+  @media(prefers-color-scheme:dark){.toast{background:#eae8e1;color:#1a1a18;} .toast-undo{background:#1D9E75;color:#fff;}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="screen active" id="screen-add">
-    <div class="month-bar">
-      <button id="prevM">&#8592;</button>
-      <div class="month-title" id="monthLabel">—</div>
-      <button id="nextM">&#8594;</button>
-    </div>
-    <div class="hero">
-      <div class="hero-label" id="heroLabel">Total em</div>
-      <div class="hero-value"><span class="prefix">R$</span><span id="hTotal">0,00</span></div>
-      <div class="hero-row">
-        <div class="hero-stat"><div class="hero-stat-label">Média / dia</div><div class="hero-stat-val accent" id="hMedia">R$ 0</div></div>
-        <div class="hero-stat"><div class="hero-stat-label">Maior categoria</div><div class="hero-stat-val" id="hCat">—</div></div>
-      </div>
-    </div>
-    <div class="section-head">Novo lançamento</div>
-    <div class="form-wrap">
-      <div class="field"><label>Descrição</label><input type="text" id="desc" placeholder="Ex: Mercado, Farmácia..." autocomplete="off"/></div>
-      <div class="field-row">
-        <div class="field"><label>Valor (R$)</label><input type="number" id="amount" inputmode="decimal" placeholder="0,00" min="0" step="0.01"/></div>
-        <div class="field"><label>Data</label><input type="date" id="dateInput"/></div>
-      </div>
-      <div class="field"><label>Categoria</label>
-        <select id="cat"><option>Alimentação</option><option>Moradia</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Educação</option><option>Outros</option></select>
-      </div>
-      <button class="btn-add" id="addBtn">Registrar</button>
-    </div>
-    <div class="section-head">Lançamentos</div>
-    <div class="expense-list" id="expenseList"><div class="empty">Nenhum gasto registrado</div></div>
+
+  <!-- SETUP CARD — some when Firebase not configured -->
+  <div class="setup-card" id="setup-card" style="display:none">
+    <h3>⚙️ Configure o Firebase para sincronizar entre dispositivos</h3>
+    <p>Siga os passos:</p>
+    <p>1. Acesse <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> com sua conta Google</p>
+    <p>2. Crie um projeto → Build → <strong>Realtime Database</strong> → Criar banco → Modo de teste</p>
+    <p>3. Configurações do projeto (⚙️) → Seus apps → &lt;/&gt; Web → copie o <code>databaseURL</code></p>
+    <p>4. Cole o URL do banco aqui embaixo e clique em Salvar:</p>
+    <input class="setup-input" id="db-url-input" placeholder="https://SEU-PROJETO-default-rtdb.firebaseio.com" />
+    <p style="margin-top:6px">5. Copie também o <code>apiKey</code> do firebaseConfig:</p>
+    <input class="setup-input" id="api-key-input" placeholder="AIzaSy..." style="margin-top:4px"/>
+    <button class="setup-btn" onclick="saveConfig()">Salvar e conectar</button>
   </div>
 
-  <div class="screen" id="screen-resumo">
-    <div class="month-bar">
-      <button id="prevM2">&#8592;</button>
-      <div class="month-title" id="monthLabel2">—</div>
-      <button id="nextM2">&#8594;</button>
+  <!-- SYNC STATUS BAR -->
+  <div class="sync-bar load" id="sync-bar">
+    <div class="sync-dot"></div>
+    <span id="sync-msg">Conectando ao Firebase...</span>
+  </div>
+
+  <div class="header">
+    <h1>Dashboard — Arthur Henrique</h1>
+    <div class="header-sub" id="date-label"></div>
+    <div class="header-sub" style="margin-top:3px;font-weight:600;">M5 — 2025.2 · Coord. Profa. Elisabete Pereira</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Estudado</div><div class="stat-num n-done" id="cnt-done">0</div></div>
+    <div class="stat"><div class="stat-label">A estudar</div><div class="stat-num n-todo" id="cnt-todo">0</div></div>
+    <div class="stat"><div class="stat-label">Atrasado</div><div class="stat-num n-due" id="cnt-due">0</div></div>
+    <div class="stat"><div class="stat-label">A vir</div><div class="stat-num n-rev" id="cnt-rev">0</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="progress-label"><span id="pct">0%</span> concluído — Medicina UFPE 4º Período 2026.1</div>
+
+  <div class="section-label">Filtrar por status</div>
+  <div class="status-row" id="status-filters">
+    <button class="stab active" onclick="setFilter('all',this)">Todos</button>
+    <button class="stab" onclick="setFilter('todo',this)">A estudar</button>
+    <button class="stab" onclick="setFilter('done',this)">Estudado</button>
+    <button class="stab" onclick="setFilter('ministrada',this)">Aula ministrada</button>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="setView('estudos',this)">Estudos</button>
+    <button class="nav-btn" onclick="setView('agenda',this)">Agenda</button>
+    <button class="nav-btn" onclick="setView('provas',this)">Provas</button>
+    <button class="nav-btn" onclick="setView('faltas',this)">Faltas</button>
+  </div>
+
+  <div id="view-estudos">
+    <div class="lembrete"><div class="lembrete-dot"></div><div><strong>30/04:</strong> Cenários Clínicos SAI (atividade avaliativa)</div></div>
+    <div class="section-label">Filtrar por cadeira</div>
+    <div class="sub-chips" id="sub-chips"></div>
+    <div class="legend">
+      Data da aula:
+      <span><span class="aula-tag aula-past">02/03</span> ministrada</span>
+      <span><span class="aula-tag aula-today">hoje</span> hoje</span>
+      <span><span class="aula-tag aula-future">20/04</span> futura</span>
     </div>
-    <div class="hero">
-      <div class="hero-label">Total gasto</div>
-      <div class="hero-value"><span class="prefix">R$</span><span id="rTotal">0,00</span></div>
-      <div class="hero-row">
-        <div class="hero-stat"><div class="hero-stat-label">Média / dia</div><div class="hero-stat-val accent" id="rMedia">—</div></div>
-        <div class="hero-stat"><div class="hero-stat-label">Meta</div><div class="hero-stat-val" id="rMeta">—</div></div>
+    <div class="add-row">
+      <input type="text" id="new-text" placeholder="Adicionar tópico..."/>
+      <select id="new-status"><option value="todo">A estudar</option><option value="done">Estudado</option></select>
+      <select id="new-subj">
+        <option value="SAI — Clínica">SAI — Clínica</option>
+        <option value="SAI — Neurologia">SAI — Neuro</option>
+        <option value="SAI — Gineco">SAI — Gineco</option>
+        <option value="SCA">SCA</option>
+        <option value="ICTC — Cirurgia">ICTC — Cirurgia</option>
+        <option value="ICTC — Anatomia">ICTC — Anatomia</option>
+        <option value="BTM">BTM</option>
+        <option value="RAMEL">RAMEL</option>
+        <option value="DPP">DPP</option>
+        <option value="FABS 2">FABS 2</option>
+      </select>
+      <button onclick="addItem()">+ Adicionar</button>
+    </div>
+    <div id="list"></div>
+  </div>
+
+  <div id="view-agenda" style="display:none">
+    <details class="hp-wrap" open style="margin-bottom:1.1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);">
+      <summary style="cursor:pointer;padding:11px 13px;font-size:13px;font-weight:700;">📌 Horário Padrão — grade semanal fixa (M5 2025.2)</summary>
+      <div style="padding:0 13px 13px;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">Grade base recorrente, sem cronograma diário ainda. Assim que o cronograma detalhado (com datas e tópicos por aula) for divulgado, ele substitui/complementa esta grade na visão semanal abaixo.</div>
+        <div style="overflow-x:auto;">
+          <table style="border-collapse:collapse;width:100%;min-width:640px;font-size:10.5px;">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Horário</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Segunda</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Terça</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Quarta</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Quinta</th>
+                <th style="text-align:left;padding:4px 6px;color:var(--text3);font-size:9px;text-transform:uppercase;">Sexta</th>
+              </tr>
+            </thead>
+            <tbody id="hp-tbody"></tbody>
+          </table>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:10px;color:var(--text2);">
+          <span><span class="sub-badge sb-mulh">Mulher</span></span>
+          <span><span class="sub-badge sb-grn">Gestante/RN</span></span>
+          <span><span class="sub-badge sb-cria">Criança/Adol.</span></span>
+          <span><span class="sub-badge sb-pgss">Planej./Gestão</span></span>
+          <span><span class="sub-badge sb-asa1">ASA1 (Dermato)</span></span>
+          <span style="background:var(--green-bg);color:var(--green-text);font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;">Horário Verde</span>
+        </div>
       </div>
+    </details>
+    <div id="ag-week-nav" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;"></div>
+    <div class="ag-day-nav" id="ag-day-nav"></div>
+    <div class="ag-week-label" id="ag-week-label"></div>
+    <div id="ag-content"></div>
+  </div>
+
+  <div id="view-provas" style="display:none">
+    <div class="prov-subtabs">
+      <button class="prov-subtab active" onclick="setProvSubTab('calendario',this)">📅 Calendário</button>
+      <button class="prov-subtab" onclick="setProvSubTab('notas',this)">📝 Notas</button>
     </div>
-    <div class="meta-wrap">
-      <div class="meta-label-row"><span>Meta mensal</span><span class="meta-pct" id="metaPct"></span></div>
-      <div class="meta-bar-track"><div class="meta-bar-fill" id="metaBar" style="width:0%"></div></div>
-      <div class="meta-input-row"><label>Definir limite:</label><input type="number" id="metaInput" inputmode="decimal" placeholder="R$ (opcional)" min="0" step="50"/></div>
+    <div id="prov-sub-calendario">
+      <div id="provas-list"></div>
     </div>
-    <div class="section-head">Por categoria</div>
-    <div class="cat-bars" id="catBars"></div>
-    <div class="section-head" style="margin-top:24px">Distribuição</div>
-    <div class="chart-wrap">
-      <div class="legend" id="pieLegend"></div>
-      <div style="position:relative;width:100%;height:200px;"><canvas id="pieChart"></canvas></div>
+    <div id="prov-sub-notas" style="display:none">
+      <div id="notas-list"></div>
     </div>
   </div>
 
-  <div class="screen" id="screen-ano">
-    <div class="month-bar">
-      <button id="prevY">&#8592;</button>
-      <div class="month-title" id="yearLabel">—</div>
-      <button id="nextY">&#8594;</button>
+  <div id="view-faltas" style="display:none">
+    <div class="falta-summary">
+      <div class="falta-sum-item"><div class="falta-sum-label">Total de faltas</div><div class="falta-sum-num n-due" id="falta-total">0</div></div>
+      <div class="falta-sum-item"><div class="falta-sum-label">Disciplinas em risco</div><div class="falta-sum-num n-rev" id="falta-risco">0</div></div>
+      <div class="falta-sum-item"><div class="falta-sum-label">Disciplinas reprovando</div><div class="falta-sum-num n-done" style="color:var(--red)" id="falta-reprov">0</div></div>
     </div>
-    <div class="section-head">Evolução</div>
-    <div class="chart-wrap" style="margin-bottom:24px;"><div style="position:relative;width:100%;height:200px;"><canvas id="lineChart"></canvas></div></div>
-    <div class="section-head">Meses</div>
-    <div class="annual-grid" id="annualGrid"></div>
-    <div class="section-head">Categorias</div>
-    <div class="cat-bars" id="annualCatBars"></div>
+    <div id="falta-list"></div>
   </div>
-
-  <div class="bottom-nav">
-    <button class="nav-btn active" data-screen="add"><span class="nav-icon">✦</span><span>Lançar</span></button>
-    <button class="nav-btn" data-screen="resumo"><span class="nav-icon">◎</span><span>Resumo</span></button>
-    <button class="nav-btn" data-screen="ano"><span class="nav-icon">◈</span><span>Ano</span></button>
-  </div>
+</div><!-- .app -->
+<div class="toast" id="toast">
+  <span class="toast-msg" id="toast-msg"></span>
+  <button class="toast-undo" onclick="undoLast()">Desfazer</button>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
-const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const MS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-const CATS=['Alimentação','Moradia','Transporte','Saúde','Lazer','Educação','Outros'];
-const COLORS=['#4f8ef7','#5db88a','#e07a5f','#9b7fe8','#54b4d3','#e8b45a','#7a8fa8'];
-const now=new Date();
-let cm=now.getMonth(),cy=now.getFullYear(),vy=cy,pieChart=null,lineChart=null;
-function loadData(){try{return JSON.parse(localStorage.getItem('gastos_data')||'{}')}catch{return {};}}
-function loadMetas(){try{return JSON.parse(localStorage.getItem('gastos_metas')||'{}')}catch{return {};}}
-function save(){localStorage.setItem('gastos_data',JSON.stringify(appData));localStorage.setItem('gastos_metas',JSON.stringify(metas));}
-let appData=loadData(),metas=loadMetas();
-const mkey=(y,m)=>`${y}-${m}`;
-const exps=(y,m)=>appData[mkey(y,m)]||[];
-const fmt=v=>'R$\u00a0'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtS=v=>'R$\u00a0'+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
-const dim=(y,m)=>new Date(y,m+1,0).getDate();
-const todayStr=()=>now.toISOString().slice(0,10);
-const fmtD=s=>{if(!s)return '';const[,m,d]=s.split('-');return `${d}/${m}`;};
-const isToday=s=>s===todayStr();
-const isYest=s=>{const y=new Date(now);y.setDate(y.getDate()-1);return s===y.toISOString().slice(0,10);};
-const dayLbl=s=>{if(!s)return '';if(isToday(s))return 'Hoje';if(isYest(s))return 'Ontem';return fmtD(s);};
-document.getElementById('dateInput').value=todayStr();
-function setLabels(){const t=MONTHS[cm]+' '+cy;['monthLabel','monthLabel2'].forEach(id=>document.getElementById(id).textContent=t);document.getElementById('heroLabel').textContent='Total em '+MONTHS[cm];}
-function stats(){
-  const e=exps(cy,cm),bc={};CATS.forEach(c=>bc[c]=0);e.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+x.amount);
-  const total=e.reduce((s,x)=>s+x.amount,0),pass=(cy===now.getFullYear()&&cm===now.getMonth())?now.getDate():dim(cy,cm);
-  return{e,bc,total,media:pass>0?total/pass:0,maxCat:CATS.reduce((a,b)=>bc[a]>=bc[b]?a:b)};
+// ─────────────────────────────────────────────
+//  SUBJECT META
+// ─────────────────────────────────────────────
+const SM_META = {
+  'Assistência à Saúde da Mulher':                       {chip:'chip-mulh', badge:'sb-mulh', label:'Saúde da Mulher'},
+  'Assistência à Saúde da Gestante e do Recém-Nascido':  {chip:'chip-grn',  badge:'sb-grn',  label:'Gestante e RN'},
+  'Assistência à Saúde da Criança e do Adolescente':     {chip:'chip-cria', badge:'sb-cria', label:'Criança e Adolescente'},
+  'Planejamento e Gestão de Serviços de Saúde':          {chip:'chip-pgss', badge:'sb-pgss', label:'Planej. e Gestão'},
+  'ASA 1 (Dermato)':                                     {chip:'chip-asa1', badge:'sb-asa1', label:'ASA 1 (Dermato)'},
+};
+// DEADLINES é calculado dinamicamente a partir de PROVAS_DEF + localStorage
+// Chave = label da prova (ex: 'P1 RAMEL — 05/05'), valor = data ISO real (pode ser editada)
+function buildDeadlines(){
+  let state={};
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}');}catch(e){}
+  const dl={'Adicionado manualmente':'2026-07-04'};
+  // PROVAS_DEF ainda não está definido aqui — será chamado depois da definição
+  if(typeof PROVAS_DEF!=='undefined'){
+    PROVAS_DEF.forEach(p=>{
+      const effectiveDate=(state[p.id]&&state[p.id].date)||p.date;
+      dl[p.label]=effectiveDate;
+    });
+  }
+  return dl;
 }
-function render(){setLabels();renderAdd();renderResumo();}
-function renderAdd(){
-  const{total,media,bc,maxCat,e}=stats();
-  document.getElementById('hTotal').textContent=Number(total).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('hMedia').textContent=fmt(media);
-  document.getElementById('hCat').textContent=bc[maxCat]>0?maxCat:'—';
-  renderList(e);
-}
-function renderList(e){
-  const el=document.getElementById('expenseList');
-  if(!e.length){el.innerHTML='<div class="empty">Nenhum gasto registrado</div>';return;}
-  const sorted=[...e].map((x,i)=>({...x,oi:i})).sort((a,b)=>(!a.date&&!b.date)?0:(!a.date?1:(!b.date?-1:b.date.localeCompare(a.date))));
-  const g={},go=[];sorted.forEach(x=>{const k=x.date||'__';if(!g[k]){g[k]=[];go.push(k);}g[k].push(x);});
-  let h='';
-  go.forEach(k=>{
-    const lbl=k==='__'?'Sem data':dayLbl(k)+(k!==todayStr()&&!isYest(k)?'  ·  '+fmtD(k):'');
-    h+=`<div class="day-group-label">${lbl}</div>`;
-    g[k].forEach(x=>{const col=COLORS[CATS.indexOf(x.cat)]||'#7a8fa8';h+=`<div class="expense-item"><span class="cat-dot-lg" style="background:${col}"></span><div class="e-info"><div class="e-desc">${x.desc}</div><div class="e-cat">${x.cat}</div></div><div class="e-amt">${fmt(x.amount)}</div><button class="e-del" data-i="${x.oi}">×</button></div>`;});
-  });
-  el.innerHTML=h;
-  el.querySelectorAll('.e-del').forEach(b=>b.addEventListener('click',ev=>{appData[mkey(cy,cm)].splice(parseInt(ev.target.dataset.i),1);save();render();}));
-}
-function renderResumo(){
-  const{total,media,bc}=stats();
-  document.getElementById('rTotal').textContent=Number(total).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('rMedia').textContent=fmt(media);
-  const meta=metas[mkey(cy,cm)]||0;
-  document.getElementById('metaInput').value=meta||'';
-  if(meta>0){const s=meta-total,p=Math.min(100,Math.round(total/meta*100));const el=document.getElementById('rMeta');el.textContent=fmt(Math.abs(s));el.className='hero-stat-val '+(s<0?'danger':'success');document.getElementById('metaPct').textContent=p+'%';const b=document.getElementById('metaBar');b.style.width=p+'%';b.className='meta-bar-fill'+(s<0?' over':'');}
-  else{document.getElementById('rMeta').textContent='Sem meta';document.getElementById('rMeta').className='hero-stat-val';document.getElementById('metaPct').textContent='';document.getElementById('metaBar').style.width='0%';}
-  renderBars(bc,'catBars');renderPie(bc,total);
-}
-function renderBars(bc,id){
-  const mx=Math.max(...CATS.map(c=>bc[c]||0),1);
-  document.getElementById(id).innerHTML=CATS.map((c,i)=>{const v=bc[c]||0,p=Math.round(v/mx*100);return `<div class="cat-bar-row"><span class="cat-dot" style="background:${COLORS[i]}"></span><span class="cat-name">${c}</span><div class="cat-track"><div class="cat-fill" style="width:${p}%;background:${COLORS[i]}"></div></div><span class="cat-amt">${fmt(v)}</span></div>`;}).join('');
-}
-function renderPie(bc,total){
-  const lb=CATS.filter(c=>bc[c]>0),vl=lb.map(c=>bc[c]),cl=lb.map(c=>COLORS[CATS.indexOf(c)]);
-  document.getElementById('pieLegend').innerHTML=lb.length?lb.map((c,i)=>`<span class="legend-item"><span class="legend-sq" style="background:${cl[i]}"></span>${c}</span>`).join(''):'<span style="font-size:15px;color:var(--text3);font-style:italic;font-family:\'Cormorant Garamond\',serif">Sem dados</span>';
-  if(pieChart)pieChart.destroy();if(!vl.length)return;
-  pieChart=new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:lb,datasets:[{data:vl,backgroundColor:cl,borderWidth:2,borderColor:'#111827'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.parsed)+' ('+Math.round(ctx.parsed/(total||1)*100)+'%)'}}}}});
-}
-function renderAno(){
-  document.getElementById('yearLabel').textContent=vy;
-  const totals=MONTHS.map((_,m)=>exps(vy,m).reduce((s,e)=>s+e.amount,0));
-  const ct={};CATS.forEach(c=>ct[c]=0);MONTHS.forEach((_,m)=>exps(vy,m).forEach(e=>ct[e.cat]=(ct[e.cat]||0)+e.amount));
-  document.getElementById('annualGrid').innerHTML=MONTHS.map((_,m)=>{const ic=vy===cy&&m===cm,v=totals[m];return `<div class="annual-cell${ic?' current':''}"><div class="annual-month">${MS[m]}</div><div class="annual-val${ic?' current':v>0?'':' empty-val'}">${v>0?fmtS(v):'—'}</div></div>`;}).join('');
-  if(lineChart)lineChart.destroy();
-  lineChart=new Chart(document.getElementById('lineChart'),{type:'line',data:{labels:MS,datasets:[{data:totals,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.06)',borderWidth:2,pointBackgroundColor:'#4f8ef7',pointRadius:4,pointBorderWidth:0,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.parsed.y)}}},scales:{y:{ticks:{callback:v=>'R$'+Math.round(v),font:{size:11},color:'#4a5568'},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},x:{ticks:{font:{size:11},color:'#4a5568'},grid:{display:false},border:{display:false}}}}});
-  renderBars(ct,'annualCatBars');
-}
-document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  btn.classList.add('active');document.getElementById('screen-'+btn.dataset.screen).classList.add('active');
-  if(btn.dataset.screen==='ano')renderAno();if(btn.dataset.screen==='resumo')renderResumo();
-}));
-const chM=d=>{cm+=d;if(cm<0){cm=11;cy--;}else if(cm>11){cm=0;cy++;}render();};
-document.getElementById('prevM').addEventListener('click',()=>chM(-1));
-document.getElementById('nextM').addEventListener('click',()=>chM(1));
-document.getElementById('prevM2').addEventListener('click',()=>chM(-1));
-document.getElementById('nextM2').addEventListener('click',()=>chM(1));
-document.getElementById('prevY').addEventListener('click',()=>{vy--;renderAno();});
-document.getElementById('nextY').addEventListener('click',()=>{vy++;renderAno();});
-document.getElementById('metaInput').addEventListener('change',e=>{metas[mkey(cy,cm)]=parseFloat(e.target.value)||0;save();renderResumo();});
-document.getElementById('addBtn').addEventListener('click',()=>{
-  const desc=document.getElementById('desc').value.trim(),amount=parseFloat(document.getElementById('amount').value),cat=document.getElementById('cat').value,date=document.getElementById('dateInput').value;
-  if(!desc||isNaN(amount)||amount<=0)return;
-  const k=mkey(cy,cm);if(!appData[k])appData[k]=[];appData[k].push({desc,amount,cat,date});
-  save();
-  document.getElementById('desc').value='';document.getElementById('amount').value='';document.getElementById('dateInput').value=todayStr();render();
+// Proxy dinâmico: sempre reflete o estado atual
+const DEADLINES=new Proxy({},{
+  get(_,key){return buildDeadlines()[key];},
+  has(_,key){return key in buildDeadlines();},
+  ownKeys(_){return Object.keys(buildDeadlines());},
+  getOwnPropertyDescriptor(_,key){
+    const v=buildDeadlines()[key];
+    return v!==undefined?{value:v,writable:true,enumerable:true,configurable:true}:undefined;
+  }
 });
-render();
+const ORDER={'Adicionado manualmente':5}; // reservado — não utilizado no código atual
+const IV=[1,3,7,14,30,60];
+
+// ─────────────────────────────────────────────
+//  DATE HELPERS
+// ─────────────────────────────────────────────
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function addD(iso,n){const d=new Date(iso);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function diffD(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
+function fmt(iso){const[,m,d]=iso.split('-');return`${d}/${m}`;}
+
+function aulaTag(iso){
+  if(!iso)return'';
+  const t=todayISO();
+  if(iso<t) return`<span class="aula-tag aula-past">${fmt(iso)}</span>`;
+  if(iso===t)return`<span class="aula-tag aula-today">hoje ${fmt(iso)}</span>`;
+  return`<span class="aula-tag aula-future">${fmt(iso)}</span>`;
+}
+function revTag(iso){
+  const t=todayISO(),d=diffD(t,iso);
+  if(d<0)  return`<span class="rev-tag rt-late">Atrasada — ${fmt(iso)}</span>`;
+  if(d===0)return`<span class="rev-tag rt-today">Revisar hoje</span>`;
+  if(d<=7) return`<span class="rev-tag rt-soon">Revisar ${fmt(iso)}</span>`;
+  return`<span class="rev-tag rt-fut">Próx. rev. ${fmt(iso)}</span>`;
+}
+function calcNext(item,q){
+  const cur=item.rep||0;
+  const rep=q===0?0:q===1?Math.min(cur+1,IV.length-1):Math.min(cur+2,IV.length-1);
+  let nd=addD(todayISO(),IV[rep]);
+  const dl=DEADLINES[item.prova];
+  if(dl){const cap=addD(dl,-2);if(nd>cap){const ob=addD(dl,-1);nd=ob>todayISO()?ob:todayISO();}}
+  return{nd,rep};
+}
+
+// ─────────────────────────────────────────────
+//  DEFAULT DATA
+// ─────────────────────────────────────────────
+const DEFAULT_ITEMS=[
+  // Lista de tópicos de estudo do M5 — preenchida a partir dos documentos de 'assuntos das provas'
+  // (ASA1/Dermato, Criança e Adolescente) e 'temas das avaliações' (Gestante e RN) enviados.
+  // Os módulos Mulher e Planejamento e Gestão ainda não têm lista de assuntos por prova divulgada —
+  // os temas de cada aula já aparecem na Agenda.
+  {"id": 1, "text": "Semiologia Dermatológica", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 2, "text": "Dermatoviroses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 3, "text": "Dermatozoonoses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 4, "text": "Dermatoses Eritêmato-Escamosas", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 5, "text": "Tumores Cutâneos", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 6, "text": "Hanseníase", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 7, "text": "Micoses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 8, "text": "Hanseníase", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 9, "text": "Leishmaniose Tegumentar Americana", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 10, "text": "Tumores Cutâneos", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 11, "text": "Sífilis Adquirida", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 12, "text": "Psoríase e Dermatite Seborreica", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 13, "text": "Impetigos, Furúnculo, Abscesso, SSSS, Erisipela, Celulite", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 14, "text": "Micoses Superficiais e Subcutâneas", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 15, "text": "Dermatozoonoses", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 16, "text": "Farmacodermias", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 17, "text": "Doenças Bacterianas da Pele", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 18, "text": "Dermatoses Vésico-Bolhosas", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 19, "text": "Leishmaniose Tegumentar Americana", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 20, "text": "Dermatoses Eczematosas", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 21, "text": "Sífilis Adquirida", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 22, "text": "Farmacodermias", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 23, "text": "Fisiologia e diagnóstico de gravidez", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 24, "text": "Assistência Pré-natal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 25, "text": "Assistência ao parto transvaginal eutócico: mecanismo e estática", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 26, "text": "Puerpério fisiológico e patológico", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 27, "text": "Indução do Parto", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 28, "text": "Tocurgia e Distócia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 29, "text": "Gestação prolongada", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 30, "text": "Cesariana", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 31, "text": "Características Anatômicas e Fisiológicas do RN", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 32, "text": "Assistência ao RN na Sala de Parto e Reanimação Neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 33, "text": "Tocotraumatismos", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 34, "text": "Atenção Humanizada ao RN Prematuro e de Baixo Peso: Método Canguru", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 35, "text": "Hemorragias da primeira metade da gravidez", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 36, "text": "Hemorragia pós-parto", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 37, "text": "Trabalho de parto prematuro", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 38, "text": "RUPREME (Rotura Prematura de Membranas Ovulares)", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 39, "text": "Síndromes Hipertensivas", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 40, "text": "Triagem neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 41, "text": "Icterícia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 42, "text": "Sífilis congênita", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 43, "text": "Aleitamento materno", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 44, "text": "Diabetes", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 45, "text": "Restrição de Crescimento Fetal e Cardiotocografia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 46, "text": "Ultrassonografia em obstetrícia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 47, "text": "Hemorragias da segunda metade da gravidez", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 48, "text": "Óbito Fetal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 49, "text": "Teratogênese", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 50, "text": "Anoxia perinatal e Encefalopatia hipóxico-isquêmica", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 51, "text": "Distúrbios Respiratórios no RN", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 52, "text": "Sepse Neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 53, "text": "Cuidado acolhedor para todos os recém-nascidos", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 54, "text": "Infecções Congênitas", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 55, "text": "Distúrbios Metabólicos no período neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 56, "text": "Abordagem ética", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 57, "text": "Crescimento e Desenvolvimento na infância e adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 58, "text": "Proteção ao Aleitamento Materno", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 59, "text": "Vacinação na infância e adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 60, "text": "Alimentação na infância e na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 61, "text": "Desnutrição na Pediatria", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 62, "text": "Segurança e Prevenção de acidentes na infância e na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 63, "text": "A consulta do adolescente", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 64, "text": "Síndrome do adolescente normal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 65, "text": "Impacto das TICs na infância e na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 66, "text": "Constipação Intestinal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 67, "text": "Fimose, Hérnia umbilical e Hérnia epigástrica", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 68, "text": "Persistência do conduto peritônio-vaginal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 69, "text": "Distopias Testiculares", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 70, "text": "Desenvolvimento puberal normal e patológico", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 71, "text": "Diagnóstico Diferencial das anemias", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 72, "text": "Violência na Criança e Adolescente: impacto na saúde", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 73, "text": "Diarreia aguda na criança e adolescente", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 74, "text": "Sexualidade na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 75, "text": "Infecções das Vias Aéreas Superiores (IVAS)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 76, "text": "Asma na infância e adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 77, "text": "Infecções das Vias Aéreas Inferiores (IVAI)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 78, "text": "Parasitoses intestinais", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 79, "text": "Obesidade e Síndrome metabólica", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 80, "text": "Principais problemas ginecológicos na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 81, "text": "Transtorno do Espectro Autista (TEA)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 82, "text": "Estenose Hipertrófica do Piloro", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 83, "text": "Atresias Intestinais", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 84, "text": "Transtornos mentais na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 85, "text": "Principais problemas andrológicos na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 86, "text": "Transtorno do Déficit de Atenção e Hiperatividade (TDAH)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 87, "text": "Doenças exantemáticas I e II", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 88, "text": "ITU", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 89, "text": "Doença Reumática", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 90, "text": "Tuberculose", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 91, "text": "Glomerulonefrite Pós-estreptocóccica (GNPE)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 92, "text": "Crises febris e Síndrome epilépticas", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 93, "text": "Gravidez e Parentalidade na adolescência: aspectos psicossociais", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 94, "text": "Síndrome Nefrótica (SN)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 95, "text": "Meningoencefalites (MGEs)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 96, "text": "Apendicite Aguda", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 97, "text": "Invaginação intestinal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 98, "text": "Tumores abdominais (Nefroblastoma e tumor de Wilms)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+];
+
+
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let items = [];
+let nid = 200;
+let fStatus='all', fSub='all', fRev='all', view='estudos';
+let expanded = {};
+let dbRef = null;
+let isSyncing = false;
+
+// ─────────────────────────────────────────────
+//  FIREBASE SETUP
+// ─────────────────────────────────────────────
+function loadConfig(){
+  return {
+    dbUrl: localStorage.getItem('fb_db_url') || '',
+    apiKey: localStorage.getItem('fb_api_key') || '',
+  };
+}
+
+function saveConfig(){
+  const url = document.getElementById('db-url-input').value.trim();
+  const key = document.getElementById('api-key-input').value.trim();
+  if(!url || !key){ alert('Preencha os dois campos!'); return; }
+  localStorage.setItem('fb_db_url', url);
+  localStorage.setItem('fb_api_key', key);
+  document.getElementById('setup-card').style.display='none';
+  initFirebase(url, key);
+}
+
+function setSyncStatus(type, msg){
+  const bar = document.getElementById('sync-bar');
+  const txt = document.getElementById('sync-msg');
+  bar.className = 'sync-bar ' + type;
+  txt.textContent = msg;
+}
+
+function initFirebase(dbUrl, apiKey){
+  if(!dbUrl || !apiKey){
+    document.getElementById('setup-card').style.display='block';
+    setSyncStatus('warn', 'Firebase não configurado — dados salvos só neste dispositivo');
+    // fallback to localStorage
+    const saved = localStorage.getItem('arthur_local_m5');
+    items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    nid = Math.max(...items.map(i=>i.id), 0) + 1;
+    buildChips(); renderList(); updateStats();
+    return;
+  }
+
+  setSyncStatus('load', 'Conectando ao Firebase...');
+
+  try {
+    // init only once
+    if(!firebase.apps.length){
+      firebase.initializeApp({
+        apiKey: apiKey,
+        databaseURL: dbUrl,
+        projectId: dbUrl.replace('https://','').replace('.firebaseio.com','').replace('-default-rtdb',''),
+      });
+    }
+    dbRef = firebase.database().ref('dashboard/m5/items');
+
+    // listen for real-time updates
+    dbRef.on('value', snapshot => {
+      const data = snapshot.val();
+      if(data){
+        items = Object.values(data);
+        nid = Math.max(...items.map(i=>i.id), 0) + 1;
+      } else {
+        // first time — push default data
+        items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+        nid = Math.max(...items.map(i=>i.id), 0) + 1;
+        pushAllToFirebase();
+      }
+      setSyncStatus('ok', 'Sincronizado ✓ — alterações aparecem em todos os dispositivos');
+      buildChips(); renderList(); updateStats();
+      initFaltasSync();
+      initProvasSync();
+      initNotasSync();
+      // Subir dados locais de provas/notas para o Firebase na primeira conexão
+      firebase.database().ref('dashboard/m5/provas_cal').once('value', snap=>{
+        if(!snap.val()){
+          const local=loadProvasState();
+          if(Object.keys(local).length) firebase.database().ref('dashboard/m5/provas_cal').set(local).catch(console.error);
+        }
+      });
+      firebase.database().ref('dashboard/m5/notas').once('value', snap=>{
+        if(!snap.val()){
+          const local=loadNotas();
+          if(Object.keys(local).length) firebase.database().ref('dashboard/m5/notas').set(local).catch(console.error);
+        }
+      });
+    }, err => {
+      setSyncStatus('err', 'Erro de conexão — verifique o URL e a apiKey');
+      console.error(err);
+      // fallback
+      const saved = localStorage.getItem('arthur_local_m5');
+      items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+      nid = Math.max(...items.map(i=>i.id), 0) + 1;
+      buildChips(); renderList(); updateStats();
+    });
+
+  } catch(e){
+    setSyncStatus('err', 'Erro ao inicializar Firebase: ' + e.message);
+    const saved = localStorage.getItem('arthur_local_m5');
+    items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    nid = Math.max(...items.map(i=>i.id), 0) + 1;
+    buildChips(); renderList(); updateStats();
+  }
+}
+
+function pushAllToFirebase(){
+  if(!dbRef) return;
+  const obj = {};
+  items.forEach(item => { obj['item_'+item.id] = item; });
+  dbRef.set(obj).catch(console.error);
+}
+
+function saveItem(item){
+  if(dbRef){
+    dbRef.child('item_'+item.id).set(item).catch(console.error);
+  } else {
+    localStorage.setItem('arthur_local_m5', JSON.stringify(items));
+  }
+}
+
+function deleteItemRemote(id){
+  if(dbRef){
+    dbRef.child('item_'+id).remove().catch(console.error);
+  } else {
+    localStorage.setItem('arthur_local_m5', JSON.stringify(items));
+  }
+}
+
+// ─────────────────────────────────────────────
+//  RENDER HELPERS
+// ─────────────────────────────────────────────
+function chipsHTML(){
+  return`<button class="chip chip-all active" onclick="setSub('all',this)">Todas</button>`
+    +Object.entries(SM_META).map(([k,v])=>`<button class="chip ${v.chip} active" onclick="setSub('${k}',this)">${v.label}</button>`).join('');
+}
+function buildChips(){
+  document.getElementById('sub-chips').innerHTML=chipsHTML();
+}
+function subBadge(sub){
+  const m=SM_META[sub];
+  return m?`<span class="sub-badge ${m.badge}">${m.label}</span>`:`<span style="font-size:10px;color:#9e9d99">${sub}</span>`;
+}
+function statusBadge(s){
+  return s==='done'
+    ?'<span class="status-badge sb-done">Estudado</span>'
+    :'<span class="status-badge sb-todo">A estudar</span>';
+}
+
+function renderList(){
+  const t=todayISO();
+  let f=items;
+  if(fStatus==='todo')       f=f.filter(i=>i.status==='todo');
+  if(fStatus==='done')       f=f.filter(i=>i.status==='done');
+  if(fStatus==='ministrada') f=f.filter(i=>i.aulaDate&&i.aulaDate<=t);
+  if(fSub!=='all')           f=f.filter(i=>i.subject===fSub);
+
+  const groups={};
+  f.forEach(item=>{
+    const k=item.prova||'Outros';
+    if(!groups[k]) groups[k]={urgency:item.urgency||'low',items:[]};
+    groups[k].items.push(item);
+  });
+  // ordenar itens dentro de cada grupo por data da aula (mais antiga primeiro)
+  Object.values(groups).forEach(g=>{
+    g.items.sort((a,b)=>(a.aulaDate||'9999').localeCompare(b.aulaDate||'9999'));
+  });
+  // ordenar grupos pela data-limite real da prova
+  const keys=Object.keys(groups).sort((a,b)=>{
+    const da=DEADLINES[a]||'9999-12-31';
+    const db=DEADLINES[b]||'9999-12-31';
+    return da.localeCompare(db);
+  });
+  const allProvas=Object.keys(DEADLINES).filter(p=>p!=='Adicionado manualmente').sort((a,b)=>(DEADLINES[a]||'').localeCompare(DEADLINES[b]||''));
+  const el=document.getElementById('list');
+  if(!f.length){el.innerHTML='<p class="empty">Nenhum item aqui.</p>';updateStats();return;}
+
+  el.innerHTML=keys.map(prova=>{
+    const g=groups[prova],u=g.urgency;
+    const dc=g.items.filter(i=>i.status==='done').length;
+    const isLow=u==='low',isExp=expanded[prova]||false;
+    const pct=g.items.length?Math.round(dc/g.items.length*100):0;
+    const fc=pct===100?'mf-done':u==='high'?'mf-high':'mf-med';
+    const tc=u==='high'?'tag-high':u==='med'?'tag-med':'tag-low';
+
+    const row=item=>{
+      const t=todayISO();
+      const isMinistrada=item.aulaDate&&item.aulaDate<t&&item.status!=='done';
+      const isFutura=item.aulaDate&&item.aulaDate>t&&item.status!=='done';
+      const extraClass=(isMinistrada?' ministrada':isFutura?' futura':'');
+      const provaOpts=allProvas.map(p=>`<option value="${p}"${p===item.prova?' selected':''}>${p}</option>`).join('');
+      return`<div class="item${extraClass}" data-sub="${item.subject}" data-id="${item.id}" draggable="true">
+      <div class="drag-handle" title="Arrastar para outra prova">⠿</div>
+      <div class="check${item.status==='done'?' on':''}" onclick="toggle(${item.id})"></div>
+      <div class="item-body">
+        <div class="item-text${item.status==='done'?' done':''}">${item.text}</div>
+        <div class="item-meta">
+          ${subBadge(item.subject)}
+          ${aulaTag(item.aulaDate)}
+          ${item.nextRev?revTag(item.nextRev):''}
+        </div>
+        ${item.provaOriginal?`<span class="item-origin-badge">movido de: ${item.provaOriginal}</span>`:''}
+        <div class="item-move-row">
+          <span class="item-move-label">Mover para:</span>
+          <select class="item-move-sel" onchange="moveItemProva(${item.id},this.value)">${provaOpts}</select>
+        </div>
+      </div>
+      <div class="item-right">
+        ${statusBadge(item.status)}
+        <button class="del" onclick="del(${item.id})">×</button>
+      </div>
+    </div>`;
+    };
+
+    let body='';
+    if(isLow&&!isExp){
+      body=g.items.slice(0,3).map(row).join('');
+      const h=g.items.length-3;
+      if(h>0)body+=`<span class="show-more" onclick="toggleGroup('${prova}')">+ ver mais ${h} tópico${h>1?'s':''}</span>`;
+    } else if(isLow&&isExp){
+      body=g.items.map(row).join('')+`<span class="show-more" onclick="toggleGroup('${prova}')">− recolher</span>`;
+    } else { body=g.items.map(row).join(''); }
+
+    return`<div class="prova-group" data-prova="${prova}">
+      <div class="prova-header">
+        <span class="prova-tag ${tc}">${prova}</span>
+        <span class="prova-count">${dc}/${g.items.length}
+          <span class="mini-bar"><span class="mini-fill ${fc}" style="width:${pct}%"></span></span>
+        </span>
+      </div>
+      <div class="drop-label">Soltar aqui para mover para esta prova</div>
+      ${body}</div>`;
+  }).join('');
+  updateStats();
+}
+
+function updateStats(){
+  const t=todayISO();
+  document.getElementById('cnt-done').textContent=items.filter(i=>i.status==='done').length;
+  document.getElementById('cnt-todo').textContent=items.filter(i=>i.status==='todo').length;
+  // "Atrasado" = aula já ministrada, não estudado
+  document.getElementById('cnt-due').textContent=items.filter(i=>i.status==='todo'&&i.aulaDate&&i.aulaDate<t).length;
+  // "A vir" = aula futura, não estudado
+  document.getElementById('cnt-rev').textContent=items.filter(i=>i.status==='todo'&&i.aulaDate&&i.aulaDate>t).length;
+  const pct=items.length?Math.round(items.filter(i=>i.status==='done').length/items.length*100):0;
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'%';
+}
+
+// ─────────────────────────────────────────────
+//  ACTIONS
+// ─────────────────────────────────────────────
+function toggle(id){
+  const item=items.find(i=>i.id===id);if(!item)return;
+  if(item.status==='done'){item.status='todo';delete item.nextRev;delete item.rep;}
+  else{item.status='done';const{nd,rep}=calcNext(item,1);item.nextRev=nd;item.rep=rep;}
+  saveItem(item);
+  renderList();updateStats();
+}
+function applyQ(id,q){
+  const item=items.find(i=>i.id===id);if(!item)return;
+  const{nd,rep}=calcNext(item,q);item.nextRev=nd;item.rep=rep;
+  saveItem(item);
+  updateStats();
+}
+// ─────────────────────────────────────────────
+//  UNDO / TOAST
+// ─────────────────────────────────────────────
+let undoStack = []; // [{type:'delete'|'move', item, prevProva}]
+let toastTimer = null;
+
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ toast.classList.remove('show'); }, 5000);
+}
+
+function undoLast(){
+  const action = undoStack.pop();
+  if(!action) return;
+  clearTimeout(toastTimer);
+  document.getElementById('toast').classList.remove('show');
+
+  if(action.type === 'delete'){
+    items.unshift(action.item);
+    saveItem(action.item);
+    renderList(); updateStats();
+  } else if(action.type === 'move'){
+    const item = items.find(i=>i.id===action.item.id);
+    if(!item) return;
+    item.prova = action.prevProva;
+    // restaurar provaOriginal corretamente
+    if(action.prevProvaOriginal !== undefined) item.provaOriginal = action.prevProvaOriginal;
+    else delete item.provaOriginal;
+    const dl = DEADLINES[item.prova];
+    if(dl){ const diff=diffD(todayISO(),dl); item.urgency=diff<=30?'high':diff<=60?'med':'low'; }
+    saveItem(item);
+    renderList();
+  }
+}
+
+function del(id){
+  const item = items.find(i=>i.id===id);
+  if(!item) return;
+  undoStack.push({type:'delete', item: JSON.parse(JSON.stringify(item))});
+  items = items.filter(i=>i.id!==id);
+  deleteItemRemote(id);
+  renderList(); updateStats();
+  showToast(`"${item.text.slice(0,40)}${item.text.length>40?'…':''}" removido`);
+}
+
+function moveItemProva(id, novaProva){
+  const item = items.find(i=>i.id===id);
+  if(!item || item.prova===novaProva) return;
+  // guardar estado anterior para undo
+  undoStack.push({
+    type: 'move',
+    item: {id: item.id},
+    prevProva: item.prova,
+    prevProvaOriginal: item.provaOriginal,
+  });
+  if(!item.provaOriginal) item.provaOriginal = item.prova;
+  if(novaProva === item.provaOriginal) delete item.provaOriginal;
+  item.prova = novaProva;
+  const dl = DEADLINES[novaProva];
+  if(dl){ const diff=diffD(todayISO(),dl); item.urgency=diff<=30?'high':diff<=60?'med':'low'; }
+  saveItem(item);
+  renderList();
+  showToast(`Tópico movido para ${novaProva}`);
+}
+
+function addItem(){
+  const t=document.getElementById('new-text').value.trim();if(!t)return;
+  const s=document.getElementById('new-status').value;
+  const subj=document.getElementById('new-subj').value;
+  const ni={id:nid++,text:t,status:s,subject:subj,prova:'Adicionado manualmente',urgency:'low'};
+  if(s==='done'){const{nd,rep}=calcNext(ni,1);ni.nextRev=nd;ni.rep=rep;}
+  items.unshift(ni);
+  document.getElementById('new-text').value='';
+  saveItem(ni);
+  renderList();
+}
+
+// ── DRAG AND DROP ──
+let dragId=null;
+
+function initDragDrop(){
+  const list=document.getElementById('list');
+
+  // drag start — via delegation
+  list.addEventListener('dragstart',e=>{
+    const item=e.target.closest('.item[data-id]');
+    if(!item)return;
+    dragId=parseInt(item.dataset.id);
+    setTimeout(()=>item.classList.add('dragging'),0);
+  });
+  list.addEventListener('dragend',e=>{
+    document.querySelectorAll('.item.dragging').forEach(el=>el.classList.remove('dragging'));
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    dragId=null;
+  });
+
+  // drag over groups
+  list.addEventListener('dragover',e=>{
+    e.preventDefault();
+    const group=e.target.closest('.prova-group[data-prova]');
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    if(group) group.classList.add('drag-over');
+  });
+  list.addEventListener('dragleave',e=>{
+    if(!list.contains(e.relatedTarget)){
+      document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    }
+  });
+  list.addEventListener('drop',e=>{
+    e.preventDefault();
+    const group=e.target.closest('.prova-group[data-prova]');
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    if(!group||dragId==null)return;
+    moveItemProva(dragId, group.dataset.prova);
+  });
+
+  // touch support
+  let touchItem=null,touchClone=null,touchId=null;
+  list.addEventListener('touchstart',e=>{
+    const handle=e.target.closest('.drag-handle');
+    if(!handle)return;
+    touchItem=handle.closest('.item[data-id]');
+    if(!touchItem)return;
+    touchId=parseInt(touchItem.dataset.id);
+    touchClone=touchItem.cloneNode(true);
+    touchClone.style.cssText='position:fixed;z-index:999;opacity:.7;pointer-events:none;width:'+touchItem.offsetWidth+'px;';
+    document.body.appendChild(touchClone);
+    touchItem.classList.add('dragging');
+  },{passive:true});
+  list.addEventListener('touchmove',e=>{
+    if(!touchClone)return;
+    e.preventDefault();
+    const t=e.touches[0];
+    touchClone.style.left=(t.clientX-40)+'px';
+    touchClone.style.top=(t.clientY-20)+'px';
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    const under=document.elementFromPoint(t.clientX,t.clientY);
+    const group=under&&under.closest('.prova-group[data-prova]');
+    if(group)group.classList.add('drag-over');
+  },{passive:false});
+  list.addEventListener('touchend',e=>{
+    if(!touchClone)return;
+    const t=e.changedTouches[0];
+    document.querySelectorAll('.prova-group.drag-over').forEach(el=>el.classList.remove('drag-over'));
+    const under=document.elementFromPoint(t.clientX,t.clientY);
+    const group=under&&under.closest('.prova-group[data-prova]');
+    if(group&&touchId!=null) moveItemProva(touchId,group.dataset.prova);
+    touchClone.remove();touchClone=null;
+    if(touchItem)touchItem.classList.remove('dragging');
+    touchItem=null;touchId=null;
+  });
+}
+
+function setFilter(f,btn){fStatus=f;document.querySelectorAll('#status-filters .stab').forEach(s=>s.classList.remove('active'));btn.classList.add('active');renderList();}
+function setSub(s,btn){
+  fSub=s;
+  document.querySelectorAll('.sub-chips .chip').forEach(c=>{
+    const isAll=c.classList.contains('chip-all');
+    const match=s==='all'?isAll:(SM_META[s]&&c.textContent.trim()===SM_META[s].label);
+    if(match)c.classList.add('active');else c.classList.remove('active');
+  });
+  renderList();
+}
+function toggleGroup(p){expanded[p]=!expanded[p];renderList();}
+function setView(v,btn){
+  view=v;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('view-estudos').style.display=v==='estudos'?'':'none';
+  document.getElementById('view-foco').style.display=v==='foco'?'':'none';
+  document.getElementById('view-faltas').style.display=v==='faltas'?'':'none';
+  if(v==='foco')renderFoco();
+  if(v==='faltas')renderFaltas();
+}
+
+function setView(v,btn){
+  view=v;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('view-estudos').style.display=v==='estudos'?'':'none';
+  document.getElementById('view-agenda').style.display=v==='agenda'?'':'none';
+  document.getElementById('view-provas').style.display=v==='provas'?'':'none';
+  document.getElementById('view-faltas').style.display=v==='faltas'?'':'none';
+  if(v==='agenda')renderAgenda();
+  if(v==='provas')renderProvas();
+  if(v==='faltas')renderFaltas();
+}
+
+// ─────────────────────────────────────────────
+//  AGENDA — CALENDÁRIO SEMANAL
+// ─────────────────────────────────────────────
+// Cada entrada: { date:'YYYY-MM-DD', time:'HH:MM–HH:MM', mod:'BTM', tipo:'teo'|'prat'|'prova'|'dpp'|'fabs', titulo:'...', prof:'...', local:'...' }
+const AGENDA = [
+  // Calendário de aulas do M5 (2025.2/2026.2) com datas reais, já filtrado para Arthur Henrique Assis de Lima
+  // (Turma W / subgrupo W2 - Dermato; subgrupo 2 - Ginecologia; grupo B - Gestante e RN; subgrupo B - Criança e Adolescente).
+  // Entradas marcadas com ⚠️ precisam de confirmação manual (dados que não puderam ser lidos com segurança).
+  {"date": "2026-08-10", "time": "09:00", "mod": "MULH", "tipo": "teo", "titulo": "Abertura do 5º Período (todos os módulos)", "prof": "Profs. Elisabete, Edilberto, Geórgia, Helena, Petrônio", "local": ""},
+  {"date": "2026-08-10", "time": "09:00", "mod": "CRIA", "tipo": "teo", "titulo": "Acolhimento e Início do semestre 2026.2", "prof": "Coords. Georgia Veras, Manuela Torres", "local": "Sala 5 FMR"},
+  {"date": "2026-08-10", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Fisiologia e diagnóstico de gravidez / Assistência Pré-natal", "prof": "Prof. Edilberto Rocha", "local": "Sala 5 CCM"},
+  {"date": "2026-08-11", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Anatomia, Embriologia, Fisiologia", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-11", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Características Anatômicas e Fisiológicas do RN", "prof": "Profa. Fátima Doherty", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-11", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Abordagem ética", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-08-12", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profa. Maria Julia", "local": "Ambulatório Pediatria"},
+  {"date": "2026-08-12", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Proteção ao Aleitamento Materno", "prof": "Profa. Katia Brandt", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-12", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Fisiologia Menstrual / Semiologia Ginecológica", "prof": "Dr. Aurélio", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-08-13", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Vacinação na infância e adolescência", "prof": "Profa. Adriana Azoubel", "local": "Sala 3 FMR"},
+  {"date": "2026-08-13", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia: Metodologia", "prof": "Dra. Luciana", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-08-13", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Contrato pedagógico / Apresentação da disciplina / Problematização", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-08-14", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — ALCON — Coleta de caso", "prof": "Profa. Fátima", "local": "Vide plano — HC"},
+  {"date": "2026-08-14", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Semiologia Dermatológica", "prof": "Profa. Vanessa Medeiros", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-17", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Assist. ao parto transvaginal eutócico / Puerpério fisiológico e patológico", "prof": "Prof. Elias Melo / Profa. Lucia Rohr", "local": "Sala 5 CCM"},
+  {"date": "2026-08-17", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-08-18", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 9 (com W7)", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-08-18", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Assistência ao RN na Sala de Parto e Reanimação Neonatal", "prof": "Profa. Fátima Doherty", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-18", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Profa. Margarida", "local": "Enfermaria Pediatria"},
+  {"date": "2026-08-19", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Fimose, Hérnia umbilical e Hérnia epigástrica (Profa. Marianne Arnold) + Crescimento e Desenvolvimento na infância e adolescência", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-19", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Alimentação na infância e adolescência", "prof": "Profa. Katia Brandt", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-19", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Dismenorreia / SPM", "prof": "Dr. João Victor", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-08-20", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profa. Priscila", "local": "Ambulatório Pediatria"},
+  {"date": "2026-08-20", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia: Patologia da Placenta", "prof": "Dr. Gustavo", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-08-20", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Sistemas e serviços de saúde — Apresentação releitura da peça (1ª avaliação)", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-08-21", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Enfermaria — 4º andar", "prof": "Prof. Edilberto Rocha", "local": "Vide plano — HC"},
+  {"date": "2026-08-21", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Dermatoviroses", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-24", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Indução do Parto / Tocurgia e Distócia", "prof": "Prof. Alex Sandro / Prof. Elias Melo", "local": "Sala 5 CCM"},
+  {"date": "2026-08-24", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 219 (subgrupo 2)", "prof": "Prof. João Victor", "local": "HC"},
+  {"date": "2026-08-25", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Cláudia Ferraz", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-25", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Tocotraumatismos", "prof": "Hugo", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-25", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "A consulta do adolescente", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-08-26", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório CIPE", "prof": "Prof. Francisco Atanásio", "local": "Ambulatório CIPE"},
+  {"date": "2026-08-26", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Impacto das TICs na infância e na adolescência", "prof": "Profa. Sophie Eickmann", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-26", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Propedêutica Cervical / Anticoncepção", "prof": "Dr. Agostinho", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-08-27", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Síndrome do adolescente normal", "prof": "Profa. Elisabete Pereira", "local": "Sala 3 FMR"},
+  {"date": "2026-08-27", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Citologia Ginecológica", "prof": "Dra. Luciana", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-08-27", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Regionalização da Saúde e Redes", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-08-28", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Laboratório — CCM", "prof": "Profa. Kátia", "local": "Vide plano — HC"},
+  {"date": "2026-08-28", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Dermatozoonoses", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-08-31", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Gestação Prolongada / Cesariana", "prof": "Prof. Antônio Carlos", "local": "Sala 5 CCM"},
+  {"date": "2026-08-31", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-09-01", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 1", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-09-01", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Atenção Humanizada ao RN Prematuro/Baixo Peso: Método Canguru", "prof": "Profa. Elisabete", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-01", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Adolescente", "prof": "Prof. Décio", "local": "Ambulatório Adolescente"},
+  {"date": "2026-09-02", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Persistência do conduto peritônio-vaginal e Distopias Testiculares + Desnutrição na Pediatria", "prof": "Prof. Hugo Toscano", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-02", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Segurança e Prevenção de Acidentes na infância e adolescência", "prof": "Profa. Marta Lyra", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-02", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Ginecologia Infanto-Puberal I e II", "prof": "Dra. Vilma", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-09-03", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Profa. Tereza", "local": "Enfermaria Pediatria"},
+  {"date": "2026-09-03", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 1", "prof": "Dra. Fátima", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-09-03", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Apresentação de seminário — Regionalização em Saúde (2ª avaliação)", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-09-04", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Laboratório — CCM", "prof": "Prof. Antônio Carlos", "local": "Vide plano — HC"},
+  {"date": "2026-09-04", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Dermatoses Eritêmato-Escamosas", "prof": "Profa. Vanessa Medeiros", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-07", "time": "—", "mod": "GRN", "tipo": "feriado", "titulo": "FERIADO (Obstetrícia)", "prof": "", "local": ""},
+  {"date": "2026-09-07", "time": "—", "mod": "MULH", "tipo": "feriado", "titulo": "FERIADO", "prof": "", "local": ""},
+  {"date": "2026-09-08", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Vanessa Medeiros", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-08", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Aleitamento Materno", "prof": "Profa. Paula", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-08", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Desenvolvimento puberal normal e patológico", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-09-09", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profs. Edjane e Hugo", "local": "Ambulatório Pediatria"},
+  {"date": "2026-09-09", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Constipação intestinal", "prof": "Profa. Margarida Antunes", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-09", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Amenorreia Primária / Amenorreia Secundária e SOP", "prof": "Dr. Eduardo", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-09-10", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Violência na criança e adolescente: impacto na saúde", "prof": "Profa. Elisabete Pereira", "local": "Sala 3 FMR"},
+  {"date": "2026-09-10", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Distopias / IUE", "prof": "Dra. Márcia", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-09-10", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Modelo assistencial da SES-PE — convidado Renan Carlos Freitas da Silva", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-09-11", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Puericultura", "prof": "Profa. Paula", "local": "Vide plano — HC"},
+  {"date": "2026-09-11", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Estudo Dirigido", "prof": "—", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-14", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 256 (subgrupo 2)", "prof": "Profa. Mirella", "local": "HC"},
+  {"date": "2026-09-14", "time": "—", "mod": "GRN", "tipo": "prova", "titulo": "1ª Avaliação (Obstetrícia e Neonatologia)", "prof": "", "local": ""},
+  {"date": "2026-09-15", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 10 (com W6)", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-09-15", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Triagem neonatal", "prof": "Profa. Paula", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-15", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Prof. Dusan", "local": "Enfermaria Pediatria"},
+  {"date": "2026-09-16", "time": "07:30", "mod": "CRIA", "tipo": "prova", "titulo": "1ª Prova Teórica", "prof": "Profs. Georgia, Hugo, Dusan, Marta, Maria Júlia, Margarida, Edjane", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-16", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Diarreia aguda na criança e adolescente", "prof": "Profa. Margarida Antunes", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-16", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Infecções Genitais / IST", "prof": "Dr. Aurélio", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-09-17", "time": "08:00", "mod": "MULH", "tipo": "prova", "titulo": "1ª Avaliação", "prof": "", "local": "Auditório do CCM"},
+  {"date": "2026-09-17", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profa. Priscila", "local": "Ambulatório Pediatria"},
+  {"date": "2026-09-17", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Avaliação em Saúde", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-09-18", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Triagem — 1º andar", "prof": "Profa. Lucia Rohr", "local": "Vide plano — HC"},
+  {"date": "2026-09-18", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Tumores Cutâneos", "prof": "Profa. Cláudia Ferraz", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-21", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Síndromes Hipertensivas", "prof": "Prof. Edilberto Rocha", "local": "Sala 5 CCM"},
+  {"date": "2026-09-21", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-09-22", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-22", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Icterícia", "prof": "Profa. Fátima", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-22", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Sexualidade na adolescência", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-09-23", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Estenose Hipertrófica do Piloro + (tema continuação)", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-23", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Infecções das Vias Aéreas Superiores (IVAS)", "prof": "Profa. Dayanne Bruscky", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-24", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Infecções das Vias Aéreas Inferiores (IVAI)", "prof": "Profa. Georgia Veras", "local": "Sala 3 FMR"},
+  {"date": "2026-09-24", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologias Benignas da Vulva / Patologias Malignas da Vulva", "prof": "Dra. Márcia", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-09-24", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Planejamento em Saúde", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-09-25", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Puericultura", "prof": "Profa. Paula", "local": "Vide plano — HC"},
+  {"date": "2026-09-25", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Hanseníase", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-28", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Hemorragias 1ª metade da gravidez / Hemorragia pós-parto", "prof": "Profa. Lucia Rohr / Profa. Debora Leite", "local": "Sala 5 CCM"},
+  {"date": "2026-09-28", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 255 (subgrupo 2)", "prof": "Prof. Cláudio", "local": "HC"},
+  {"date": "2026-09-29", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 8 (com W7)", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-09-29", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Caso clínico 1 (Neonatologia)", "prof": "Profas. Fátima e Elisabete", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-29", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Adolescente", "prof": "Prof. Décio", "local": "Ambulatório Adolescente"},
+  {"date": "2026-09-30", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Atresias Intestinais + Asma na infância e adolescência", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-30", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Parasitoses intestinais", "prof": "Profa. Maria Julia", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-30", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia Pré-maligna do Colo / Câncer de Colo", "prof": "Dr. Agostinho", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-01", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Profa. Adriana", "local": "Enfermaria Pediatria"},
+  {"date": "2026-10-01", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia do Colo Uterino e Vulva", "prof": "Dr. Gustavo", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-01", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Apresentação de Experiências de Planejamento no SUS (3ª avaliação)", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-10-02", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Sala de parto — 4º andar", "prof": "Profa. Daniele Gattás", "local": "Vide plano — HC"},
+  {"date": "2026-10-02", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Micoses", "prof": "Profa. Cláudia Ferraz", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-05", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Trabalho de parto prematuro / Rotura Prematura de membranas", "prof": "Prof. Alex Sandro", "local": "Sala 5 CCM"},
+  {"date": "2026-10-05", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-10-06", "time": "08:00", "mod": "ASA1", "tipo": "prova", "titulo": "1ª Avaliação Prática", "prof": "Todas as profs", "local": "CCM"},
+  {"date": "2026-10-06", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Sífilis Congênita", "prof": "Hugo", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-06", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Principais problemas ginecológicos na adolescência", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-10-07", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profs. Marta e Margarida", "local": "Ambulatório Pediatria"},
+  {"date": "2026-10-07", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Obesidade e Síndrome metabólica", "prof": "Profa. Gabriela Pimentel", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-07", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "SUA / Mioma Uterino", "prof": "Dra. Helena", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-08", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Transtornos mentais na adolescência", "prof": "Profa. Elisabete Pereira", "local": "Sala 3 FMR"},
+  {"date": "2026-10-08", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia do Corpo Uterino", "prof": "Dr. Gustavo", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-08", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Apresentação de Experiências de Planejamento no SUS (3ª avaliação) — continuação", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-10-09", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — ALCON — Exame físico", "prof": "Profa. Rafaela", "local": "Vide plano — HC"},
+  {"date": "2026-10-09", "time": "10:00", "mod": "ASA1", "tipo": "prova", "titulo": "1ª Avaliação Teórica", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4"},
+  {"date": "2026-10-12", "time": "—", "mod": "GRN", "tipo": "feriado", "titulo": "FERIADO (Obstetrícia)", "prof": "", "local": ""},
+  {"date": "2026-10-12", "time": "—", "mod": "MULH", "tipo": "feriado", "titulo": "FERIADO", "prof": "", "local": ""},
+  {"date": "2026-10-13", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Vanessa Medeiros", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-13", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Caso clínico 2 (Neonatologia)", "prof": "Profas. Fátima e Elisabete", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-13", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Adolescente", "prof": "Profa. Manuela", "local": "Ambulatório Adolescente"},
+  {"date": "2026-10-14", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Apendicite Aguda + Infecção do Trato Urinário (ITU)", "prof": "Prof. Dusan Kostic", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-14", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Transtorno do Espectro Autista (TEA)", "prof": "Profa. Sophie Eickmann", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-14", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 2", "prof": "Dra. Fátima", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-15", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profa. Priscila", "local": "Ambulatório Pediatria"},
+  {"date": "2026-10-15", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Câncer de Endométrio", "prof": "Dra. Helena", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-15", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Modelos de Gestão e Gerência no SUS", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-10-16", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Enfermaria — 4º andar", "prof": "Prof. Elias Melo", "local": "Vide plano — HC"},
+  {"date": "2026-10-16", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Doenças Bacterianas da Pele", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-19", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 218 (subgrupo 2)", "prof": "Prof. José Carlos", "local": "HC"},
+  {"date": "2026-10-19", "time": "—", "mod": "GRN", "tipo": "prova", "titulo": "2ª Avaliação (Obstetrícia e Neonatologia)", "prof": "", "local": ""},
+  {"date": "2026-10-20", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 7 (com W3)", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-10-20", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Anoxia perinatal e Encefalopatia hipóxico-isquêmica", "prof": "Profa. Fátima", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-20", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Principais problemas andrológicos na adolescência", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-10-21", "time": "07:30", "mod": "CRIA", "tipo": "prova", "titulo": "2ª Prova Teórica", "prof": "Profs. Georgia, Hugo, Dusan, Margarida, Marta, Edjane, Maria Júlia", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-21", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Transtorno do Déficit de Atenção e Hiperatividade (TDAH)", "prof": "Profa. Sophie Eickmann", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-21", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Tumores Benignos do Ovário / Câncer de Ovário", "prof": "Dra. Mirella", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-22", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Profa. Priscila", "local": "Enfermaria Pediatria"},
+  {"date": "2026-10-22", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia do Ovário", "prof": "Dra. Luciana", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-10-22", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Apresentação — Modelos de Gestão e Gerência: Consórcio e EBSERH (4ª avaliação)", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-10-23", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — ALCON — Aleitamento materno", "prof": "Profa. Kátia", "local": "Vide plano — HC"},
+  {"date": "2026-10-23", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Dermatoses Vésico-Bolhosas", "prof": "Profa. Vanessa Medeiros", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-26", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Diabetes / Ultrassonografia em obstetrícia", "prof": "Prof. Edilberto Rocha / Prof. Alex Sandro", "local": "Sala 5 CCM"},
+  {"date": "2026-10-26", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-10-27", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-27", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Caso clínico 3 (Neonatologia)", "prof": "Profas. Fátima e Elisabete", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-10-27", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prova", "titulo": "1ª Avaliação Prática (subgrupo B)", "prof": "Profa. Priscila", "local": "Ambulatório Adolescente"},
+  {"date": "2026-10-28", "time": "—", "mod": "MULH", "tipo": "feriado", "titulo": "FERIADO", "prof": "", "local": ""},
+  {"date": "2026-10-28", "time": "—", "mod": "CRIA", "tipo": "feriado", "titulo": "FERIADO — Servidor Público Federal", "prof": "", "local": ""},
+  {"date": "2026-10-29", "time": "08:00", "mod": "MULH", "tipo": "prova", "titulo": "2ª Avaliação", "prof": "", "local": "Auditório do CCM"},
+  {"date": "2026-10-29", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Doenças exantemáticas I", "prof": "Profa. Georgia Veras", "local": "Sala 3 FMR"},
+  {"date": "2026-10-29", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Apresentação — Modelos de Gestão e Gerência: PPP e OS (4ª avaliação)", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-10-30", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Laboratório — CCM", "prof": "Prof. Antônio Carlos", "local": "Vide plano — HC"},
+  {"date": "2026-10-30", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Leishmaniose Tegumentar Americana", "prof": "Profa. Cláudia Ferraz", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-02", "time": "—", "mod": "GRN", "tipo": "feriado", "titulo": "FERIADO (Obstetrícia)", "prof": "", "local": ""},
+  {"date": "2026-11-02", "time": "—", "mod": "MULH", "tipo": "feriado", "titulo": "FERIADO", "prof": "", "local": ""},
+  {"date": "2026-11-03", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 9 (com W4)", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-11-03", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Distúrbios Respiratórios no RN", "prof": "Profa. Paula", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-03", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Doença Reumática", "prof": "Profa. Paula Diniz", "local": "Sala 3 FMR"},
+  {"date": "2026-11-04", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório CIPE", "prof": "Prof. Hugo", "local": "Ambulatório CIPE"},
+  {"date": "2026-11-04", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Tuberculose", "prof": "Profa. Edjane Burity", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-04", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Infertilidade", "prof": "Dr. Cláudio", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-05", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Doenças exantemáticas II", "prof": "Profa. Georgia Veras", "local": "Sala 3 FMR"},
+  {"date": "2026-11-05", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Radiologia: Densitometria óssea", "prof": "Dra. Fátima", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-05", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Regulação e Auditoria no SUS; HC e EBSERH — convidado Wagner de Lima Cordeiro", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-11-06", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Puericultura", "prof": "Profa. Paula", "local": "Vide plano — HC"},
+  {"date": "2026-11-06", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Dermatoses Eczematosas", "prof": "Profa. Vanessa Medeiros", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-09", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Restrição de Crescimento Fetal, Cardiotocografia / Óbito Fetal", "prof": "Prof. Alex Sandro / Profa. Daniele Gattás", "local": "Sala 5 CCM"},
+  {"date": "2026-11-09", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 223 (subgrupo 2)", "prof": "Profa. Vilma", "local": "HC"},
+  {"date": "2026-11-10", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-10", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Sepse Neonatal", "prof": "Profa. Paula", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-10", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Adolescente", "prof": "Prof. Décio", "local": "Ambulatório Adolescente"},
+  {"date": "2026-11-11", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Invaginação intestinal + Glomerulonefrite Pós-estreptocóccica (GNPE)", "prof": "Prof. Dusan Kostic", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-11", "time": "13:00–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Crises febris e síndromes epilépticas", "prof": "Profa. Priscila Fonseca", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-11", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Endometriose", "prof": "Dr. Cláudio", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-12", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria (subgrupos B e D)", "prof": "Profa. Rafaela", "local": "Ambulatório Pediatria (subgrupos B e D)"},
+  {"date": "2026-11-12", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Radiologia: Imagem da Mulher — Mama", "prof": "Dra. Fátima", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-12", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Financiamento da Saúde", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-11-13", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Triagem — 1º andar", "prof": "Profa. Lucia Rohr", "local": "Vide plano — HC"},
+  {"date": "2026-11-13", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Sífilis Adquirida", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-16", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Hemorragias 2ª metade da gravidez", "prof": "Profa. Lucia Rohr", "local": "Sala 5 CCM"},
+  {"date": "2026-11-16", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-11-17", "time": "08:00–10:00", "mod": "ASA1", "tipo": "prat", "titulo": "Prática — Ambulatório de Dermatologia — Amb. 6 (com W3)", "prof": "", "local": "Ambulatório do Serv. de Dermatologia, HC"},
+  {"date": "2026-11-17", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Cuidado acolhedor para todos os RN", "prof": "Profa. Elisabete", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-17", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Gravidez e Parentalidade na adolescência: aspectos psicossociais", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
+  {"date": "2026-11-18", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — CIPE Tutoria — Tumores abdominais e rotinas do centro cirúrgico", "prof": "Prof. José Luiz", "local": "CIPE Tutoria — Tumores abdominais e rotinas do centro cirúrgico"},
+  {"date": "2026-11-18", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "CASOS CLÍNICOS I", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-18", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Climatério", "prof": "Dr. José Carlos", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-19", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Ambulatório Pediatria", "prof": "Profa. Gabriela", "local": "Ambulatório Pediatria"},
+  {"date": "2026-11-19", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia: Citologia Mamária", "prof": "Dras. Catarina/Luciana", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-19", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Oficina SIOPS — Sistema de Informação sobre Orçamentos Públicos em Saúde", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-11-20", "time": "—", "mod": "ASA1", "tipo": "feriado", "titulo": "FERIADO", "prof": "", "local": ""},
+  {"date": "2026-11-20", "time": "—", "mod": "GRN", "tipo": "feriado", "titulo": "FERIADO (Prática)", "prof": "", "local": ""},
+  {"date": "2026-11-23", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Teratogênese", "prof": "Prof. Edilberto Rocha", "local": "Sala 5 CCM"},
+  {"date": "2026-11-23", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 222 (subgrupo 2)", "prof": "Prof. Agostinho", "local": "HC"},
+  {"date": "2026-11-24", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "⚠️ CONFERIR: cronograma marca \"Turma X\" nesta data e a tabela de ambulatórios não cobre mais 24/11 — confirme com a coordenação se a Turma W tem atividade nesse dia", "prof": "", "local": "A confirmar"},
+  {"date": "2026-11-24", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Infecções Congênitas", "prof": "Hugo", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-24", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Profa. Manuela", "local": "Enfermaria Pediatria"},
+  {"date": "2026-11-25", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Tumores abdominais (Nefroblastoma/Wilms) + Síndrome Nefrótica (SN)", "prof": "Prof. Dusan Kostic", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-25", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "CASOS CLÍNICOS II", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-25", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Osteoporose", "prof": "Dr. José Carlos", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-26", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Uso de drogas lícitas e ilícitas (NÃO cai na prova — trabalho em grupo)", "prof": "Profa. Elisabete Pereira", "local": "Sala 3 FMR"},
+  {"date": "2026-11-26", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia: Lesões não neoplásicas benignas da Mama", "prof": "Dra. Luciana", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-11-26", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Apresentação — análise crítica de indicadores de financiamento (5ª avaliação)", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-11-27", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Puericultura", "prof": "Profa. Paula", "local": "Vide plano — HC"},
+  {"date": "2026-11-27", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Farmacodermias", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-11-30", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Seminário 1 (Obstetrícia)", "prof": "Prof. Alex Sandro", "local": "Sala 5 CCM"},
+  {"date": "2026-11-30", "time": "a confirmar", "mod": "MULH", "tipo": "prat", "titulo": "⚠️ CONFERIR: prática de Tutoria (Ginecologia, subgrupo 2) — sala/professora/horário não puderam ser lidos com segurança na tabela original. Confira a \"Proposta Práticas Gineco com acolhimento\" diretamente.", "prof": "", "local": "A confirmar"},
+  {"date": "2026-12-01", "time": "08:00", "mod": "ASA1", "tipo": "prova", "titulo": "2ª Avaliação Prática", "prof": "Todas as profs", "local": "CCM"},
+  {"date": "2026-12-01", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Distúrbios Metabólicos no período neonatal", "prof": "Hugo", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-12-01", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Meningoencefalites (MGEs)", "prof": "Profa. Georgia Veras", "local": "Sala 3 FMR"},
+  {"date": "2026-12-02", "time": "07:30–10:10", "mod": "CRIA", "tipo": "prat", "titulo": "Prática (subgrupo B) — Enfermaria Pediatria", "prof": "Profa. Edjane", "local": "Enfermaria Pediatria"},
+  {"date": "2026-12-02", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "REVISÃO", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-12-02", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologias Benignas da Mama", "prof": "Dra. Lúcia", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-12-03", "time": "13:30–16:30", "mod": "CRIA", "tipo": "prova", "titulo": "2ª Avaliação Prática (subgrupo B)", "prof": "Profa. Priscila", "local": "Ambulatório Pediatria"},
+  {"date": "2026-12-03", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Patologia: Lesões Malignas da Mama", "prof": "Dra. Luciana", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-12-03", "time": "—", "mod": "PGSS", "tipo": "teo", "titulo": "Revisão dos conteúdos", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
+  {"date": "2026-12-04", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Sala de parto — 4º andar", "prof": "Profa. Daniele Gattás", "local": "Vide plano — HC"},
+  {"date": "2026-12-04", "time": "10:00–11:50", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Extra", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-12-07", "time": "a definir", "mod": "MULH", "tipo": "prat", "titulo": "Prática — Ambulatório 257 (subgrupo 2)", "prof": "Prof. Eduardo", "local": "HC"},
+  {"date": "2026-12-08", "time": "—", "mod": "ASA1", "tipo": "feriado", "titulo": "FERIADO", "prof": "", "local": ""},
+  {"date": "2026-12-08", "time": "—", "mod": "GRN", "tipo": "feriado", "titulo": "FERIADO (Neonatologia)", "prof": "", "local": ""},
+  {"date": "2026-12-09", "time": "07:30", "mod": "CRIA", "tipo": "prova", "titulo": "3ª Prova Teórica", "prof": "Profs. Georgia, Hugo, Dusan, Margarida, Marta, Edjane, Maria Júlia", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-12-09", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Câncer de Mama", "prof": "Dra. Lúcia", "local": "Anfiteatro 4 HC / Sala 5 CCM (vide cronograma)"},
+  {"date": "2026-12-10", "time": "08:00", "mod": "MULH", "tipo": "prova", "titulo": "3ª Avaliação", "prof": "", "local": "Auditório do CCM"},
+  {"date": "2026-12-10", "time": "—", "mod": "PGSS", "tipo": "prova", "titulo": "2ª Avaliação Parcial", "prof": "", "local": ""},
+  {"date": "2026-12-11", "time": "07:30", "mod": "GRN", "tipo": "prova", "titulo": "Avaliação Prática (Grupo B — vide escala)", "prof": "Todos os profs", "local": "CCM"},
+  {"date": "2026-12-11", "time": "08:00", "mod": "ASA1", "tipo": "prova", "titulo": "2ª Avaliação Teórica", "prof": "Profa. Jéssica Guido", "local": "Anfiteatro 4"},
+  {"date": "2026-12-12", "time": "—", "mod": "CRIA", "tipo": "teo", "titulo": "Último dia para aulas teóricas e práticas (reposições)", "prof": "Profa. Georgia Veras", "local": ""},
+  {"date": "2026-12-14", "time": "07:00", "mod": "MULH", "tipo": "prova", "titulo": "Prova Prática", "prof": "", "local": "CCM — tutorias 3 a 8 e sala 5"},
+  {"date": "2026-12-14", "time": "10:10–12:50", "mod": "GRN", "tipo": "teo", "titulo": "Obstetrícia (Teórica) — Seminário 2 (Obstetrícia)", "prof": "Prof. Alex Sandro", "local": "Sala 5 CCM"},
+  {"date": "2026-12-15", "time": "08:00", "mod": "ASA1", "tipo": "prova", "titulo": "2ª Chamada (Aval. 1 e 2)", "prof": "Profa. Jéssica Guido", "local": "Serviço de Dermatologia"},
+  {"date": "2026-12-15", "time": "10:10", "mod": "GRN", "tipo": "prova", "titulo": "3ª Avaliação", "prof": "Profs. Alex, Daniela, Elisabete, Fátima", "local": ""},
+  {"date": "2026-12-15", "time": "13:30", "mod": "CRIA", "tipo": "prova", "titulo": "2ª Chamada", "prof": "Profa. Georgia Veras", "local": ""},
+  {"date": "2026-12-16", "time": "11:00", "mod": "MULH", "tipo": "prova", "titulo": "2ª Chamada", "prof": "", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-12-17", "time": "08:00", "mod": "MULH", "tipo": "prova", "titulo": "Prova Final", "prof": "", "local": "Sala 5 CCM"},
+  {"date": "2026-12-17", "time": "13:30–15:00", "mod": "CRIA", "tipo": "prova", "titulo": "Prova Final", "prof": "Profa. Georgia Veras", "local": ""},
+  {"date": "2026-12-17", "time": "—", "mod": "PGSS", "tipo": "prova", "titulo": "Avaliação Final", "prof": "", "local": ""},
+  {"date": "2026-12-18", "time": "07:30", "mod": "GRN", "tipo": "prova", "titulo": "2ª Chamada", "prof": "", "local": ""},
+  {"date": "2026-12-18", "time": "10:00", "mod": "ASA1", "tipo": "prova", "titulo": "Avaliação Final", "prof": "Profa. Jéssica Guido", "local": "Serviço de Dermatologia"},
+  {"date": "2026-12-21", "time": "—", "mod": "GRN", "tipo": "prova", "titulo": "Prova Final", "prof": "", "local": ""},
+];
+
+
+
+const MOD_META = {
+  'SAI-C': {label:'SAI Clínica',  cls:'mod-sai-c'},
+  'SAI-N': {label:'SAI Neuro',    cls:'mod-sai-n'},
+  'SAI-G': {label:'SAI Gineco',   cls:'mod-sai-g'},
+  'SCA':   {label:'SCA',          cls:'mod-sca'},
+  'ICTC-C':{label:'ICTC Cirurgia',cls:'mod-ictc'},
+  'ICTC-A':{label:'ICTC Anatomia',cls:'mod-ictc'},
+  'BTM':   {label:'BTM',          cls:'mod-btm'},
+  'RAMEL': {label:'RAMEL',        cls:'mod-ramel'},
+  'DPP':   {label:'DPP I',        cls:'mod-dpp'},
+  'FABS':  {label:'FABS II',      cls:'mod-fabs'},
+  'FERIADO':{label:'Feriado',     cls:''},
+  'MULH':  {label:'Saúde da Mulher',       cls:'mod-mulh'},
+  'GRN':   {label:'Gestante e RN',         cls:'mod-grn'},
+  'CRIA':  {label:'Criança e Adolescente', cls:'mod-cria'},
+  'PGSS':  {label:'Planej. e Gestão',      cls:'mod-pgss'},
+  'ASA1':  {label:'ASA 1 (Dermato)',       cls:'mod-asa1'},
+};
+
+// ─────────────────────────────────────────────
+//  HORÁRIO PADRÃO — grade semanal fixa (M5 2025.2)
+//  Fonte: plano de horário oficial da coordenação (documento M5_2025_2.pdf)
+// ─────────────────────────────────────────────
+const HP_VERDE = {mod:null, txt:'Horário Verde', local:'', verde:true};
+const HORARIO_PADRAO = [
+  {time:'7H30–8H20', dias:[
+    {mod:'MULH', txt:'Prática Ginecologia', local:'Metade: Amb. Gineco HC · Metade: Salas 3, 4 e Tutorias FMR'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Prática', local:'Amb. Dermato HC / Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica CIPE · Metade: Prática', local:'Anfiteatro 4 HC / HC'},
+    {mod:'MULH', txt:'Patologia / Imagem', local:'Sala 1 FMR'},
+    {mod:'GRN',  txt:'Prática', local:'Vários locais — vide plano'},
+  ]},
+  {time:'8H20–9H10', dias:[
+    {mod:'MULH', txt:'Prática Ginecologia', local:'Metade: Amb. Gineco HC · Metade: Salas 3, 4 e Tutorias FMR'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Prática', local:'Amb. Dermato HC / Anfiteatro 4 HC'},
+    {mod:'MULH', txt:'Patologia / Imagem', local:'Sala 1 FMR'},
+    {mod:'CRIA', txt:'Metade: Teórica Pediatria · Metade: Prática', local:'Anfiteatro 4 HC / HC'},
+    {mod:'GRN',  txt:'Prática', local:'Vários locais — vide plano'},
+  ]},
+  {time:'9H20–10H10', dias:[
+    {mod:'MULH', txt:'Prática Ginecologia', local:'Metade: Amb. Gineco HC · Metade: Salas 3, 4 e Tutorias FMR'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Prática', local:'Amb. Dermato HC / Anfiteatro 4 HC'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'GRN',  txt:'Prática', local:'Vários locais — vide plano'},
+  ]},
+  {time:'10H10–11H', dias:[
+    {mod:'GRN',  txt:'Teórica Obstetrícia', local:'Sala 5 FMR'},
+    {mod:'GRN',  txt:'Teórica Neonatologia', local:'Anfiteatro 4 HC'},
+    {mod:'MULH', txt:'Teórica Ginecologia', local:'Anfiteatro 4 HC'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Teórica', local:'Anfiteatro 4 HC'},
+  ]},
+  {time:'11H10–12H', dias:[
+    {mod:'GRN',  txt:'Teórica Obstetrícia', local:'Sala 5 FMR'},
+    {mod:'GRN',  txt:'Teórica Neonatologia', local:'Anfiteatro 4 HC'},
+    {mod:'MULH', txt:'Teórica Ginecologia', local:'Anfiteatro 4 HC'},
+    {mod:'PGSS', txt:'Planejamento e Gestão', local:'Área acadêmica de Saúde Coletiva'},
+    {mod:'ASA1', txt:'ASA 1 (Dermato) — Teórica', local:'Anfiteatro 4 HC'},
+  ]},
+  {time:'12H–12H50', dias:[
+    {mod:'GRN', txt:'Teórica Obstetrícia', local:'Sala 5 FMR'},
+    null, null, null,
+    HP_VERDE,
+  ]},
+  {time:'13H–13H50', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Teórica Pediatria', local:'Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    HP_VERDE,
+  ]},
+  {time:'13H50–14H40', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Teórica Pediatria', local:'Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    HP_VERDE,
+  ]},
+  {time:'14H50–15H40', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Teórica Pediatria', local:'Anfiteatro 4 HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    HP_VERDE,
+  ]},
+  {time:'15H40–16H30', dias:[
+    HP_VERDE,
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    {mod:'CRIA', txt:'Metade: Teórica (sala 3 FMR) · Metade: Prática', local:'sala 3 FMR / HC'},
+    null,
+    HP_VERDE,
+  ]},
+  {time:'16H40–17H30', dias:[
+    HP_VERDE, null, null, null, HP_VERDE,
+  ]},
+];
+function renderHorarioPadrao(){
+  const el=document.getElementById('hp-tbody');
+  if(!el) return;
+  el.innerHTML = HORARIO_PADRAO.map(row=>{
+    const cells = row.dias.map(d=>{
+      if(!d) return '<td style="padding:4px 6px;color:var(--text3);border-top:1px solid var(--border);">—</td>';
+      if(d.verde) return '<td style="padding:4px 6px;border-top:1px solid var(--border);background:var(--green-bg);color:var(--green-text);font-weight:700;border-radius:4px;">Horário Verde</td>';
+      const meta=MOD_META[d.mod]||{label:d.mod,cls:''};
+      return `<td style="padding:4px 6px;border-top:1px solid var(--border);vertical-align:top;">
+        <div class="${meta.cls}" style="padding:3px 6px;border-radius:5px;">
+          <div style="font-weight:700;">${meta.label}</div>
+          <div style="font-weight:400;">${d.txt}</div>
+          <div style="font-size:9px;opacity:.75;">${d.local}</div>
+        </div>
+      </td>`;
+    }).join('');
+    return `<tr><td style="padding:4px 6px;font-weight:700;white-space:nowrap;border-top:1px solid var(--border);vertical-align:top;">${row.time}</td>${cells}</tr>`;
+  }).join('');
+}
+
+const TIPO_META = {
+  'teo':    {label:'Teórica',  cls:'ag-tipo-teo'},
+  'prat':   {label:'Prática',  cls:'ag-tipo-prat'},
+  'lab':    {label:'Lab.',     cls:'ag-tipo-prat'},
+  'prova':  {label:'Prova',    cls:'ag-tipo-prova'},
+  'dpp':    {label:'DPP',      cls:'ag-tipo-dpp'},
+  'fabs':   {label:'FABS',     cls:'ag-tipo-fabs'},
+  'feriado':{label:'',         cls:''},
+};
+
+let agSelectedDate = todayISO();
+
+function buildAgDays(){
+  // Generate ALL weekdays from start of semester (10/08/2026) until 22/12/2026 — M5 2025.2
+  const days = [];
+  const start = new Date('2026-08-10T12:00:00');
+  const end   = new Date('2026-12-22T12:00:00');
+  let d = new Date(start);
+  while(d <= end){
+    const dow = d.getDay(); // 0=sun,1=mon..6=sat
+    if(dow >= 1 && dow <= 5){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const dd2 = String(d.getDate()).padStart(2,'0');
+      days.push(`${y}-${m}-${dd2}`);
+    }
+    d.setDate(d.getDate()+1);
+  }
+  return days;
+}
+
+// ─────────────────────────────────────────────
+//  SINCRONIZAÇÃO PROVAS → AGENDA
+// ─────────────────────────────────────────────
+// Atualiza as datas das entradas da AGENDA que têm agendaId
+// com a data efetiva do PROVAS_DEF (podendo ser customizada pelo usuário)
+function patchAgendaDates(){
+  if(typeof PROVAS_DEF==='undefined') return;
+  let state={};
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}');}catch(e){}
+  const dateMap={};
+  PROVAS_DEF.forEach(p=>{
+    dateMap[p.id]=(state[p.id]&&state[p.id].date)||p.date;
+  });
+  AGENDA.forEach(a=>{
+    if(a.agendaId && dateMap[a.agendaId]){
+      a.date=dateMap[a.agendaId];
+    }
+  });
+}
+
+function renderAgenda(){
+  patchAgendaDates();
+  const days = buildAgDays();
+  const today = todayISO();
+  const dowNames = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+  // If selected date is not in days, pick today or closest future
+  if(!days.includes(agSelectedDate)){
+    agSelectedDate = days.find(d=>d>=today) || days[0];
+  }
+
+  // Show ALL days — scrollable nav
+  const nav = document.getElementById('ag-day-nav');
+  nav.innerHTML = days.map(iso=>{
+    const dt = new Date(iso+'T12:00:00');
+    const dow = dowNames[dt.getDay()];
+    const dd = dt.getDate().toString().padStart(2,'0');
+    const mm = (dt.getMonth()+1).toString().padStart(2,'0');
+    const isToday = iso===today;
+    const isActive = iso===agSelectedDate;
+    const hasProva = AGENDA.some(a=>a.date===iso && (a.tipo==='prova'||a.tipo==='prat-prova'));
+    return`<button class="ag-day-btn${isActive?' active':''}${isToday?' today':''}${hasProva?' has-prova':''}"
+      onclick="selectAgDay('${iso}')">${dow}<br><span class="ag-dd">${dd}</span><span style="font-size:9px;opacity:.7">/${mm}</span>${hasProva?'<span class="ag-prova-dot">!</span>':''}</button>`;
+  }).join('');
+
+  // Scroll so active day is visible
+  requestAnimationFrame(()=>{
+    const activeBtn = nav.querySelector('.ag-day-btn.active');
+    if(activeBtn) activeBtn.scrollIntoView({inline:'center', behavior:'smooth', block:'nearest'});
+  });
+
+  // Render prev/next week buttons
+  const prevNextDiv = document.getElementById('ag-week-nav');
+  if(prevNextDiv){
+    const cur = new Date(agSelectedDate+'T12:00:00');
+    const prevWeek = new Date(cur); prevWeek.setDate(cur.getDate()-7);
+    const nextWeek = new Date(cur); nextWeek.setDate(cur.getDate()+7);
+    const fmt = d => `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}`;
+    prevNextDiv.innerHTML = `
+      <button onclick="jumpWeek(-1)" class="ag-week-btn">◀ Semana anterior</button>
+      <span class="ag-week-label">Semana de ${fmt(getMonday(cur))}</span>
+      <button onclick="jumpWeek(1)" class="ag-week-btn">Próxima semana ▶</button>`;
+  }
+
+  renderAgDay();
+}
+
+function getMonday(d){
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day===0?-6:1);
+  return new Date(d.setDate(diff));
+}
+function jumpWeek(delta){
+  const cur = new Date(agSelectedDate+'T12:00:00');
+  cur.setDate(cur.getDate() + delta*7);
+  const days = buildAgDays();
+  // Find closest available weekday
+  let target = cur.toISOString().slice(0,10);
+  if(!days.includes(target)){
+    target = days.find(d=>d>=target) || days[days.length-1];
+  }
+  selectAgDay(target);
+}
+function selectAgDay(iso){
+  agSelectedDate = iso;
+  renderAgenda();
+}
+
+function renderAgDay(){
+  const iso = agSelectedDate;
+  const dt = new Date(iso+'T12:00:00');
+  const dowFull = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][dt.getDay()];
+  const ddmm = dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+
+  document.getElementById('ag-week-label').textContent = `${dowFull}, ${ddmm}`;
+
+  function parseTime(t){
+    if(!t) return 9999;
+    const m = t.match(/^(\d+):(\d+)/);
+    return m ? parseInt(m[1])*60+parseInt(m[2]) : 9999;
+  }
+  const dayItems = AGENDA.filter(a=>a.date===iso).sort((a,b)=>{
+    if(a.tipo==='feriado' && b.tipo!=='feriado') return -1;
+    if(b.tipo==='feriado' && a.tipo!=='feriado') return 1;
+    return parseTime(a.time) - parseTime(b.time);
+  });
+
+  if(!dayItems.length){
+    document.getElementById('ag-content').innerHTML = `<div class="ag-empty">Sem atividades programadas para este dia.</div>`;
+    return;
+  }
+
+  document.getElementById('ag-content').innerHTML = dayItems.map(a=>{
+    const mm = MOD_META[a.mod]||{label:a.mod,cls:''};
+    const tm = TIPO_META[a.tipo]||{label:a.tipo,cls:''};
+
+    if(a.tipo==='feriado'){
+      return`<div class="ag-feriado">${a.titulo}</div>`;
+    }
+
+    if(a.tipo==='livre'){
+      return`<div class="ag-livre">🟢 ${a.titulo}</div>`;
+    }
+
+    if(a.tipo==='prova'){
+      return`<div class="ag-block ag-block-prova">
+        <div class="ag-block-header">
+          <span class="ag-time">${a.time}</span>
+          <span class="ag-modulo">${mm.label}</span>
+          <span class="ag-tipo ag-tipo-prova">⚠️ PROVA</span>
+        </div>
+        <div class="ag-block-body">
+          <div class="ag-titulo ag-titulo-prova">${a.titulo}</div>
+          ${a.prof?`<div class="ag-detail"><span>Prof.</span>${a.prof}</div>`:''}
+          ${a.local?`<div class="ag-detail"><span>Local</span>${a.local}</div>`:''}
+        </div>
+      </div>`;
+    }
+
+    if(a.tipo==='prat-prova'){
+      return`<div class="ag-block ag-block-prat-prova">
+        <div class="ag-block-header">
+          <span class="ag-time">${a.time}</span>
+          <span class="ag-modulo">${mm.label}</span>
+          <span class="ag-tipo ag-tipo-prat-prova">🩺 PROVA PRÁTICA</span>
+        </div>
+        <div class="ag-block-body">
+          <div class="ag-titulo ag-titulo-prova">${a.titulo}</div>
+          ${a.prof?`<div class="ag-detail"><span>Prof.</span>${a.prof}</div>`:''}
+          ${a.local?`<div class="ag-detail"><span>Local</span>${a.local}</div>`:''}
+        </div>
+      </div>`;
+    }
+
+    return`<div class="ag-block ${mm.cls}">
+      <div class="ag-block-header">
+        <span class="ag-time">${a.time}</span>
+        <span class="ag-modulo">${mm.label}</span>
+        ${a.tipo!=='dpp'&&a.tipo!=='fabs'?`<span class="ag-tipo ${tm.cls}">${tm.label}</span>`:''}
+      </div>
+      <div class="ag-block-body">
+        <div class="ag-titulo">${a.titulo}</div>
+        ${a.prof?`<div class="ag-detail"><span>Prof.</span>${a.prof}</div>`:''}
+        ${a.local?`<div class="ag-detail"><span>Local</span>${a.local}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────
+//  PROVAS CALENDÁRIO
+// ─────────────────────────────────────────────
+// tipo: 'teo' = teórica | 'prat' = prática/cenários
+const PROVAS_DEF = [
+  // Calendário de provas do M5 (2025.2/2026.2) — datas oficiais dos documentos enviados.
+  // module usa uma das chaves: MULH, GRN, CRIA, PGSS, ASA1
+  {"id": "pgss_a1", "label": "1ª Ativ. Avaliativa — releitura da peça", "tipo": "teo", "date": "2026-08-20", "module": "PGSS", "grupo": "Aval. contínuas PGSS", "local": ""},
+  {"id": "pgss_a2", "label": "2ª Ativ. Avaliativa — seminário Regionalização", "tipo": "teo", "date": "2026-09-03", "module": "PGSS", "grupo": "Aval. contínuas PGSS", "local": ""},
+  {"id": "grn_p1", "label": "1ª Avaliação (Obstetrícia e Neonatologia)", "tipo": "teo", "date": "2026-09-14", "module": "GRN", "grupo": "P1 Gestante e RN", "local": ""},
+  {"id": "cria_p1", "label": "1ª Prova Teórica", "tipo": "teo", "date": "2026-09-16", "module": "CRIA", "grupo": "P1 Criança e Adolescente", "local": "Anfiteatro 4 HC"},
+  {"id": "mulh_p1", "label": "1ª Avaliação", "tipo": "teo", "date": "2026-09-17", "module": "MULH", "grupo": "P1 Saúde da Mulher", "local": "Auditório CCM"},
+  {"id": "asa1_p1_prat", "label": "1ª Avaliação Prática", "tipo": "prat", "date": "2026-10-06", "module": "ASA1", "grupo": "P1 ASA1 (Dermato)", "local": "CCM"},
+  {"id": "pgss_a3", "label": "3ª Ativ. Avaliativa — Experiências de Planejamento no SUS", "tipo": "teo", "date": "2026-10-08", "module": "PGSS", "grupo": "Aval. contínuas PGSS", "local": ""},
+  {"id": "asa1_p1_teo", "label": "1ª Avaliação Teórica", "tipo": "teo", "date": "2026-10-09", "module": "ASA1", "grupo": "P1 ASA1 (Dermato)", "local": "Anfiteatro 4"},
+  {"id": "grn_p2", "label": "2ª Avaliação (Obstetrícia e Neonatologia)", "tipo": "teo", "date": "2026-10-19", "module": "GRN", "grupo": "P2 Gestante e RN", "local": ""},
+  {"id": "cria_p2", "label": "2ª Prova Teórica", "tipo": "teo", "date": "2026-10-21", "module": "CRIA", "grupo": "P2 Criança e Adolescente", "local": "Anfiteatro 4 HC"},
+  {"id": "cria_p1_prat_ah", "label": "1ª Avaliação Prática (subgrupo B)", "tipo": "prat", "date": "2026-10-27", "module": "CRIA", "grupo": "P1 Prática Criança e Adolescente", "local": "Ambulatório Adolescente"},
+  {"id": "mulh_p2", "label": "2ª Avaliação", "tipo": "teo", "date": "2026-10-29", "module": "MULH", "grupo": "P2 Saúde da Mulher", "local": "Auditório CCM"},
+  {"id": "pgss_a4", "label": "4ª Ativ. Avaliativa — Modelos de Gestão (Consórcio/EBSERH/PPP/OS)", "tipo": "teo", "date": "2026-10-29", "module": "PGSS", "grupo": "Aval. contínuas PGSS", "local": ""},
+  {"id": "pgss_a5", "label": "5ª Ativ. Avaliativa — indicadores de financiamento (SIOPS)", "tipo": "teo", "date": "2026-11-26", "module": "PGSS", "grupo": "Aval. contínuas PGSS", "local": ""},
+  {"id": "asa1_p2_prat", "label": "2ª Avaliação Prática", "tipo": "prat", "date": "2026-12-01", "module": "ASA1", "grupo": "P2 ASA1 (Dermato)", "local": "CCM"},
+  {"id": "cria_p2_prat_ah", "label": "2ª Avaliação Prática (subgrupo B)", "tipo": "prat", "date": "2026-12-03", "module": "CRIA", "grupo": "P2 Prática Criança e Adolescente", "local": "Ambulatório Pediatria"},
+  {"id": "cria_p3", "label": "3ª Prova Teórica", "tipo": "teo", "date": "2026-12-09", "module": "CRIA", "grupo": "P3 Criança e Adolescente", "local": "Anfiteatro 4 HC"},
+  {"id": "mulh_p3", "label": "3ª Avaliação", "tipo": "teo", "date": "2026-12-10", "module": "MULH", "grupo": "P3 Saúde da Mulher", "local": "Auditório CCM"},
+  {"id": "pgss_p2", "label": "2ª Avaliação Parcial", "tipo": "teo", "date": "2026-12-10", "module": "PGSS", "grupo": "P2 Planejamento e Gestão", "local": ""},
+  {"id": "asa1_p2_teo", "label": "2ª Avaliação Teórica", "tipo": "teo", "date": "2026-12-11", "module": "ASA1", "grupo": "P2 ASA1 (Dermato)", "local": "Anfiteatro 4"},
+  {"id": "grn_prat", "label": "Avaliação Prática (grupo B — vide escala)", "tipo": "prat", "date": "2026-12-11", "module": "GRN", "grupo": "Prática Gestante e RN", "local": "CCM"},
+  {"id": "mulh_prat", "label": "Prova Prática", "tipo": "prat", "date": "2026-12-14", "module": "MULH", "grupo": "Prática Saúde da Mulher", "local": "CCM tutorias 3-8 e sala 5"},
+  {"id": "asa1_2ch", "label": "2ª Chamada (Aval. 1 e 2)", "tipo": "teo", "date": "2026-12-15", "module": "ASA1", "grupo": "2ª Chamada ASA1", "local": "Serviço de Dermatologia"},
+  {"id": "grn_p3", "label": "3ª Avaliação", "tipo": "teo", "date": "2026-12-15", "module": "GRN", "grupo": "P3 Gestante e RN", "local": ""},
+  {"id": "cria_2ch", "label": "2ª Chamada", "tipo": "teo", "date": "2026-12-15", "module": "CRIA", "grupo": "2ª Chamada Criança e Adolescente", "local": ""},
+  {"id": "mulh_2ch", "label": "2ª Chamada", "tipo": "teo", "date": "2026-12-16", "module": "MULH", "grupo": "2ª Chamada Saúde da Mulher", "local": "Anfiteatro 4 HC"},
+  {"id": "mulh_final", "label": "Prova Final", "tipo": "teo", "date": "2026-12-17", "module": "MULH", "grupo": "Final Saúde da Mulher", "local": "Sala 5 CCM"},
+  {"id": "pgss_final", "label": "Avaliação Final", "tipo": "teo", "date": "2026-12-17", "module": "PGSS", "grupo": "Final Planejamento e Gestão", "local": ""},
+  {"id": "cria_final", "label": "Prova Final", "tipo": "teo", "date": "2026-12-17", "module": "CRIA", "grupo": "Final Criança e Adolescente", "local": ""},
+  {"id": "asa1_final", "label": "Avaliação Final", "tipo": "teo", "date": "2026-12-18", "module": "ASA1", "grupo": "Final ASA1", "local": "Serviço de Dermatologia"},
+  {"id": "grn_2ch", "label": "2ª Chamada", "tipo": "teo", "date": "2026-12-18", "module": "GRN", "grupo": "2ª Chamada Gestante e RN", "local": ""},
+  {"id": "grn_final", "label": "Prova Final", "tipo": "teo", "date": "2026-12-21", "module": "GRN", "grupo": "Final Gestante e RN", "local": ""},
+];
+
+
+
+function loadProvasState(){
+  try{ return JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}'); }catch(e){return{};}
+}
+function saveProvasState(state){
+  localStorage.setItem('arthur_provas_cal_m5', JSON.stringify(state));
+  // Sincronizar no Firebase se conectado
+  if(typeof firebase!=='undefined' && firebase.apps.length){
+    try{ firebase.database().ref('dashboard/m5/provas_cal').set(state); }catch(e){}
+  }
+}
+function initProvasSync(){
+  if(typeof firebase==='undefined'||!firebase.apps.length) return;
+  firebase.database().ref('dashboard/m5/provas_cal').on('value', snapshot=>{
+    const data=snapshot.val();
+    if(!data) return;
+    localStorage.setItem('arthur_provas_cal_m5', JSON.stringify(data));
+    if(document.getElementById('view-provas').style.display!=='none') renderProvas();
+  });
+}
+
+function fmtDateLong(iso){
+  if(!iso) return '—';
+  const d=new Date(iso+'T12:00:00');
+  return d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'});
+}
+
+function provCountdown(dateISO, isDone){
+  if(isDone) return {txt:'', cls:''};
+  const diff=diffD(todayISO(), dateISO);
+  if(diff<0)  return {txt:`${Math.abs(diff)}d atrás`, cls:''};
+  if(diff===0)return {txt:'Hoje!',     cls:'urgente'};
+  if(diff<=7) return {txt:`${diff}d`,  cls:'urgente'};
+  if(diff<=21)return {txt:`${diff}d`,  cls:'breve'};
+  return       {txt:`${diff}d`,        cls:''};
+}
+
+function renderProvas(){
+  const state=loadProvasState();
+
+  const pending=[], done=[];
+  PROVAS_DEF.forEach(p=>{
+    const st=state[p.id]||{};
+    const dateISO = st.date || p.date;
+    const isDone = !!st.done;
+    const entry={...p, dateISO, isDone};
+    if(isDone) done.push(entry);
+    else pending.push(entry);
+  });
+
+  pending.sort((a,b)=>(a.dateISO||'9999').localeCompare(b.dateISO||'9999'));
+  done.sort((a,b)=>(a.dateISO||'9999').localeCompare(b.dateISO||'9999'));
+
+  function cardHTML(entry){
+    const st=state[entry.id]||{};
+    const {txt:cdTxt, cls:cdCls}=provCountdown(entry.dateISO, entry.isDone);
+    const tipoTag=entry.tipo==='prat'
+      ?'<span class="prov-tipo prov-tipo-prat">Prática</span>'
+      :'<span class="prov-tipo prov-tipo-teo">Teórica</span>';
+    const editOpen=st.editing?'open':'';
+    const doneClass=entry.isDone?' prov-done':' prov-pending';
+    const checkOn=entry.isDone?' on':'';
+    return`<div class="prov-card${doneClass}" id="pcard-${entry.id}">
+      <div class="prov-card-header">
+        <div class="prov-check${checkOn}" onclick="toggleProva('${entry.id}')"></div>
+        <div class="prov-info">
+          <div class="prov-name">${entry.label}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${tipoTag}
+            <span class="prov-date-txt"><strong>${fmtDateLong(entry.dateISO)}</strong></span>
+          </div>
+        </div>
+        ${cdTxt?`<div class="prov-countdown ${cdCls}">${cdTxt}</div>`:''}
+        <button class="prov-edit-btn" onclick="toggleProvaEdit('${entry.id}')" title="Editar data">✏️</button>
+      </div>
+      <div class="prov-edit-row ${editOpen}" id="pedit-${entry.id}">
+        <span class="prov-edit-label">Nova data:</span>
+        <input class="prov-edit-input" type="date" id="pdate-${entry.id}" value="${entry.dateISO||''}" />
+        <button class="prov-edit-save" onclick="saveProvaDate('${entry.id}')">Salvar</button>
+      </div>
+    </div>`;
+  }
+
+  const total=PROVAS_DEF.length;
+  const doneCount=done.length;
+  const pct=Math.round(doneCount/total*100);
+
+  const pendingHTML = pending.length
+    ? pending.map(cardHTML).join('')
+    : '<p class="empty" style="padding:12px 0">Nenhuma prova pendente 🎉</p>';
+
+  const doneHTML = done.length
+    ? `<div class="prov-section-label">Realizadas (${doneCount})</div>`+done.map(cardHTML).join('')
+    : '';
+
+  document.getElementById('provas-list').innerHTML=`
+    <div class="prov-header-row">
+      <div class="prov-header-title">Calendário de Provas</div>
+      <div style="font-size:12px;color:var(--text2)">${doneCount}/${total}</div>
+    </div>
+    <div class="progress-bar" style="margin-bottom:3px"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label" style="margin-bottom:1.1rem">${pct}% concluído</div>
+    <div class="prov-section-label">Pendentes (${pending.length})</div>
+    ${pendingHTML}
+    ${doneHTML}
+  `;
+}
+
+function toggleProva(id){
+  const state=loadProvasState();
+  if(!state[id]) state[id]={};
+  state[id].done = !state[id].done;
+  saveProvasState(state);
+  renderProvas();
+}
+
+function toggleProvaEdit(id){
+  const state=loadProvasState();
+  if(!state[id]) state[id]={};
+  state[id].editing = !state[id].editing;
+  saveProvasState(state);
+  renderProvas();
+}
+
+function saveProvaDate(id){
+  const input=document.getElementById('pdate-'+id);
+  if(!input) return;
+  const val=input.value;
+  if(!val){ alert('Selecione uma data válida.'); return; }
+  const state=loadProvasState();
+  if(!state[id]) state[id]={};
+  state[id].date=val;
+  state[id].editing=false;
+  saveProvasState(state);
+  renderProvas();
+  // Sincronizar agenda se estiver visível
+  if(document.getElementById('view-agenda').style.display!=='none') renderAgenda();
+}
+
+// ─────────────────────────────────────────────
+//  PROVAS SUB-ABAS
+// ─────────────────────────────────────────────
+function setProvSubTab(tab, btn){
+  document.querySelectorAll('.prov-subtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('prov-sub-calendario').style.display = tab==='calendario' ? '' : 'none';
+  document.getElementById('prov-sub-notas').style.display      = tab==='notas'      ? '' : 'none';
+  if(tab==='notas') renderNotas();
+}
+
+// ─────────────────────────────────────────────
+//  NOTAS DE PROVAS
+// ─────────────────────────────────────────────
+function loadNotas(){
+  try{ return JSON.parse(localStorage.getItem('arthur_notas_m5')||'{}'); }catch(e){return{};}
+}
+function saveNotas(n){
+  localStorage.setItem('arthur_notas_m5', JSON.stringify(n));
+  // Sincronizar no Firebase se conectado
+  if(typeof firebase!=='undefined' && firebase.apps.length){
+    try{ firebase.database().ref('dashboard/m5/notas').set(n); }catch(e){}
+  }
+}
+function initNotasSync(){
+  if(typeof firebase==='undefined'||!firebase.apps.length) return;
+  firebase.database().ref('dashboard/m5/notas').on('value', snapshot=>{
+    const data=snapshot.val();
+    if(!data) return;
+    localStorage.setItem('arthur_notas_m5', JSON.stringify(data));
+    // Re-renderizar sub-aba de notas se estiver visível
+    const notasSub=document.getElementById('prov-sub-notas');
+    if(notasSub && notasSub.style.display!=='none') renderNotas();
+  });
+}
+
+function notaClass(nota){
+  if(nota===null||nota===undefined||nota==='') return 'none';
+  const n=parseFloat(nota);
+  if(isNaN(n)) return 'none';
+  if(n>=7) return 'green';
+  if(n>=5) return 'amber';
+  return 'red';
+}
+
+function saveNotaCard(id){
+  const notaEl = document.getElementById('ninput-'+id);
+  const obsEl  = document.getElementById('nobs-'+id);
+  if(!notaEl) return;
+  const val  = notaEl.value.trim().replace(',','.');
+  const obs  = obsEl ? obsEl.value.trim() : '';
+  const n    = loadNotas();
+  if(!n[id]) n[id]={};
+  n[id].nota = val;
+  n[id].obs  = obs;
+  saveNotas(n);
+  renderNotas();
+}
+
+// Ordem e cores dos módulos
+const NOTA_MODULES = [
+  {key:'MULH', label:'Saúde da Mulher',       sub:'Ginecologia, Patologia, Imagem',           color:'#D4537E'},
+  {key:'GRN',  label:'Gestante e RN',         sub:'Obstetrícia, Neonatologia',                color:'#7B5EC7'},
+  {key:'CRIA', label:'Criança e Adolescente', sub:'Pediatria, Cirurgia Pediátrica (CIPE)',    color:'#EF9F27'},
+  {key:'PGSS', label:'Planej. e Gestão',      sub:'Planejamento e Gestão de Serviços de Saúde',color:'#4A90A4'},
+  {key:'ASA1', label:'ASA 1 (Dermato)',       sub:'Assistência à Saúde do Adulto 1',          color:'#B5651D'},
+];
+
+function notaBigClass(nota){
+  if(nota===''||nota===null||nota===undefined) return 'nota-big-none';
+  const n=parseFloat(nota);
+  if(isNaN(n)) return 'nota-big-none';
+  if(n>=7) return 'nota-big-green';
+  if(n>=5) return 'nota-big-amber';
+  return 'nota-big-red';
+}
+function notaBigTxt(nota){
+  if(nota===''||nota===null||nota===undefined) return '—';
+  const n=parseFloat(nota);
+  return isNaN(n)?'—':n.toFixed(1);
+}
+
+function renderNotas(){
+  const notas = loadNotas();
+  let state={};
+  try{state=JSON.parse(localStorage.getItem('arthur_provas_cal_m5')||'{}');}catch(e){}
+
+  const provas = PROVAS_DEF.map(p=>{
+    const dateISO=(state[p.id]&&state[p.id].date)||p.date;
+    const notaObj=notas[p.id]||{};
+    return {...p, dateISO, nota: notaObj.nota??'', obs: notaObj.obs??''};
+  });
+
+  // Resumo global
+  const comNota    = provas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
+  const comNotaTeo = comNota.filter(p=>p.tipo==='teo');
+  const mediaNum   = comNota.length ? comNota.reduce((s,p)=>s+parseFloat(p.nota),0)/comNota.length : null;
+  const mediaTeoNum= comNotaTeo.length ? comNotaTeo.reduce((s,p)=>s+parseFloat(p.nota),0)/comNotaTeo.length : null;
+  const media      = mediaNum!==null ? mediaNum.toFixed(1) : '—';
+  const mediaTeo   = mediaTeoNum!==null ? mediaTeoNum.toFixed(1) : '—';
+  const aprovadas  = comNota.filter(p=>parseFloat(p.nota)>=7).length;
+  const reprovadas = comNota.filter(p=>parseFloat(p.nota)<5).length;
+  const mediaColor    = mediaNum===null?'var(--text)':mediaNum>=7?'var(--green)':mediaNum>=5?'var(--amber)':'var(--red)';
+  const mediaTeoColor = mediaTeoNum===null?'var(--text3)':mediaTeoNum>=7?'var(--green)':mediaTeoNum>=5?'var(--amber)':'var(--red)';
+
+  let html = `
+  <div class="nota-summary" style="grid-template-columns:repeat(2,1fr)">
+    <div class="nota-sum-item">
+      <div class="nota-sum-label">Média geral</div>
+      <div class="nota-sum-num" style="color:${mediaColor}">${media}</div>
+    </div>
+    <div class="nota-sum-item">
+      <div class="nota-sum-label">Média teóricas</div>
+      <div class="nota-sum-num" style="color:${mediaTeoColor}">${mediaTeo}</div>
+    </div>
+    <div class="nota-sum-item">
+      <div class="nota-sum-label">Aprovadas ≥7</div>
+      <div class="nota-sum-num n-done">${aprovadas}</div>
+    </div>
+    <div class="nota-sum-item">
+      <div class="nota-sum-label">Em risco &lt;5</div>
+      <div class="nota-sum-num n-due">${reprovadas}</div>
+    </div>
+  </div>`;
+
+  NOTA_MODULES.forEach(mod=>{
+    const modProvas = provas
+      .filter(p=>p.module===mod.key)
+      .sort((a,b)=>a.dateISO.localeCompare(b.dateISO));
+    if(!modProvas.length) return;
+
+    // Agrupar por grupo (P1, P2, P3...)
+    const grupos = {};
+    modProvas.forEach(p=>{
+      const g = p.grupo||p.label;
+      if(!grupos[g]) grupos[g]=[];
+      grupos[g].push(p);
+    });
+    const grupoKeys = Object.keys(grupos).sort((a,b)=>{
+      const da = grupos[a][0].grupoSort || grupos[a][0].dateISO;
+      const db = grupos[b][0].grupoSort || grupos[b][0].dateISO;
+      return da.localeCompare(db);
+    });
+
+    const modCom   = modProvas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
+    const modMedia = modCom.length ? modCom.reduce((s,p)=>s+parseFloat(p.nota),0)/modCom.length : null;
+    const modMStr  = modMedia!==null ? modMedia.toFixed(1) : '—';
+    const modMColor= modMedia===null?'var(--text3)':modMedia>=7?'var(--green)':modMedia>=5?'var(--amber)':'var(--red)';
+    const progPct  = modProvas.length ? Math.round(modCom.length/modProvas.length*100) : 0;
+    const progColor= modMedia===null?mod.color:modMedia>=7?'#1D9E75':modMedia>=5?'#BA7517':'#E24B4A';
+
+    html += `<div class="nota-mod-section">
+      <div class="nota-mod-header">
+        <div class="nota-mod-color-bar" style="background:${mod.color}"></div>
+        <div class="nota-mod-info">
+          <div class="nota-mod-label">${mod.label}</div>
+          <div class="nota-mod-sub">${mod.sub}</div>
+          <div class="nota-mod-prog">
+            <div class="nota-mod-prog-fill" style="width:${progPct}%;background:${progColor}"></div>
+          </div>
+        </div>
+        <div class="nota-mod-right">
+          <div class="nota-mod-avg-num" style="color:${modMColor}">${modMStr}</div>
+          <div class="nota-mod-avg-label">${modCom.length}/${modProvas.length} notas</div>
+        </div>
+      </div>`;
+
+    grupoKeys.forEach(grupoKey=>{
+      const gProvas = grupos[grupoKey];
+      const gCom = gProvas.filter(p=>p.nota!==''&&!isNaN(parseFloat(p.nota)));
+      const gMedia = gCom.length ? gCom.reduce((s,p)=>s+parseFloat(p.nota),0)/gCom.length : null;
+      const gMStr  = gMedia!==null ? gMedia.toFixed(1) : '—';
+      const gMColor= gMedia===null?'var(--text2)':gMedia>=7?'var(--green)':gMedia>=5?'var(--amber)':'var(--red)';
+      const temPrat = gProvas.some(p=>p.tipo==='prat');
+      const temTeo  = gProvas.some(p=>p.tipo==='teo');
+      const grupoDesc = temTeo && temPrat ? 'Teórica + Prática'
+                      : temPrat ? 'Somente Prática'
+                      : 'Somente Teórica';
+
+      html += `
+      <div class="nota-grupo-divider">
+        <span class="nota-grupo-label" style="background:${mod.color}">${grupoKey}</span>
+        <span class="nota-grupo-desc">${grupoDesc}</span>
+        <div class="nota-grupo-line"></div>
+        <span class="nota-grupo-avg" style="color:${gMColor}">${gMStr}</span>
+      </div>`;
+
+      html += gProvas.map(p=>{
+        const bigCls = notaBigClass(p.nota);
+        const bigTxt = notaBigTxt(p.nota);
+        const tipoTag = p.tipo==='prat'
+          ?'<span class="prov-tipo prov-tipo-prat">🩺 Prática</span>'
+          :'<span class="prov-tipo prov-tipo-teo">📝 Teórica</span>';
+        return`<div class="nota-card">
+          <div class="nota-big ${bigCls}">${bigTxt}</div>
+          <div class="nota-card-mid">
+            <div class="nota-card-name">${p.label}</div>
+            <div class="nota-card-meta">
+              ${tipoTag}
+              <span class="prov-date-txt">${fmtDateLong(p.dateISO)}</span>
+            </div>
+          </div>
+          <div class="nota-card-right">
+            <input class="nota-input" type="number" min="0" max="10" step="0.1"
+              id="ninput-${p.id}" value="${p.nota}" placeholder="—"
+              onkeydown="if(event.key==='Enter')saveNotaCard('${p.id}')" />
+            <button class="nota-save-btn" onclick="saveNotaCard('${p.id}')">✓</button>
+          </div>
+        </div>`;
+      }).join('');
+    });
+
+    html += `</div>`;
+  });
+
+  document.getElementById('notas-list').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// Carga horária total e limite de 25% (em nº de aulas de 50min)
+// 1h = 1,2 aulas de 50min → limite_aulas = floor(CH_horas * 0.25 * 1.2)
+const FALTA_META = {
+  'Assistência à Saúde da Mulher':                      {ch:105, label:'Saúde da Mulher'},
+  'Assistência à Saúde da Gestante e do Recém-Nascido': {ch:120, label:'Gestante e RN'},
+  'Assistência à Saúde da Criança e do Adolescente':    {ch:210, label:'Criança e Adolescente'},
+  'Planejamento e Gestão de Serviços de Saúde':         {ch:45,  label:'Planej. e Gestão'},
+  'ASA 1 (Dermato)':                                    {ch:75,  label:'ASA 1 (Dermato)'},
+};
+// Cada módulo do M5 já é um bloco único (sem submódulos como no M4/SAI).
+const FALTA_GROUPS = [
+  {key:'MULH', label:'Assistência à Saúde da Mulher',                      ch:105, subjects:['Assistência à Saúde da Mulher'],                      badge:'sb-mulh'},
+  {key:'GRN',  label:'Assistência à Saúde da Gestante e do Recém-Nascido', ch:120, subjects:['Assistência à Saúde da Gestante e do Recém-Nascido'], badge:'sb-grn'},
+  {key:'CRIA', label:'Assistência à Saúde da Criança e do Adolescente',    ch:210, subjects:['Assistência à Saúde da Criança e do Adolescente'],    badge:'sb-cria'},
+  {key:'PGSS', label:'Planejamento e Gestão de Serviços de Saúde',         ch:45,  subjects:['Planejamento e Gestão de Serviços de Saúde'],         badge:'sb-pgss'},
+  {key:'ASA1', label:'ASA 1 (Dermato) — Assist. à Saúde do Adulto 1',      ch:75,  subjects:['ASA 1 (Dermato)'],                                    badge:'sb-asa1'},
+];
+// limite em aulas de 50min: floor(ch * 0.25 * 60/50)
+function calcLimiteAulas(ch){ return Math.floor(ch * 0.25 * 60 / 50); }
+
+function loadFaltas(){
+  let saved={};
+  try{ saved=JSON.parse(localStorage.getItem('arthur_faltas_m5')||'{}'); }catch(e){}
+  const result={};
+  FALTA_GROUPS.forEach(g=>{ result[g.key]={count: saved[g.key]?.count ?? 0}; });
+  return result;
+}
+function saveFaltas(f){
+  localStorage.setItem('arthur_faltas_m5', JSON.stringify(f));
+  // sincronizar no Firebase se estiver conectado
+  if(typeof firebase!=='undefined' && firebase.apps.length){
+    try{ firebase.database().ref('dashboard/m5/faltas').set(f); }catch(e){}
+  }
+}
+
+// ouvir mudanças de faltas do Firebase em tempo real
+function initFaltasSync(){
+  if(typeof firebase==='undefined'||!firebase.apps.length) return;
+  firebase.database().ref('dashboard/m5/faltas').on('value', snapshot=>{
+    const data=snapshot.val();
+    if(!data) return;
+    // merge com todos os grupos conhecidos
+    const merged={};
+    FALTA_GROUPS.forEach(g=>{ merged[g.key]={count: data[g.key]?.count ?? 0}; });
+    // salvar local também para fallback offline
+    localStorage.setItem('arthur_faltas_m5', JSON.stringify(merged));
+    // re-renderizar se a aba estiver visível
+    if(document.getElementById('view-faltas').style.display!=='none') renderFaltas();
+  });
+}
+
+function faltaStatus(count, limite){
+  const pct = Math.min(Math.round(count/limite*100), 100);
+  if(count >= limite) return {cls:'fs-danger', label:'Reprovado por faltas ⚠️', pct};
+  if(count >= Math.floor(limite*0.75)) return {cls:'fs-warn', label:`Atenção — ${limite-count} aula${limite-count===1?'':'s'} até reprovar`, pct};
+  return {cls:'fs-ok', label:`${limite-count} aula${limite-count===1?'':'s'} restante${limite-count===1?'':'s'}`, pct};
+}
+
+function renderFaltas(){
+  const faltas = loadFaltas();
+  let total=0, risco=0, reprov=0;
+  FALTA_GROUPS.forEach(g=>{
+    const count=(faltas[g.key]||{count:0}).count;
+    const lim=calcLimiteAulas(g.ch);
+    total+=count;
+    if(count>=lim) reprov++;
+    else if(count>=Math.floor(lim*0.75)) risco++;
+  });
+  document.getElementById('falta-total').textContent=total;
+  document.getElementById('falta-risco').textContent=risco;
+  document.getElementById('falta-reprov').textContent=reprov;
+
+  document.getElementById('falta-list').innerHTML = FALTA_GROUPS.map(g=>{
+    const f=faltas[g.key]||{count:0};
+    const lim=calcLimiteAulas(g.ch);
+    const st=faltaStatus(f.count, lim);
+    const barClass=st.cls==='fs-danger'?'fb-danger':st.cls==='fs-warn'?'fb-warn':'fb-ok';
+    return`<div class="falta-card">
+      <div class="falta-header">
+        <span class="sub-badge ${g.badge}" style="font-size:11px;padding:3px 9px">${g.label}</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span class="falta-status ${st.cls}">${st.label}</span>
+        <span style="font-size:11px;color:var(--text3)">Limite: ${lim} aulas (${g.ch}h × 25%)</span>
+      </div>
+      <div class="falta-bar-wrap"><div class="falta-bar-fill ${barClass}" style="width:${st.pct}%"></div></div>
+      <div class="falta-controls" style="margin-top:8px">
+        <button class="falta-btn" onclick="addFalta('${g.key}',-1)">−</button>
+        <div style="text-align:center">
+          <div class="falta-count">${f.count}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:-2px">de ${lim} aulas</div>
+        </div>
+        <button class="falta-btn" onclick="addFalta('${g.key}',1)">+</button>
+        <div style="margin-left:auto;font-size:11px;color:var(--text2)">CH: ${g.ch}h</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addFalta(key, delta){
+  const f=loadFaltas();
+  if(!f[key]) f[key]={count:0};
+  f[key].count = Math.max(0, f[key].count+delta);
+  saveFaltas(f);
+  renderFaltas();
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+document.getElementById('new-text').addEventListener('keydown',e=>{if(e.key==='Enter')addItem();});
+const now=new Date();
+document.getElementById('date-label').textContent=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+initDragDrop();
+renderHorarioPadrao();
+const cfg=loadConfig();
+initFirebase(cfg.dbUrl, cfg.apiKey);
 </script>
 </body>
 </html>
