@@ -473,7 +473,7 @@
     <div class="stat"><div class="stat-label">A vir</div><div class="stat-num n-rev" id="cnt-rev">0</div></div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
-  <div class="progress-label"><span id="pct">0%</span> concluído — Medicina UFPE 4º Período 2026.1</div>
+  <div class="progress-label"><span id="pct">0%</span> concluído — Medicina UFPE 5º Período 2026.2</div>
 
   <div class="section-label">Filtrar por status</div>
   <div class="status-row" id="status-filters">
@@ -776,6 +776,28 @@ let dbRef = null;
 let isSyncing = false;
 
 // ─────────────────────────────────────────────
+//  MERGE: garante que novos tópicos adicionados ao DEFAULT_ITEMS
+//  (ex: quando um cronograma novo é incorporado ao dashboard) sejam
+//  incluídos mesmo quando já existem dados salvos localmente ou no Firebase,
+//  sem apagar o progresso (status) que o usuário já marcou.
+// ─────────────────────────────────────────────
+function mergeNewDefaultItems(existingItems){
+  const key = it => (it.text||'') + '|' + (it.subject||'') + '|' + (it.prova||'');
+  const existingKeys = new Set(existingItems.map(key));
+  let maxId = existingItems.length ? Math.max(...existingItems.map(i=>i.id||0)) : 0;
+  const added = [];
+  DEFAULT_ITEMS.forEach(def => {
+    if(!existingKeys.has(key(def))){
+      maxId += 1;
+      const newItem = Object.assign({}, def, {id: maxId});
+      existingItems.push(newItem);
+      added.push(newItem);
+    }
+  });
+  return added;
+}
+
+// ─────────────────────────────────────────────
 //  FIREBASE SETUP
 // ─────────────────────────────────────────────
 function loadConfig(){
@@ -809,6 +831,8 @@ function initFirebase(dbUrl, apiKey){
     // fallback to localStorage
     const saved = localStorage.getItem('arthur_local_m5');
     items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    mergeNewDefaultItems(items);
+    localStorage.setItem('arthur_local_m5', JSON.stringify(items));
     nid = Math.max(...items.map(i=>i.id), 0) + 1;
     buildChips(); renderList(); updateStats();
     return;
@@ -832,7 +856,12 @@ function initFirebase(dbUrl, apiKey){
       const data = snapshot.val();
       if(data){
         items = Object.values(data);
+        const added = mergeNewDefaultItems(items);
         nid = Math.max(...items.map(i=>i.id), 0) + 1;
+        if(added.length){
+          // sobe só os itens novos pro Firebase, sem mexer no progresso já salvo
+          added.forEach(it => dbRef.child('item_'+it.id).set(it).catch(console.error));
+        }
       } else {
         // first time — push default data
         items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
@@ -863,6 +892,8 @@ function initFirebase(dbUrl, apiKey){
       // fallback
       const saved = localStorage.getItem('arthur_local_m5');
       items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+      mergeNewDefaultItems(items);
+      localStorage.setItem('arthur_local_m5', JSON.stringify(items));
       nid = Math.max(...items.map(i=>i.id), 0) + 1;
       buildChips(); renderList(); updateStats();
     });
@@ -871,6 +902,8 @@ function initFirebase(dbUrl, apiKey){
     setSyncStatus('err', 'Erro ao inicializar Firebase: ' + e.message);
     const saved = localStorage.getItem('arthur_local_m5');
     items = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    mergeNewDefaultItems(items);
+    localStorage.setItem('arthur_local_m5', JSON.stringify(items));
     nid = Math.max(...items.map(i=>i.id), 0) + 1;
     buildChips(); renderList(); updateStats();
   }
