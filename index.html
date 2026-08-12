@@ -660,8 +660,9 @@ function calcNext(item,q){
 // ─────────────────────────────────────────────
 const DEFAULT_ITEMS=[
   // Lista de tópicos de estudo do M5 — preenchida a partir dos documentos de 'assuntos das provas'
-  // (ASA1/Dermato, Criança e Adolescente) e 'temas das avaliações' (Gestante e RN) enviados.
-  // Os módulos Mulher e Planejamento e Gestão ainda não têm lista de assuntos por prova divulgada —
+  // (ASA1/Dermato, Criança e Adolescente), 'temas das avaliações' (Gestante e RN) e cronograma de aulas
+  // teóricas (Saúde da Mulher, agrupado por avaliação a partir das datas de prova).
+  // O módulo Planejamento e Gestão ainda não tem lista de assuntos por prova divulgada —
   // os temas de cada aula já aparecem na Agenda.
   {"id": 1, "text": "Semiologia Dermatológica", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
   {"id": 2, "text": "Dermatoviroses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
@@ -761,7 +762,50 @@ const DEFAULT_ITEMS=[
   {"id": 96, "text": "Apendicite Aguda", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
   {"id": 97, "text": "Invaginação intestinal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
   {"id": 98, "text": "Tumores abdominais (Nefroblastoma e tumor de Wilms)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 99, "text": "Fisiologia Menstrual", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 100, "text": "Semiologia Ginecológica", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 101, "text": "Patologia: Metodologia", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 102, "text": "Dismenorreia", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 103, "text": "SPM (Síndrome pré-menstrual)", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 104, "text": "Patologia da Placenta", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 105, "text": "Propedêutica Cervical", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 106, "text": "Anticoncepção", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 107, "text": "Citologia Ginecológica", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 108, "text": "Ginecologia Infanto-Puberal I", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 109, "text": "Ginecologia Infanto-Puberal II", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 110, "text": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 1", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 111, "text": "Amenorreia Primária", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 112, "text": "Amenorreia Secundária e SOP", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 113, "text": "Distopias", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 114, "text": "IUE (Incontinência Urinária de Esforço)", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 115, "text": "Infecções Genitais", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 116, "text": "IST", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 117, "text": "Patologias Benignas da Vulva", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 118, "text": "Patologias Malignas da Vulva", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 119, "text": "Patologia Pré-maligna do Colo", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 120, "text": "Câncer de Colo", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 121, "text": "Patologia do Colo Uterino e Vulva", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 122, "text": "SUA (Sangramento Uterino Anormal)", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 123, "text": "Mioma Uterino", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 124, "text": "Patologia do Corpo Uterino", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 125, "text": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 2", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 126, "text": "Câncer de Endométrio", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 127, "text": "Tumores Benignos do Ovário", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 128, "text": "Câncer de Ovário", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 129, "text": "Patologia do Ovário", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 130, "text": "Infertilidade", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 131, "text": "Radiologia: Densitometria óssea", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 132, "text": "Endometriose", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 133, "text": "Radiologia: Imagem da Mulher — Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 134, "text": "Climatério", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 135, "text": "Patologia: Citologia Mamária", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 136, "text": "Osteoporose", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 137, "text": "Patologia: Lesões não neoplásicas benignas da Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 138, "text": "Patologias Benignas da Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 139, "text": "Patologia: Lesões Malignas da Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 140, "text": "Câncer de Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
 ];
+
 
 
 
@@ -1352,6 +1396,7 @@ const AGENDA = [
   {"date": "2026-09-23", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Estenose Hipertrófica do Piloro + (tema continuação)", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
   {"date": "2026-09-23", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Infecções das Vias Aéreas Superiores (IVAS)", "prof": "Profa. Dayanne Bruscky", "local": "Anfiteatro 4 HC"},
   {"date": "2026-09-24", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Infecções das Vias Aéreas Inferiores (IVAI)", "prof": "Profa. Georgia Veras", "local": "Sala 3 FMR"},
+  {"date": "2026-09-23", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Reposição S/N (se necessário)", "prof": "", "local": "A confirmar"},
   {"date": "2026-09-24", "time": "07:30–09:30", "mod": "MULH", "tipo": "teo", "titulo": "Patologias Benignas da Vulva / Patologias Malignas da Vulva", "prof": "Dra. Márcia", "local": "Sala 5 CCM"},
   {"date": "2026-09-24", "time": "10:10–12:00", "mod": "PGSS", "tipo": "teo", "titulo": "Planejamento em Saúde", "prof": "", "local": "Área acadêmica de Saúde Coletiva"},
   {"date": "2026-09-25", "time": "07:30–10:10", "mod": "GRN", "tipo": "prat", "titulo": "Prática (Grupo B) — Puericultura", "prof": "Profa. Paula", "local": "Vide plano — HC"},
@@ -1502,6 +1547,7 @@ const AGENDA = [
   {"date": "2026-12-15", "time": "13:30", "mod": "CRIA", "tipo": "prova", "titulo": "2ª Chamada", "prof": "Profa. Georgia Veras", "local": ""},
   {"date": "2026-12-16", "time": "11:00", "mod": "MULH", "tipo": "prova", "titulo": "2ª Chamada", "prof": "", "local": "Anfiteatro 4 HC"},
   {"date": "2026-12-17", "time": "08:00", "mod": "MULH", "tipo": "prova", "titulo": "Prova Final", "prof": "", "local": "Sala 5 CCM"},
+  {"date": "2026-12-18", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Fechamento das notas e encerramento", "prof": "", "local": ""},
   {"date": "2026-12-17", "time": "13:30–15:00", "mod": "CRIA", "tipo": "prova", "titulo": "Prova Final", "prof": "Profa. Georgia Veras", "local": ""},
   {"date": "2026-12-17", "time": "10:10–12:00", "mod": "PGSS", "tipo": "prova", "titulo": "Avaliação Final", "prof": "", "local": ""},
   {"date": "2026-12-18", "time": "07:30", "mod": "GRN", "tipo": "prova", "titulo": "2ª Chamada", "prof": "", "local": ""},
