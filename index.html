@@ -491,7 +491,14 @@
   </div>
 
   <div id="view-estudos">
-    <div class="lembrete"><div class="lembrete-dot"></div><div><strong>30/04:</strong> Cenários Clínicos SAI (atividade avaliativa)</div></div>
+    <details class="hp-wrap" id="prio-wrap" open style="margin-bottom:1.1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--white);">
+      <summary style="cursor:pointer;padding:11px 13px;font-size:13px;font-weight:700;">🎯 Prioridades de Estudo — plano intercalado entre as cadeiras</summary>
+      <div style="padding:0 13px 13px;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5;">Ordem sugerida pra estudar, alternando entre as 5 cadeiras (não empilha tudo na prova mais próxima de uma matéria só). Isso não muda a checklist abaixo — é só um atalho pra saber por onde começar.</div>
+        <div id="prio-list"></div>
+        <div id="prio-more-wrap" style="margin-top:6px;"></div>
+      </div>
+    </details>
     <div class="section-label">Filtrar por cadeira</div>
     <div class="sub-chips" id="sub-chips"></div>
     <div class="legend">
@@ -504,16 +511,11 @@
       <input type="text" id="new-text" placeholder="Adicionar tópico..."/>
       <select id="new-status"><option value="todo">A estudar</option><option value="done">Estudado</option></select>
       <select id="new-subj">
-        <option value="SAI — Clínica">SAI — Clínica</option>
-        <option value="SAI — Neurologia">SAI — Neuro</option>
-        <option value="SAI — Gineco">SAI — Gineco</option>
-        <option value="SCA">SCA</option>
-        <option value="ICTC — Cirurgia">ICTC — Cirurgia</option>
-        <option value="ICTC — Anatomia">ICTC — Anatomia</option>
-        <option value="BTM">BTM</option>
-        <option value="RAMEL">RAMEL</option>
-        <option value="DPP">DPP</option>
-        <option value="FABS 2">FABS 2</option>
+        <option value="Assistência à Saúde da Mulher">Saúde da Mulher</option>
+        <option value="Assistência à Saúde da Gestante e do Recém-Nascido">Gestante e RN</option>
+        <option value="Assistência à Saúde da Criança e do Adolescente">Criança e Adolescente</option>
+        <option value="Planejamento e Gestão de Serviços de Saúde">Planej. e Gestão</option>
+        <option value="ASA 1 (Dermato)">ASA 1 (Dermato)</option>
       </select>
       <button onclick="addItem()">+ Adicionar</button>
     </div>
@@ -606,7 +608,7 @@ function buildDeadlines(){
   if(typeof PROVAS_DEF!=='undefined'){
     PROVAS_DEF.forEach(p=>{
       const effectiveDate=(state[p.id]&&state[p.id].date)||p.date;
-      dl[p.label]=effectiveDate;
+      dl[p.grupo]=effectiveDate;
     });
   }
   return dl;
@@ -996,7 +998,120 @@ function statusBadge(s){
     :'<span class="status-badge sb-todo">A estudar</span>';
 }
 
+// ─────────────────────────────────────────────
+//  PRIORIDADES DE ESTUDO — plano priorizado por proximidade da prova
+//  Painel separado do checklist principal (que continua organizado por prova/módulo).
+//  Regra: a prioridade principal é a data da prova (mais perto primeiro). A alternação
+//  entre cadeiras só acontece quando faz sentido didaticamente — ou seja, quando duas
+//  ou mais provas de matérias diferentes estão próximas no tempo (mesma "onda"), os
+//  tópicos dessas matérias se intercalam. Quando uma prova está bem mais distante que
+//  as outras, ela não entra na roda — vem depois, na sua vez.
+//  JANELA_ONDA_DIAS: provas que caem dentro dessa distância uma da outra são
+//  consideradas "da mesma época" e entram no rodízio juntas.
+// ─────────────────────────────────────────────
+const JANELA_ONDA_DIAS = 12;
+
+function computePriorityQueue(){
+  const pending = items.filter(i=>i.status!=='done');
+  // agrupa por prova (cada prova = uma "cadeira" nesse contexto, já que cada prova pertence a 1 matéria)
+  const byProva = {};
+  pending.forEach(item=>{
+    const k = item.prova || 'Outros';
+    if(!byProva[k]) byProva[k] = {subject: item.subject, dl: DEADLINES[k] || '9999-12-31', items: []};
+    byProva[k].items.push(item);
+  });
+  // ordena as provas por data
+  const provaKeys = Object.keys(byProva).sort((a,b)=>byProva[a].dl.localeCompare(byProva[b].dl));
+
+  // agrupa provas em "ondas": uma nova onda começa quando a próxima prova está
+  // mais de JANELA_ONDA_DIAS depois da última prova já incluída na onda atual
+  const waves = [];
+  let currentWave = [];
+  let lastDate = null;
+  provaKeys.forEach(k=>{
+    const dl = byProva[k].dl;
+    if(lastDate !== null && dl !== '9999-12-31' && lastDate !== '9999-12-31'){
+      const gap = (new Date(dl+'T12:00:00') - new Date(lastDate+'T12:00:00')) / 86400000;
+      if(gap > JANELA_ONDA_DIAS){
+        waves.push(currentWave);
+        currentWave = [];
+      }
+    }
+    currentWave.push(k);
+    lastDate = dl;
+  });
+  if(currentWave.length) waves.push(currentWave);
+
+  // dentro de cada onda, intercala (rodízio) entre as provas da onda;
+  // entre ondas, segue em ordem (onda mais próxima primeiro)
+  const result = [];
+  waves.forEach(wave=>{
+    let round = 0;
+    let addedAny = true;
+    while(addedAny){
+      addedAny = false;
+      for(const k of wave){
+        const entry = byProva[k].items[round];
+        if(entry){
+          result.push({item: entry, dl: byProva[k].dl});
+          addedAny = true;
+        }
+      }
+      round++;
+    }
+  });
+  return result;
+}
+
+function renderPrioridades(){
+  const el = document.getElementById('prio-list');
+  const moreWrap = document.getElementById('prio-more-wrap');
+  if(!el) return;
+  const full = computePriorityQueue();
+  if(!full.length){
+    el.innerHTML = '<p class="empty">Tudo estudado por aqui — nenhum tópico pendente 🎉</p>';
+    if(moreWrap) moreWrap.innerHTML = '';
+    return;
+  }
+  const DEFAULT_SHOWN = 25;
+  const showAll = window.__prioShowAll === true;
+  const queue = showAll ? full : full.slice(0, DEFAULT_SHOWN);
+  const t = todayISO();
+  el.innerHTML = queue.map((entry, idx)=>{
+    const {item, dl} = entry;
+    let daysTxt = '';
+    if(dl && dl !== '9999-12-31'){
+      const days = Math.ceil((new Date(dl+'T12:00:00') - new Date(t+'T12:00:00')) / 86400000);
+      daysTxt = days < 0 ? '<span style="color:var(--red-text,#b3372c);">prova já passou</span>'
+        : days === 0 ? '<span style="color:var(--red-text,#b3372c);font-weight:700;">prova é hoje</span>'
+        : `faltam ${days} dia${days===1?'':'s'} pra prova`;
+    }
+    return `<div class="item" data-sub="${item.subject}" style="align-items:flex-start;">
+      <div style="min-width:22px;height:22px;border-radius:99px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text2);flex-shrink:0;margin-top:2px;">${idx+1}</div>
+      <div class="check${item.status==='done'?' on':''}" onclick="toggle(${item.id})"></div>
+      <div class="item-body">
+        <div class="item-text">${item.text}</div>
+        <div class="item-meta">
+          ${subBadge(item.subject)}
+          <span style="font-size:10px;color:var(--text3);">${item.prova||''}${daysTxt?' · '+daysTxt:''}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  if(moreWrap){
+    if(!showAll && full.length > DEFAULT_SHOWN){
+      moreWrap.innerHTML = `<button style="width:100%;text-align:center;padding:8px;font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text2);font-weight:600;" onclick="window.__prioShowAll=true;renderPrioridades();">Mostrar mais (${full.length - DEFAULT_SHOWN} restantes)</button>`;
+    } else if(showAll && full.length > DEFAULT_SHOWN){
+      moreWrap.innerHTML = `<button style="width:100%;text-align:center;padding:8px;font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text2);font-weight:600;" onclick="window.__prioShowAll=false;renderPrioridades();">Mostrar menos</button>`;
+    } else {
+      moreWrap.innerHTML = '';
+    }
+  }
+}
+
+
 function renderList(){
+  renderPrioridades();
   const t=todayISO();
   let f=items;
   if(fStatus==='todo')       f=f.filter(i=>i.status==='todo');
