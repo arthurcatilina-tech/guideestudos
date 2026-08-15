@@ -662,151 +662,168 @@ function calcNext(item,q){
 // ─────────────────────────────────────────────
 const DEFAULT_ITEMS=[
   // Lista de tópicos de estudo do M5 — preenchida a partir dos documentos de 'assuntos das provas'
-  // (ASA1/Dermato, Criança e Adolescente), 'temas das avaliações' (Gestante e RN) e cronograma de aulas
-  // teóricas (Saúde da Mulher, agrupado por avaliação a partir das datas de prova).
-  // O módulo Planejamento e Gestão ainda não tem lista de assuntos por prova divulgada —
-  // os temas de cada aula já aparecem na Agenda.
-  {"id": 1, "text": "Semiologia Dermatológica", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 2, "text": "Dermatoviroses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 3, "text": "Dermatozoonoses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 4, "text": "Dermatoses Eritêmato-Escamosas", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 5, "text": "Tumores Cutâneos", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 6, "text": "Hanseníase", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 7, "text": "Micoses", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 8, "text": "Hanseníase", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 9, "text": "Leishmaniose Tegumentar Americana", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 10, "text": "Tumores Cutâneos", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 11, "text": "Sífilis Adquirida", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 12, "text": "Psoríase e Dermatite Seborreica", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 13, "text": "Impetigos, Furúnculo, Abscesso, SSSS, Erisipela, Celulite", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 14, "text": "Micoses Superficiais e Subcutâneas", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 15, "text": "Dermatozoonoses", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 16, "text": "Farmacodermias", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 17, "text": "Doenças Bacterianas da Pele", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 18, "text": "Dermatoses Vésico-Bolhosas", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 19, "text": "Leishmaniose Tegumentar Americana", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 20, "text": "Dermatoses Eczematosas", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 21, "text": "Sífilis Adquirida", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 22, "text": "Farmacodermias", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
-  {"id": 23, "text": "Fisiologia e diagnóstico de gravidez", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 24, "text": "Assistência Pré-natal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 25, "text": "Assistência ao parto transvaginal eutócico: mecanismo e estática", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 26, "text": "Puerpério fisiológico e patológico", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 27, "text": "Indução do Parto", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 28, "text": "Tocurgia e Distócia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 29, "text": "Gestação prolongada", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 30, "text": "Cesariana", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 31, "text": "Características Anatômicas e Fisiológicas do RN", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 32, "text": "Assistência ao RN na Sala de Parto e Reanimação Neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 33, "text": "Tocotraumatismos", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 34, "text": "Atenção Humanizada ao RN Prematuro e de Baixo Peso: Método Canguru", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 35, "text": "Hemorragias da primeira metade da gravidez", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 36, "text": "Hemorragia pós-parto", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 37, "text": "Trabalho de parto prematuro", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 38, "text": "RUPREME (Rotura Prematura de Membranas Ovulares)", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 39, "text": "Síndromes Hipertensivas", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 40, "text": "Triagem neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 41, "text": "Icterícia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 42, "text": "Sífilis congênita", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 43, "text": "Aleitamento materno", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 44, "text": "Diabetes", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 45, "text": "Restrição de Crescimento Fetal e Cardiotocografia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 46, "text": "Ultrassonografia em obstetrícia", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 47, "text": "Hemorragias da segunda metade da gravidez", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 48, "text": "Óbito Fetal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 49, "text": "Teratogênese", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 50, "text": "Anoxia perinatal e Encefalopatia hipóxico-isquêmica", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 51, "text": "Distúrbios Respiratórios no RN", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 52, "text": "Sepse Neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 53, "text": "Cuidado acolhedor para todos os recém-nascidos", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 54, "text": "Infecções Congênitas", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 55, "text": "Distúrbios Metabólicos no período neonatal", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
-  {"id": 56, "text": "Abordagem ética", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 57, "text": "Crescimento e Desenvolvimento na infância e adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 58, "text": "Proteção ao Aleitamento Materno", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 59, "text": "Vacinação na infância e adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 60, "text": "Alimentação na infância e na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 61, "text": "Desnutrição na Pediatria", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 62, "text": "Segurança e Prevenção de acidentes na infância e na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 63, "text": "A consulta do adolescente", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 64, "text": "Síndrome do adolescente normal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 65, "text": "Impacto das TICs na infância e na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 66, "text": "Constipação Intestinal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 67, "text": "Fimose, Hérnia umbilical e Hérnia epigástrica", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 68, "text": "Persistência do conduto peritônio-vaginal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 69, "text": "Distopias Testiculares", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 70, "text": "Desenvolvimento puberal normal e patológico", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 71, "text": "Diagnóstico Diferencial das anemias", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 72, "text": "Violência na Criança e Adolescente: impacto na saúde", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 73, "text": "Diarreia aguda na criança e adolescente", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 74, "text": "Sexualidade na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 75, "text": "Infecções das Vias Aéreas Superiores (IVAS)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 76, "text": "Asma na infância e adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 77, "text": "Infecções das Vias Aéreas Inferiores (IVAI)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 78, "text": "Parasitoses intestinais", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 79, "text": "Obesidade e Síndrome metabólica", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 80, "text": "Principais problemas ginecológicos na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 81, "text": "Transtorno do Espectro Autista (TEA)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 82, "text": "Estenose Hipertrófica do Piloro", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 83, "text": "Atresias Intestinais", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 84, "text": "Transtornos mentais na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 85, "text": "Principais problemas andrológicos na adolescência", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 86, "text": "Transtorno do Déficit de Atenção e Hiperatividade (TDAH)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 87, "text": "Doenças exantemáticas I e II", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 88, "text": "ITU", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 89, "text": "Doença Reumática", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 90, "text": "Tuberculose", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 91, "text": "Glomerulonefrite Pós-estreptocóccica (GNPE)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 92, "text": "Crises febris e Síndrome epilépticas", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 93, "text": "Gravidez e Parentalidade na adolescência: aspectos psicossociais", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 94, "text": "Síndrome Nefrótica (SN)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 95, "text": "Meningoencefalites (MGEs)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 96, "text": "Apendicite Aguda", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 97, "text": "Invaginação intestinal", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 98, "text": "Tumores abdominais (Nefroblastoma e tumor de Wilms)", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
-  {"id": 99, "text": "Fisiologia Menstrual", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 100, "text": "Semiologia Ginecológica", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 101, "text": "Patologia: Metodologia", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 102, "text": "Dismenorreia", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 103, "text": "SPM (Síndrome pré-menstrual)", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 104, "text": "Patologia da Placenta", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 105, "text": "Propedêutica Cervical", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 106, "text": "Anticoncepção", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 107, "text": "Citologia Ginecológica", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 108, "text": "Ginecologia Infanto-Puberal I", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 109, "text": "Ginecologia Infanto-Puberal II", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 110, "text": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 1", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 111, "text": "Amenorreia Primária", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 112, "text": "Amenorreia Secundária e SOP", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 113, "text": "Distopias", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 114, "text": "IUE (Incontinência Urinária de Esforço)", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 115, "text": "Infecções Genitais", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 116, "text": "IST", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 117, "text": "Patologias Benignas da Vulva", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 118, "text": "Patologias Malignas da Vulva", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 119, "text": "Patologia Pré-maligna do Colo", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 120, "text": "Câncer de Colo", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 121, "text": "Patologia do Colo Uterino e Vulva", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 122, "text": "SUA (Sangramento Uterino Anormal)", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 123, "text": "Mioma Uterino", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 124, "text": "Patologia do Corpo Uterino", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 125, "text": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 2", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 126, "text": "Câncer de Endométrio", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 127, "text": "Tumores Benignos do Ovário", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 128, "text": "Câncer de Ovário", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 129, "text": "Patologia do Ovário", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 130, "text": "Infertilidade", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 131, "text": "Radiologia: Densitometria óssea", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 132, "text": "Endometriose", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 133, "text": "Radiologia: Imagem da Mulher — Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 134, "text": "Climatério", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 135, "text": "Patologia: Citologia Mamária", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 136, "text": "Osteoporose", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 137, "text": "Patologia: Lesões não neoplásicas benignas da Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 138, "text": "Patologias Benignas da Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 139, "text": "Patologia: Lesões Malignas da Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
-  {"id": 140, "text": "Câncer de Mama", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  // (ASA1/Dermato, Criança e Adolescente), 'temas das avaliações' (Gestante e RN), cronograma de aulas
+  // teóricas (Saúde da Mulher) e cronograma de aulas do Planejamento e Gestão.
+  // aulaDate = data em que o assunto foi/será dado em aula (cruzado com a Agenda). Os 3 tópicos de
+  // Dermato que só aparecem em prática (sem aula teórica pontual) usam uma data referencial —
+  // o último ambulatório antes da 2ª Avaliação Prática — já sinalizada no próprio texto do tópico.
+  {"id": 1, "text": "Semiologia Dermatológica", "aulaDate": "2026-08-14", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 2, "text": "Dermatoviroses", "aulaDate": "2026-08-21", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 3, "text": "Dermatozoonoses", "aulaDate": "2026-08-28", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 4, "text": "Dermatoses Eritêmato-Escamosas", "aulaDate": "2026-09-04", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 5, "text": "Tumores Cutâneos", "aulaDate": "2026-09-18", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 6, "text": "Hanseníase", "aulaDate": "2026-09-25", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 7, "text": "Micoses", "aulaDate": "2026-10-02", "subject": "ASA 1 (Dermato)", "prova": "P1 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 8, "text": "Hanseníase", "aulaDate": "2026-09-25", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 9, "text": "Leishmaniose Tegumentar Americana", "aulaDate": "2026-10-30", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 10, "text": "Tumores Cutâneos", "aulaDate": "2026-09-18", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 11, "text": "Sífilis Adquirida", "aulaDate": "2026-11-13", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 12, "text": "Psoríase e Dermatite Seborreica (assunto de prática — coberto ao longo dos ambulatórios; data referencial: último ambulatório antes da 2ª Aval. Prática)", "aulaDate": "2026-11-17", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 13, "text": "Impetigos, Furúnculo, Abscesso, SSSS, Erisipela, Celulite (assunto de prática — coberto ao longo dos ambulatórios; data referencial: último ambulatório antes da 2ª Aval. Prática)", "aulaDate": "2026-11-17", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 14, "text": "Micoses Superficiais e Subcutâneas (assunto de prática — coberto ao longo dos ambulatórios; data referencial: último ambulatório antes da 2ª Aval. Prática)", "aulaDate": "2026-11-17", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 15, "text": "Dermatozoonoses", "aulaDate": "2026-08-28", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 16, "text": "Farmacodermias", "aulaDate": "2026-11-27", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 17, "text": "Doenças Bacterianas da Pele", "aulaDate": "2026-10-16", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 18, "text": "Dermatoses Vésico-Bolhosas", "aulaDate": "2026-10-23", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 20, "text": "Dermatoses Eczematosas", "aulaDate": "2026-11-06", "subject": "ASA 1 (Dermato)", "prova": "P2 ASA1 (Dermato)", "urgency": "med", "status": "todo"},
+  {"id": 23, "text": "Fisiologia e diagnóstico de gravidez", "aulaDate": "2026-08-10", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 24, "text": "Assistência Pré-natal", "aulaDate": "2026-08-10", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 25, "text": "Assistência ao parto transvaginal eutócico: mecanismo e estática", "aulaDate": "2026-08-17", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 26, "text": "Puerpério fisiológico e patológico", "aulaDate": "2026-08-17", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 27, "text": "Indução do Parto", "aulaDate": "2026-08-24", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 28, "text": "Tocurgia e Distócia", "aulaDate": "2026-08-24", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 29, "text": "Gestação prolongada", "aulaDate": "2026-08-31", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 30, "text": "Cesariana", "aulaDate": "2026-08-31", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 31, "text": "Características Anatômicas e Fisiológicas do RN", "aulaDate": "2026-08-11", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 32, "text": "Assistência ao RN na Sala de Parto e Reanimação Neonatal", "aulaDate": "2026-08-18", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 33, "text": "Tocotraumatismos", "aulaDate": "2026-08-25", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 34, "text": "Atenção Humanizada ao RN Prematuro e de Baixo Peso: Método Canguru", "aulaDate": "2026-09-01", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P1 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 35, "text": "Hemorragias da primeira metade da gravidez", "aulaDate": "2026-09-28", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 36, "text": "Hemorragia pós-parto", "aulaDate": "2026-09-28", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 37, "text": "Trabalho de parto prematuro", "aulaDate": "2026-10-05", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 38, "text": "RUPREME (Rotura Prematura de Membranas Ovulares)", "aulaDate": "2026-10-05", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 39, "text": "Síndromes Hipertensivas", "aulaDate": "2026-09-21", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 40, "text": "Triagem neonatal", "aulaDate": "2026-09-15", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 41, "text": "Icterícia", "aulaDate": "2026-09-22", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 42, "text": "Sífilis congênita", "aulaDate": "2026-10-06", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 43, "text": "Aleitamento materno", "aulaDate": "2026-09-08", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P2 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 44, "text": "Diabetes", "aulaDate": "2026-10-26", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 45, "text": "Restrição de Crescimento Fetal e Cardiotocografia", "aulaDate": "2026-11-09", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 46, "text": "Ultrassonografia em obstetrícia", "aulaDate": "2026-10-26", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 47, "text": "Hemorragias da segunda metade da gravidez", "aulaDate": "2026-11-16", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 48, "text": "Óbito Fetal", "aulaDate": "2026-11-09", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 49, "text": "Teratogênese", "aulaDate": "2026-11-23", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 50, "text": "Anoxia perinatal e Encefalopatia hipóxico-isquêmica", "aulaDate": "2026-10-20", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 51, "text": "Distúrbios Respiratórios no RN", "aulaDate": "2026-11-03", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 52, "text": "Sepse Neonatal", "aulaDate": "2026-11-10", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 53, "text": "Cuidado acolhedor para todos os recém-nascidos", "aulaDate": "2026-11-17", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 54, "text": "Infecções Congênitas", "aulaDate": "2026-11-24", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 55, "text": "Distúrbios Metabólicos no período neonatal", "aulaDate": "2026-12-01", "subject": "Assistência à Saúde da Gestante e do Recém-Nascido", "prova": "P3 Gestante e RN", "urgency": "med", "status": "todo"},
+  {"id": 56, "text": "Abordagem ética", "aulaDate": "2026-08-11", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 57, "text": "Crescimento e Desenvolvimento na infância e adolescência", "aulaDate": "2026-08-19", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 58, "text": "Proteção ao Aleitamento Materno", "aulaDate": "2026-08-12", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 59, "text": "Vacinação na infância e adolescência", "aulaDate": "2026-08-13", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 60, "text": "Alimentação na infância e na adolescência", "aulaDate": "2026-08-19", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 61, "text": "Desnutrição na Pediatria", "aulaDate": "2026-09-02", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 62, "text": "Segurança e Prevenção de acidentes na infância e na adolescência", "aulaDate": "2026-09-02", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 63, "text": "A consulta do adolescente", "aulaDate": "2026-08-25", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 64, "text": "Síndrome do adolescente normal", "aulaDate": "2026-08-27", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 65, "text": "Impacto das TICs na infância e na adolescência", "aulaDate": "2026-08-26", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 66, "text": "Constipação Intestinal", "aulaDate": "2026-09-09", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 67, "text": "Fimose, Hérnia umbilical e Hérnia epigástrica", "aulaDate": "2026-08-19", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 68, "text": "Persistência do conduto peritônio-vaginal", "aulaDate": "2026-09-02", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 69, "text": "Distopias Testiculares", "aulaDate": "2026-09-02", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P1 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 70, "text": "Desenvolvimento puberal normal e patológico", "aulaDate": "2026-09-08", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 71, "text": "Diagnóstico Diferencial das anemias", "aulaDate": "2026-09-23", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 72, "text": "Violência na Criança e Adolescente: impacto na saúde", "aulaDate": "2026-09-10", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 73, "text": "Diarreia aguda na criança e adolescente", "aulaDate": "2026-09-16", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 74, "text": "Sexualidade na adolescência", "aulaDate": "2026-09-22", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 75, "text": "Infecções das Vias Aéreas Superiores (IVAS)", "aulaDate": "2026-09-23", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 76, "text": "Asma na infância e adolescência", "aulaDate": "2026-09-30", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 77, "text": "Infecções das Vias Aéreas Inferiores (IVAI)", "aulaDate": "2026-09-24", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 78, "text": "Parasitoses intestinais", "aulaDate": "2026-09-30", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 79, "text": "Obesidade e Síndrome metabólica", "aulaDate": "2026-10-07", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 80, "text": "Principais problemas ginecológicos na adolescência", "aulaDate": "2026-10-06", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 81, "text": "Transtorno do Espectro Autista (TEA)", "aulaDate": "2026-10-14", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 82, "text": "Estenose Hipertrófica do Piloro", "aulaDate": "2026-09-23", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 83, "text": "Atresias Intestinais", "aulaDate": "2026-09-30", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P2 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 84, "text": "Transtornos mentais na adolescência", "aulaDate": "2026-10-08", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 85, "text": "Principais problemas andrológicos na adolescência", "aulaDate": "2026-10-20", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 86, "text": "Transtorno do Déficit de Atenção e Hiperatividade (TDAH)", "aulaDate": "2026-10-21", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 87, "text": "Doenças exantemáticas I e II", "aulaDate": "2026-10-22", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 88, "text": "ITU", "aulaDate": "2026-10-14", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 89, "text": "Doença Reumática", "aulaDate": "2026-11-03", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 90, "text": "Tuberculose", "aulaDate": "2026-11-04", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 91, "text": "Glomerulonefrite Pós-estreptocóccica (GNPE)", "aulaDate": "2026-11-11", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 92, "text": "Crises febris e Síndrome epilépticas", "aulaDate": "2026-11-11", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 93, "text": "Gravidez e Parentalidade na adolescência: aspectos psicossociais", "aulaDate": "2026-11-17", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 94, "text": "Síndrome Nefrótica (SN)", "aulaDate": "2026-11-25", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 95, "text": "Meningoencefalites (MGEs)", "aulaDate": "2026-12-01", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 96, "text": "Apendicite Aguda", "aulaDate": "2026-10-14", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 97, "text": "Invaginação intestinal", "aulaDate": "2026-11-11", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 98, "text": "Tumores abdominais (Nefroblastoma e tumor de Wilms)", "aulaDate": "2026-11-25", "subject": "Assistência à Saúde da Criança e do Adolescente", "prova": "P3 Criança e Adolescente", "urgency": "med", "status": "todo"},
+  {"id": 99, "text": "Fisiologia Menstrual", "aulaDate": "2026-08-12", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 100, "text": "Semiologia Ginecológica", "aulaDate": "2026-08-12", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 101, "text": "Patologia: Metodologia", "aulaDate": "2026-08-13", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 102, "text": "Dismenorreia", "aulaDate": "2026-08-19", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 103, "text": "SPM (Síndrome pré-menstrual)", "aulaDate": "2026-08-19", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 104, "text": "Patologia da Placenta", "aulaDate": "2026-08-20", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 105, "text": "Propedêutica Cervical", "aulaDate": "2026-08-26", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 106, "text": "Anticoncepção", "aulaDate": "2026-08-26", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 107, "text": "Citologia Ginecológica", "aulaDate": "2026-08-27", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 108, "text": "Ginecologia Infanto-Puberal I", "aulaDate": "2026-09-02", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 109, "text": "Ginecologia Infanto-Puberal II", "aulaDate": "2026-09-02", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 110, "text": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 1", "aulaDate": "2026-09-03", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 111, "text": "Amenorreia Primária", "aulaDate": "2026-09-09", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 112, "text": "Amenorreia Secundária e SOP", "aulaDate": "2026-09-09", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 113, "text": "Distopias", "aulaDate": "2026-09-10", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 114, "text": "IUE (Incontinência Urinária de Esforço)", "aulaDate": "2026-09-10", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 115, "text": "Infecções Genitais", "aulaDate": "2026-09-16", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 116, "text": "IST", "aulaDate": "2026-09-10", "subject": "Assistência à Saúde da Mulher", "prova": "P1 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 117, "text": "Patologias Benignas da Vulva", "aulaDate": "2026-09-24", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 118, "text": "Patologias Malignas da Vulva", "aulaDate": "2026-09-24", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 119, "text": "Patologia Pré-maligna do Colo", "aulaDate": "2026-09-30", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 120, "text": "Câncer de Colo", "aulaDate": "2026-09-30", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 121, "text": "Patologia do Colo Uterino e Vulva", "aulaDate": "2026-10-01", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 122, "text": "SUA (Sangramento Uterino Anormal)", "aulaDate": "2026-10-07", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 123, "text": "Mioma Uterino", "aulaDate": "2026-10-07", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 124, "text": "Patologia do Corpo Uterino", "aulaDate": "2026-10-08", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 125, "text": "Radiologia: Imagem da Mulher — Órgãos Pélvicos 2", "aulaDate": "2026-10-14", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 126, "text": "Câncer de Endométrio", "aulaDate": "2026-10-15", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 127, "text": "Tumores Benignos do Ovário", "aulaDate": "2026-10-21", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 128, "text": "Câncer de Ovário", "aulaDate": "2026-10-21", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 129, "text": "Patologia do Ovário", "aulaDate": "2026-10-22", "subject": "Assistência à Saúde da Mulher", "prova": "P2 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 130, "text": "Infertilidade", "aulaDate": "2026-11-04", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 131, "text": "Radiologia: Densitometria óssea", "aulaDate": "2026-11-05", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 132, "text": "Endometriose", "aulaDate": "2026-11-11", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 133, "text": "Radiologia: Imagem da Mulher — Mama", "aulaDate": "2026-11-12", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 134, "text": "Climatério", "aulaDate": "2026-11-18", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 135, "text": "Patologia: Citologia Mamária", "aulaDate": "2026-11-19", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 136, "text": "Osteoporose", "aulaDate": "2026-11-25", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 137, "text": "Patologia: Lesões não neoplásicas benignas da Mama", "aulaDate": "2026-11-26", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 138, "text": "Patologias Benignas da Mama", "aulaDate": "2026-12-02", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 139, "text": "Patologia: Lesões Malignas da Mama", "aulaDate": "2026-12-03", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 140, "text": "Câncer de Mama", "aulaDate": "2026-12-09", "subject": "Assistência à Saúde da Mulher", "prova": "P3 Saúde da Mulher", "urgency": "med", "status": "todo"},
+  {"id": 141, "text": "Contrato pedagógico e de convivência / Apresentação da disciplina", "aulaDate": "2026-08-13", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 142, "text": "Sistemas e serviços de atenção à saúde", "aulaDate": "2026-08-20", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 143, "text": "Regionalização da Saúde e Redes", "aulaDate": "2026-08-27", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 144, "text": "Apresentação de seminário — Regionalização em Saúde", "aulaDate": "2026-09-03", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 145, "text": "Modelo assistencial da Secretaria Estadual de Saúde de PE", "aulaDate": "2026-09-10", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 146, "text": "Avaliação em Saúde", "aulaDate": "2026-09-17", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 147, "text": "Planejamento em Saúde", "aulaDate": "2026-09-24", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 148, "text": "Experiências de Planejamento no SUS", "aulaDate": "2026-10-01", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 149, "text": "Modelos de Gestão e Gerência no SUS", "aulaDate": "2026-10-15", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 150, "text": "Modelos de Gestão e Gerência: Consórcio e EBSERH", "aulaDate": "2026-10-22", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 151, "text": "Modelos de Gestão e Gerência: PPP e OS", "aulaDate": "2026-10-29", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 152, "text": "Regulação e Auditoria no SUS; Hospital das Clínicas e EBSERH", "aulaDate": "2026-11-05", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 153, "text": "Financiamento da Saúde", "aulaDate": "2026-11-12", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 154, "text": "Sistema de Informação sobre Orçamentos Públicos em Saúde (SIOPS)", "aulaDate": "2026-11-19", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 155, "text": "Análise crítica de indicadores de financiamento de entes nacionais", "aulaDate": "2026-11-26", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "Aval. contínuas PGSS", "urgency": "med", "status": "todo"},
+  {"id": 156, "text": "Revisão geral dos conteúdos (SUS, planejamento, gestão, financiamento)", "aulaDate": "2026-12-03", "subject": "Planejamento e Gestão de Serviços de Saúde", "prova": "P2 Planejamento e Gestão", "urgency": "med", "status": "todo"},
 ];
+
+
+
 
 
 
@@ -826,21 +843,38 @@ let isSyncing = false;
 //  (ex: quando um cronograma novo é incorporado ao dashboard) sejam
 //  incluídos mesmo quando já existem dados salvos localmente ou no Firebase,
 //  sem apagar o progresso (status) que o usuário já marcou.
+//  Além de adicionar tópicos novos, também ATUALIZA campos de tópicos que já
+//  existiam (ex: aulaDate adicionada depois) — só o campo 'status' (estudado/
+//  a estudar) nunca é sobrescrito, pra nunca perder o progresso já marcado.
 // ─────────────────────────────────────────────
 function mergeNewDefaultItems(existingItems){
   const key = it => (it.text||'') + '|' + (it.subject||'') + '|' + (it.prova||'');
-  const existingKeys = new Set(existingItems.map(key));
+  const byKey = {};
+  existingItems.forEach(it => { byKey[key(it)] = it; });
   let maxId = existingItems.length ? Math.max(...existingItems.map(i=>i.id||0)) : 0;
   const added = [];
+  const updated = [];
+  const FIELDS_TO_SYNC = ['aulaDate','urgency','text','subject','prova'];
   DEFAULT_ITEMS.forEach(def => {
-    if(!existingKeys.has(key(def))){
+    const k = key(def);
+    const existing = byKey[k];
+    if(!existing){
       maxId += 1;
       const newItem = Object.assign({}, def, {id: maxId});
       existingItems.push(newItem);
       added.push(newItem);
+    } else {
+      let changed = false;
+      FIELDS_TO_SYNC.forEach(f => {
+        if(def[f] !== undefined && existing[f] !== def[f]){
+          existing[f] = def[f];
+          changed = true;
+        }
+      });
+      if(changed) updated.push(existing);
     }
   });
-  return added;
+  return {added, updated};
 }
 
 // ─────────────────────────────────────────────
@@ -902,11 +936,15 @@ function initFirebase(dbUrl, apiKey){
       const data = snapshot.val();
       if(data){
         items = Object.values(data);
-        const added = mergeNewDefaultItems(items);
+        const {added, updated} = mergeNewDefaultItems(items);
         nid = Math.max(...items.map(i=>i.id), 0) + 1;
         if(added.length){
-          // sobe só os itens novos pro Firebase, sem mexer no progresso já salvo
+          // sobe os itens novos pro Firebase, sem mexer no progresso já salvo
           added.forEach(it => dbRef.child('item_'+it.id).set(it).catch(console.error));
+        }
+        if(updated.length){
+          // sobe só os campos atualizados (ex: aulaDate) dos itens que já existiam
+          updated.forEach(it => dbRef.child('item_'+it.id).set(it).catch(console.error));
         }
       } else {
         // first time — push default data
@@ -1093,6 +1131,7 @@ function renderPrioridades(){
         <div class="item-text">${item.text}</div>
         <div class="item-meta">
           ${subBadge(item.subject)}
+          ${aulaTag(item.aulaDate)}
           <span style="font-size:10px;color:var(--text3);">${item.prova||''}${daysTxt?' · '+daysTxt:''}</span>
         </div>
       </div>
@@ -1508,7 +1547,7 @@ const AGENDA = [
   {"date": "2026-09-22", "time": "08:00–10:00", "mod": "ASA1", "tipo": "teo", "titulo": "Aula Teórico-prática (tema não especificado)", "prof": "Profa. Fátima Brito", "local": "Anfiteatro 4 HC"},
   {"date": "2026-09-22", "time": "10:10–12:00", "mod": "GRN", "tipo": "teo", "titulo": "Neonatologia (Teórica) — Icterícia", "prof": "Profa. Fátima", "local": "Anfiteatro 4 HC"},
   {"date": "2026-09-22", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Sexualidade na adolescência", "prof": "Profa. Suzana Costa", "local": "Sala 3 FMR"},
-  {"date": "2026-09-23", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Estenose Hipertrófica do Piloro + (tema continuação)", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
+  {"date": "2026-09-23", "time": "07:30–10:10", "mod": "CRIA", "tipo": "teo", "titulo": "CIPE: Estenose Hipertrófica do Piloro + Diagnóstico Diferencial das anemias", "prof": "Profa. Georgia Veras", "local": "Anfiteatro 4 HC"},
   {"date": "2026-09-23", "time": "13:30–15:40", "mod": "CRIA", "tipo": "teo", "titulo": "Infecções das Vias Aéreas Superiores (IVAS)", "prof": "Profa. Dayanne Bruscky", "local": "Anfiteatro 4 HC"},
   {"date": "2026-09-24", "time": "13:30–16:30", "mod": "CRIA", "tipo": "teo", "titulo": "Infecções das Vias Aéreas Inferiores (IVAI)", "prof": "Profa. Georgia Veras", "local": "Sala 3 FMR"},
   {"date": "2026-09-23", "time": "—", "mod": "MULH", "tipo": "teo", "titulo": "Reposição S/N (se necessário)", "prof": "", "local": "A confirmar"},
