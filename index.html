@@ -313,6 +313,38 @@
   .falta-sum-item{flex:1;min-width:120px;background:var(--bg2);border-radius:var(--radius-sm);padding:8px 10px;}
   .falta-sum-label{font-size:10px;color:var(--text2);margin-bottom:2px;}
   .falta-sum-num{font-size:18px;font-weight:600;}
+  /* ── PLANTÃO COB ── */
+  .plant-next{position:relative;background:var(--bg2);border-radius:var(--radius);padding:16px 16px 15px;margin-bottom:1.3rem;overflow:hidden;}
+  .plant-next::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--blue);}
+  .plant-next-eyebrow{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;margin-bottom:5px;}
+  .plant-next-date{font-size:19px;font-weight:700;line-height:1.25;}
+  .plant-next-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+  .plant-next-days{position:absolute;top:14px;right:16px;text-align:right;}
+  .plant-next-days-num{font-size:22px;font-weight:700;color:var(--blue-text);line-height:1;}
+  .plant-next-days-label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;}
+  .plant-rail{position:relative;padding-left:26px;}
+  .plant-rail::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;width:1px;background:var(--border2);}
+  .plant-row{position:relative;padding-bottom:20px;}
+  .plant-row:last-child{padding-bottom:0;}
+  .plant-dot{position:absolute;left:-26px;top:3px;width:13px;height:13px;border-radius:50%;border:2px solid var(--bg);box-shadow:0 0 0 1px var(--border2);background:var(--blue);}
+  .plant-row.is-manha .plant-dot{background:var(--amber);}
+  .plant-row.is-past .plant-dot{background:var(--text3);box-shadow:none;}
+  .plant-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;}
+  .plant-row.is-past .plant-card{opacity:.5;}
+  .plant-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px;}
+  .plant-date{font-size:13.5px;font-weight:700;}
+  .plant-dow{font-size:11px;color:var(--text2);font-weight:400;}
+  .plant-period{font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;}
+  .plant-period.manha{background:var(--amber-bg);color:var(--amber-text);}
+  .plant-period.noite{background:var(--blue-bg);color:var(--blue-text);}
+  .plant-groups{display:flex;flex-direction:column;gap:6px;}
+  .plant-group-row{display:flex;gap:8px;font-size:12px;line-height:1.4;}
+  .plant-group-tag{flex-shrink:0;width:64px;font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;padding-top:1px;}
+  .plant-group-row.mine .plant-group-tag{color:var(--blue-text);}
+  .plant-group-names{color:var(--text);}
+  .plant-group-row.mine .plant-group-names{font-weight:600;}
+  .plant-group-monitor{color:var(--text2);}
+  .plant-vaga-aberta{color:var(--text3);font-style:italic;}
   /* ── PROVAS CALENDÁRIO ── */
   .prov-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
   .prov-header-title{font-size:15px;font-weight:700;}
@@ -488,6 +520,7 @@
     <button class="nav-btn" onclick="setView('agenda',this)">Agenda</button>
     <button class="nav-btn" onclick="setView('provas',this)">Provas</button>
     <button class="nav-btn" onclick="setView('faltas',this)">Faltas</button>
+    <button class="nav-btn" onclick="setView('plantao',this)">Plantão COB</button>
   </div>
 
   <div id="view-estudos">
@@ -578,6 +611,12 @@
       <div class="falta-sum-item"><div class="falta-sum-label">Disciplinas reprovando</div><div class="falta-sum-num n-done" style="color:var(--red)" id="falta-reprov">0</div></div>
     </div>
     <div id="falta-list"></div>
+  </div>
+
+  <div id="view-plantao" style="display:none">
+    <div id="plantao-next"></div>
+    <div class="section-label">Seus plantões (trio: você, Arthur Rios e Davi Luiz)</div>
+    <div class="plant-rail" id="plantao-list"></div>
   </div>
 </div><!-- .app -->
 <div class="toast" id="toast">
@@ -1450,9 +1489,11 @@ function setView(v,btn){
   document.getElementById('view-agenda').style.display=v==='agenda'?'':'none';
   document.getElementById('view-provas').style.display=v==='provas'?'':'none';
   document.getElementById('view-faltas').style.display=v==='faltas'?'':'none';
+  document.getElementById('view-plantao').style.display=v==='plantao'?'':'none';
   if(v==='agenda')renderAgenda();
   if(v==='provas')renderProvas();
   if(v==='faltas')renderFaltas();
+  if(v==='plantao')renderPlantao();
 }
 
 // ─────────────────────────────────────────────
@@ -2032,6 +2073,20 @@ function renderAgDay(){
 //  PROVAS CALENDÁRIO
 // ─────────────────────────────────────────────
 // tipo: 'teo' = teórica | 'prat' = prática/cenários
+const PLANTAO_COB = [
+  // Plantões do trio de Arthur (ele + Arthur Rios + Davi Luiz) no COB — extraído da escala
+  // já filtrada pelo próprio Arthur a partir do documento oficial (Plantões COB 2026.2 - Turma 157).
+  // "outroMonitor"/"outroGrupo" = quem está de plantão no mesmo horário, em outra estação.
+  {date:'2026-09-11', dia:'Sexta-feira', periodo:'Noite',  monitor:'João Marcos',      outroMonitor:'Karina Brasil',      outroGrupo:'Vitoria Siqueira, Beatriz Siqueira, Maria Luiza Gusmão'},
+  {date:'2026-09-20', dia:'Domingo',     periodo:'Noite',  monitor:'Julianna Nóbrega', outroMonitor:'João Gabriel',       outroGrupo:'André Silveira, Márcio Antonio, Silvandro Victor'},
+  {date:'2026-09-27', dia:'Domingo',     periodo:'Noite',  monitor:'João Gabriel',     outroMonitor:'Julianna Nóbrega',   outroGrupo:'Isabel Ricarte, Yalu Fanthini'},
+  {date:'2026-10-17', dia:'Sábado',      periodo:'Manhã',  monitor:'Rayane Rita',      outroMonitor:null,                 outroGrupo:'(não informado / vaga em aberto)'},
+  {date:'2026-10-25', dia:'Domingo',     periodo:'Manhã',  monitor:'Danilo Micael',    outroMonitor:'Larissa Oliveira',   outroGrupo:'Laysla Lorenna, Laura Mosca, Ana Clara Cavalcanti'},
+  {date:'2026-11-04', dia:'Quarta-feira',periodo:'Noite',  monitor:'Nicolas Vitorio',  outroMonitor:'Giovanna Lima',      outroGrupo:'Gabriel Henrique, Gabriel Vasconcelos, Rodrigo Peres'},
+  {date:'2026-11-19', dia:'Quinta-feira',periodo:'Noite',  monitor:'Matheus Eduardo',  outroMonitor:'Maria Klara',        outroGrupo:'Guilherme Vinícius, Israel Barros'},
+];
+
+
 const PROVAS_DEF = [
   // Calendário de provas do M5 (2025.2/2026.2) — datas oficiais dos documentos enviados.
   // module usa uma das chaves: MULH, GRN, CRIA, PGSS, ASA1
@@ -2487,6 +2542,72 @@ function faltaStatus(count, limite){
   if(count >= limite) return {cls:'fs-danger', label:'Reprovado por faltas ⚠️', pct};
   if(count >= Math.floor(limite*0.75)) return {cls:'fs-warn', label:`Atenção — ${limite-count} aula${limite-count===1?'':'s'} até reprovar`, pct};
   return {cls:'fs-ok', label:`${limite-count} aula${limite-count===1?'':'s'} restante${limite-count===1?'':'s'}`, pct};
+}
+
+function renderPlantao(){
+  const nextEl = document.getElementById('plantao-next');
+  const listEl = document.getElementById('plantao-list');
+  if(!listEl) return;
+  const t = todayISO();
+  const sorted = [...PLANTAO_COB].sort((a,b)=>a.date.localeCompare(b.date));
+  if(!sorted.length){
+    if(nextEl) nextEl.innerHTML = '';
+    listEl.innerHTML = '<p class="empty">Nenhum plantão cadastrado.</p>';
+    return;
+  }
+
+  const upcoming = sorted.find(p => p.date >= t);
+  if(nextEl){
+    if(upcoming){
+      const days = diffD(t, upcoming.date);
+      const daysTxt = days === 0 ? 'hoje' : days === 1 ? 'amanhã' : `em ${days} dias`;
+      nextEl.innerHTML = `<div class="plant-next">
+        <div class="plant-next-eyebrow">Próximo plantão</div>
+        <div class="plant-next-date">${fmtDateLong(upcoming.date)} · ${upcoming.dia}</div>
+        <div class="plant-next-sub">Período da ${upcoming.periodo.toLowerCase()} · monitor ${upcoming.monitor}</div>
+        <div class="plant-next-days">
+          <div class="plant-next-days-num">${days===0?'●':days}</div>
+          <div class="plant-next-days-label">${days===0?'hoje':days===1?'dia':'dias'}</div>
+        </div>
+      </div>`;
+    } else {
+      nextEl.innerHTML = `<div class="plant-next" style="border-left-color:var(--text3);">
+        <div class="plant-next-eyebrow">Plantões</div>
+        <div class="plant-next-date">Nenhum plantão futuro cadastrado</div>
+        <div class="plant-next-sub">Todos os plantões registrados já passaram.</div>
+      </div>`;
+    }
+  }
+
+  listEl.innerHTML = sorted.map(p=>{
+    const isPast = p.date < t;
+    const isManha = /manh/i.test(p.periodo);
+    const periodCls = isManha ? 'manha' : 'noite';
+    const dataObj = new Date(p.date+'T12:00:00');
+    const diaMes = dataObj.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+    const outroLine = p.outroMonitor
+      ? `<span class="plant-group-monitor">${p.outroMonitor}</span> — ${p.outroGrupo}`
+      : `<span class="plant-vaga-aberta">${p.outroGrupo}</span>`;
+    return `<div class="plant-row ${isManha?'is-manha':''} ${isPast?'is-past':''}">
+      <div class="plant-dot"></div>
+      <div class="plant-card">
+        <div class="plant-head">
+          <div class="plant-date">${diaMes} <span class="plant-dow">— ${p.dia}</span></div>
+          <div class="plant-period ${periodCls}">${p.periodo}</div>
+        </div>
+        <div class="plant-groups">
+          <div class="plant-group-row mine">
+            <div class="plant-group-tag">Seu grupo</div>
+            <div class="plant-group-names"><span class="plant-group-monitor">${p.monitor}</span> — você, Arthur Rios e Davi Luiz</div>
+          </div>
+          <div class="plant-group-row">
+            <div class="plant-group-tag">Outro grupo</div>
+            <div class="plant-group-names">${outroLine}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderFaltas(){
