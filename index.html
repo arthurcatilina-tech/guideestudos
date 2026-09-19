@@ -881,21 +881,45 @@ let isSyncing = false;
 //  MERGE: garante que novos tópicos adicionados ao DEFAULT_ITEMS
 //  (ex: quando um cronograma novo é incorporado ao dashboard) sejam
 //  incluídos mesmo quando já existem dados salvos localmente ou no Firebase,
-//  sem apagar o progresso (status) que o usuário já marcou.
-//  Além de adicionar tópicos novos, também ATUALIZA campos de tópicos que já
-//  existiam (ex: aulaDate adicionada depois) — só o campo 'status' (estudado/
-//  a estudar) nunca é sobrescrito, pra nunca perder o progresso já marcado.
+//  sem apagar o progresso (status) que o usuário já marcou, nem desfazer
+//  edições do usuário (mover de prova, excluir).
+//
+//  A chave de identidade de um tópico é (texto + matéria) — SEM a prova,
+//  porque o usuário pode mover um tópico de prova e isso não deve fazer o
+//  merge achar que é "um tópico novo" e recriar uma cópia na prova antiga.
+//  Por isso 'prova' também NUNCA é sincronizada de volta a partir do
+//  DEFAULT_ITEMS — uma vez criado, esse campo é do usuário.
+//
+//  Tópicos que o usuário excluiu ficam registrados numa "lista de exclusão"
+//  (tombstone) em localStorage, para o merge nunca trazê-los de volta.
 // ─────────────────────────────────────────────
+function loadDeletedSeedKeys(){
+  try{ return new Set(JSON.parse(localStorage.getItem('arthur_deleted_seed_m5')||'[]')); }
+  catch(e){ return new Set(); }
+}
+function addDeletedSeedKey(key){
+  const s = loadDeletedSeedKeys();
+  s.add(key);
+  localStorage.setItem('arthur_deleted_seed_m5', JSON.stringify([...s]));
+}
+function removeDeletedSeedKey(key){
+  const s = loadDeletedSeedKeys();
+  s.delete(key);
+  localStorage.setItem('arthur_deleted_seed_m5', JSON.stringify([...s]));
+}
+function seedItemKey(it){ return (it.text||'') + '|' + (it.subject||''); }
+
 function mergeNewDefaultItems(existingItems){
-  const key = it => (it.text||'') + '|' + (it.subject||'') + '|' + (it.prova||'');
   const byKey = {};
-  existingItems.forEach(it => { byKey[key(it)] = it; });
+  existingItems.forEach(it => { byKey[seedItemKey(it)] = it; });
+  const deletedKeys = loadDeletedSeedKeys();
   let maxId = existingItems.length ? Math.max(...existingItems.map(i=>i.id||0)) : 0;
   const added = [];
   const updated = [];
-  const FIELDS_TO_SYNC = ['aulaDate','urgency','text','subject','prova'];
+  const FIELDS_TO_SYNC = ['aulaDate','urgency','text','subject']; // NUNCA inclui 'prova' nem 'status'
   DEFAULT_ITEMS.forEach(def => {
-    const k = key(def);
+    const k = seedItemKey(def);
+    if(deletedKeys.has(k)) return; // usuário excluiu esse tópico — não recriar
     const existing = byKey[k];
     if(!existing){
       maxId += 1;
@@ -1327,6 +1351,7 @@ function undoLast(){
 
   if(action.type === 'delete'){
     items.unshift(action.item);
+    removeDeletedSeedKey(seedItemKey(action.item));
     saveItem(action.item);
     renderList(); updateStats();
   } else if(action.type === 'move'){
@@ -1347,6 +1372,7 @@ function del(id){
   const item = items.find(i=>i.id===id);
   if(!item) return;
   undoStack.push({type:'delete', item: JSON.parse(JSON.stringify(item))});
+  addDeletedSeedKey(seedItemKey(item));
   items = items.filter(i=>i.id!==id);
   deleteItemRemote(id);
   renderList(); updateStats();
