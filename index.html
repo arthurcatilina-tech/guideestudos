@@ -345,6 +345,11 @@
   .plant-group-row.mine .plant-group-names{font-weight:600;}
   .plant-group-monitor{color:var(--text2);}
   .plant-vaga-aberta{color:var(--text3);font-style:italic;}
+  .plant-row.is-incerto .plant-card{border-style:dashed;border-color:var(--amber);background:var(--amber-bg);}
+  .plant-row.is-incerto .plant-dot{background:var(--amber);}
+  .plant-incerto-tag{display:inline-block;font-size:9.5px;font-weight:700;color:var(--amber-text);background:var(--white);border:1px solid var(--amber);border-radius:99px;padding:2px 8px;margin-bottom:6px;}
+  .plant-obs{font-size:11px;color:var(--amber-text);margin-top:7px;padding-top:7px;border-top:1px dashed var(--amber);line-height:1.4;}
+  .plant-stats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
   /* ── PROVAS CALENDÁRIO ── */
   .prov-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;}
   .prov-header-title{font-size:15px;font-weight:700;}
@@ -614,6 +619,7 @@
   </div>
 
   <div id="view-plantao" style="display:none">
+    <div class="plant-stats" id="plantao-stats"></div>
     <div id="plantao-next"></div>
     <div class="section-label">Seus plantões (trio: você, Arthur Rios e Davi Luiz)</div>
     <div class="plant-rail" id="plantao-list"></div>
@@ -2100,16 +2106,27 @@ function renderAgDay(){
 // ─────────────────────────────────────────────
 // tipo: 'teo' = teórica | 'prat' = prática/cenários
 const PLANTAO_COB = [
-  // Plantões do trio de Arthur (ele + Arthur Rios + Davi Luiz) no COB — extraído da escala
-  // já filtrada pelo próprio Arthur a partir do documento oficial (Plantões COB 2026.2 - Turma 157).
-  // "outroMonitor"/"outroGrupo" = quem está de plantão no mesmo horário, em outra estação.
-  {date:'2026-09-11', dia:'Sexta-feira', periodo:'Noite',  monitor:'João Marcos',      outroMonitor:'Karina Brasil',      outroGrupo:'Vitoria Siqueira, Beatriz Siqueira, Maria Luiza Gusmão'},
-  {date:'2026-09-20', dia:'Domingo',     periodo:'Noite',  monitor:'Julianna Nóbrega', outroMonitor:'João Gabriel',       outroGrupo:'André Silveira, Márcio Antonio, Silvandro Victor'},
-  {date:'2026-09-27', dia:'Domingo',     periodo:'Noite',  monitor:'João Gabriel',     outroMonitor:'Julianna Nóbrega',   outroGrupo:'Isabel Ricarte, Yalu Fanthini'},
-  {date:'2026-10-17', dia:'Sábado',      periodo:'Manhã',  monitor:'Rayane Rita',      outroMonitor:null,                 outroGrupo:'(não informado / vaga em aberto)'},
-  {date:'2026-10-25', dia:'Domingo',     periodo:'Manhã',  monitor:'Danilo Micael',    outroMonitor:'Larissa Oliveira',   outroGrupo:'Laysla Lorenna, Laura Mosca, Ana Clara Cavalcanti'},
-  {date:'2026-11-04', dia:'Quarta-feira',periodo:'Noite',  monitor:'Nicolas Vitorio',  outroMonitor:'Giovanna Lima',      outroGrupo:'Gabriel Henrique, Gabriel Vasconcelos, Rodrigo Peres'},
-  {date:'2026-11-19', dia:'Quinta-feira',periodo:'Noite',  monitor:'Matheus Eduardo',  outroMonitor:'Maria Klara',        outroGrupo:'Guilherme Vinícius, Israel Barros'},
+  // Plantões do trio de Arthur (ele + Arthur Rios + Davi Luiz) no COB — reconstruído a partir
+  // do documento OFICIAL (Oficial - Plantões COB T157), extraindo a grade real da tabela do PDF
+  // (célula por célula, não por leitura de texto corrido) para garantir alinhamento correto de
+  // colunas/dias. Essa lista SUBSTITUI a anterior: várias datas mudaram em relação à escala usada
+  // antes (ex: 11/09 e 19/11 não aparecem mais nesse documento oficial; novas datas como 05/09,
+  // 10/09 e 09/11 apareceram). "outroMonitor"/"outroGrupo" = quem está de plantão no mesmo
+  // horário, em outra estação (mesma coluna da tabela, outro bloco de monitor).
+  {date:'2026-09-05', dia:'Sábado',       periodo:'Noite', monitor:'(nome pouco claro no PDF — confira)', outroMonitor:'Danilo',           outroGrupo:'Gustavo Ventorim, Laura Gabrielly', incerto:true, obs:'O PDF traz literalmente "Monitor neo que deu" nessa célula — não é um nome reconhecível. Confirme direto na planilha oficial.'},
+  {date:'2026-09-10', dia:'Quinta-feira', periodo:'Noite', monitor:'Matheus Eduardo',  outroMonitor:'Maria Klara',    outroGrupo:'Sophia Vasconcelos, Maria Cecília Câmara, Ricardo Gonçalves'},
+  {date:'2026-09-20', dia:'Domingo',      periodo:'Noite', monitor:'Cleyton José',     outroMonitor:'João Gabriel',   outroGrupo:'André Silveira, Márcio Antonio, Silvandro Victor'},
+  {date:'2026-09-27', dia:'Domingo',      periodo:'Noite', monitor:'João Gabriel',     outroMonitor:'Julianna Nóbrega', outroGrupo:'Isabel Ricarte, Yalu Fanthini'},
+  {date:'2026-10-17', dia:'Sábado',       periodo:'Manhã', monitor:'Rayane Rita',      outroMonitor:null,             outroGrupo:'(não informado / vaga em aberto)'},
+  {date:'2026-10-25', dia:'Domingo',      periodo:'Manhã', monitor:'Danilo Micael',    outroMonitor:'Larissa Oliveira', outroGrupo:'Laysla Lorenna, Laura Mosca, Ana Clara Cavalcanti'},
+  {date:'2026-11-04', dia:'Quarta-feira', periodo:'Noite', monitor:'Nicolas Vitorio',  outroMonitor:'Giovanna Lima',  outroGrupo:'Gabriel Henrique, Gabriel Vasconcelos, Laura Oliveira'},
+  {date:'2026-11-09', dia:'Segunda-feira',periodo:'Noite', monitor:'Matheus Eduardo',  outroMonitor:'Mariana Sá',     outroGrupo:'Sabrina Alencar, Diego Reis, Maria Eduarda'},
+  // Possível plantão adicional — encontrado numa linha de correção/anotação manual da tabela
+  // (semana de 21 a 27/09, coluna "Quinta 24/09"), estruturalmente corrompida no PDF nessa
+  // semana específica (linhas de monitor aparecendo fora de posição). Não consegui confirmar
+  // com segurança se é um plantão de verdade ou um fragmento de outra célula. Confira antes de
+  // contar como compromisso.
+  {date:'2026-09-24', dia:'Quinta-feira', periodo:'Noite', monitor:'(trecho ilegível/duplicado — confira)', outroMonitor:null, outroGrupo:'', incerto:true, obs:'Achado numa linha de correção manual da planilha, na semana de 21–27/09, que veio com a estrutura da tabela corrompida no PDF. Pode ser um plantão real ou um fragmento de outra célula — confirme com a coordenação antes de contar.'},
 ];
 
 
@@ -2571,18 +2588,34 @@ function faltaStatus(count, limite){
 }
 
 function renderPlantao(){
+  const statsEl = document.getElementById('plantao-stats');
   const nextEl = document.getElementById('plantao-next');
   const listEl = document.getElementById('plantao-list');
   if(!listEl) return;
   const t = todayISO();
   const sorted = [...PLANTAO_COB].sort((a,b)=>a.date.localeCompare(b.date));
   if(!sorted.length){
+    if(statsEl) statsEl.innerHTML = '';
     if(nextEl) nextEl.innerHTML = '';
     listEl.innerHTML = '<p class="empty">Nenhum plantão cadastrado.</p>';
     return;
   }
 
-  const upcoming = sorted.find(p => p.date >= t);
+  // ── Infográfico: pagos vs. faltam (só conta os confirmados, não os incertos) ──
+  const confirmados = sorted.filter(p => !p.incerto);
+  const pagos = confirmados.filter(p => p.date < t).length;
+  const faltam = confirmados.length - pagos;
+  const incertos = sorted.length - confirmados.length;
+  if(statsEl){
+    statsEl.innerHTML = `
+      <div class="falta-sum-item"><div class="falta-sum-label">Pagos</div><div class="falta-sum-num" style="color:var(--green-text);">${pagos}</div></div>
+      <div class="falta-sum-item"><div class="falta-sum-label">Faltam</div><div class="falta-sum-num" style="color:var(--blue-text);">${faltam}</div></div>
+      <div class="falta-sum-item"><div class="falta-sum-label">Total confirmados</div><div class="falta-sum-num">${confirmados.length}</div></div>
+      ${incertos ? `<div class="falta-sum-item"><div class="falta-sum-label">A confirmar</div><div class="falta-sum-num" style="color:var(--amber-text);">${incertos}</div></div>` : ''}
+    `;
+  }
+
+  const upcoming = sorted.find(p => p.date >= t && !p.incerto);
   if(nextEl){
     if(upcoming){
       const days = diffD(t, upcoming.date);
@@ -2599,8 +2632,8 @@ function renderPlantao(){
     } else {
       nextEl.innerHTML = `<div class="plant-next" style="border-left-color:var(--text3);">
         <div class="plant-next-eyebrow">Plantões</div>
-        <div class="plant-next-date">Nenhum plantão futuro cadastrado</div>
-        <div class="plant-next-sub">Todos os plantões registrados já passaram.</div>
+        <div class="plant-next-date">Nenhum plantão futuro confirmado</div>
+        <div class="plant-next-sub">Todos os plantões confirmados já passaram.</div>
       </div>`;
     }
   }
@@ -2613,10 +2646,11 @@ function renderPlantao(){
     const diaMes = dataObj.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
     const outroLine = p.outroMonitor
       ? `<span class="plant-group-monitor">${p.outroMonitor}</span> — ${p.outroGrupo}`
-      : `<span class="plant-vaga-aberta">${p.outroGrupo}</span>`;
-    return `<div class="plant-row ${isManha?'is-manha':''} ${isPast?'is-past':''}">
+      : `<span class="plant-vaga-aberta">${p.outroGrupo||'(não informado / vaga em aberto)'}</span>`;
+    return `<div class="plant-row ${isManha?'is-manha':''} ${isPast?'is-past':''} ${p.incerto?'is-incerto':''}">
       <div class="plant-dot"></div>
       <div class="plant-card">
+        ${p.incerto?'<div class="plant-incerto-tag">⚠ A confirmar</div>':''}
         <div class="plant-head">
           <div class="plant-date">${diaMes} <span class="plant-dow">— ${p.dia}</span></div>
           <div class="plant-period ${periodCls}">${p.periodo}</div>
@@ -2631,6 +2665,7 @@ function renderPlantao(){
             <div class="plant-group-names">${outroLine}</div>
           </div>
         </div>
+        ${p.obs?`<div class="plant-obs">${p.obs}</div>`:''}
       </div>
     </div>`;
   }).join('');
